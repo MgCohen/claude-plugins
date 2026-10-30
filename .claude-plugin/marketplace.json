@@ -1,0 +1,12 @@
+{
+  "name": "mgcohen",
+  "owner": { "name": "MgCohen" },
+  "metadata": { "description": "Personal Claude Code plugins for MgCohen" },
+  "plugins": [
+    {
+      "name": "core",
+      "source": "./plugins/core",
+      "description": "Personal skills, agents and hooks that follow me everywhere"
+    }
+  ]
+}
