@@ -16,6 +16,11 @@
       "name": "technical-english",
       "source": "./plugins/technical-english",
       "description": "Write all output, files, artifacts and diagram text in ASD-STE100 Simplified Technical English."
+    },
+    {
+      "name": "unity-worktrees",
+      "source": "./plugins/unity-worktrees",
+      "description": "Unity-ready worktrees for Claude Code sessions, with the Library seeded via the Unity CLI"
     }
   ]
 }
