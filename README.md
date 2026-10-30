@@ -2,6 +2,13 @@
 
 Personal Claude Code plugin marketplace (`mgcohen`). Add it once on claude.ai and it syncs to every Claude Code session signed in to this account.
 
+## Plugins
+
+| Plugin | What it does |
+|---|---|
+| `core` | Personal skills, agents and hooks that follow me everywhere. |
+| `technical-english` | Writes all output, files, artifacts and diagram text in ASD-STE100 Simplified Technical English. |
+
 ## Layout
 
 ```
