@@ -15,4 +15,6 @@ case "$dir" in
   *.wt/*) UNITY_NO_PAGER=1 UNITY_NO_CRASH_REPORT=1 UNITY_NO_CLI_INVOKED_TELEMETRY=1 \
             unity vcs git worktree remove "$dir" --discard-changes -y --non-interactive --no-banner >&2 && exit 0 ;;
 esac
-git worktree remove --force "$dir" >&2
+# Run git from the main checkout: Windows cannot delete a folder that is the process's cwd.
+root=$(git -C "$dir" rev-parse --path-format=absolute --git-common-dir) || exit 1
+git -C "${root%/.git}" worktree remove --force "$dir" >&2
