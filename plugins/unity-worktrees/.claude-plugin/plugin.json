@@ -1,6 +1,6 @@
 {
   "name": "unity-worktrees",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Unity-ready worktrees for Claude Code sessions: seeds each session's worktree with the project's Library via the Unity CLI",
   "author": { "name": "MgCohen" },
   "userConfig": {
