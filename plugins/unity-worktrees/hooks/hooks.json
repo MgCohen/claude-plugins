@@ -1,0 +1,10 @@
+{
+  "hooks": {
+    "WorktreeCreate": [
+      { "hooks": [ { "type": "command", "timeout": 600, "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/worktree-create.sh\"" } ] }
+    ],
+    "WorktreeRemove": [
+      { "hooks": [ { "type": "command", "timeout": 600, "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/worktree-remove.sh\"" } ] }
+    ]
+  }
+}
