@@ -15,6 +15,26 @@ drift to a different word for the same idea. These rules stop that drift.
 5. Use one term for "no value" ("None"). Use it in all tables.
 6. Use one term for "not permitted" ("forbidden" or "must not use"). Do not mix them.
 
+## Visuals first
+
+Use a visual before prose. Write prose only for the parts that a visual cannot show.
+
+| Content | Use |
+|---|---|
+| A sequence of steps or states | Flow graph |
+| Calls between functions or services | Call stack or sequence diagram |
+| Parts and their dependencies | Dependency graph |
+| Numbers, trends or comparisons | Chart |
+| Items with the same attributes | Table |
+| Code behavior or an API | Code snippet |
+| A command to run | Command block |
+
+- If a paragraph describes a flow, a call order or a structure, replace it with a visual.
+- Give each visual a title that states its message. Add one or two sentences only if the visual
+  needs them.
+- Keep snippets short: the lines that show the point, not the full file.
+- In a reply, a short table, list or snippet is also a visual. Use it before prose.
+
 ## Sentences and paragraphs
 
 | Item | Maximum |
@@ -59,20 +79,38 @@ drift to a different word for the same idea. These rules stop that drift.
 - Lists: 7 items maximum, and 2 levels of nesting maximum.
 - Use the same structure for blocks of the same type (for example: Purpose, Path, Contains, Uses).
 
+## Foldables
+
+A document often has a segment that repeats for each item: one block for each layer, finding,
+endpoint, module or step. Put each of these blocks in a foldable.
+
+- Use a foldable for each item when a segment has three or more items with the same structure.
+- The foldable title shows the item name and one key fact: "Domain · VSA.Domain, Notes.Domain".
+- Keep all foldables closed at the start. Add "Open all" and "Close all" when there are five or
+  more items.
+- Put the summary of all items (a table or a graph) before the foldables, and keep it open.
+- In HTML, use `<details>` and `<summary>`. In Markdown, use `<details>` and `<summary>` too.
+- Do not put the main message or a warning in a foldable. The reader must see it without a click.
+
 ## Splits
 
 | Output | Limit | If the output is longer |
 |---|---|---|
 | Chat reply | 150 words (target) | If more than 400 words, write an artifact or a file. |
-| Document or page | 1,500 words, or 7 top-level sections | Split into tabs or into documents. |
+| Document or page | 1,500 words, or 7 top-level sections | Split into tabs. Use documents only for different readers. |
 | Section | 300 words | Split into two sections. |
 | Table | 15 rows | Split by group, or move to a tab. |
 | Diagram | 10 nodes | Split by layer or by step. |
 
-Use **tabs** when the parts are for the same reader and the same purpose. Example: "Overview",
-"Rules", "Details".
+If a document is too long, split it into **tabs** first. Tabs are the default split.
 
-Use **separate documents** when the parts are for different readers, or change at different times.
-Link each document to the others.
+- Use tabs when the parts are for the same reader and the same purpose. Example: "Overview",
+  "Rules", "Details".
+- The first tab is the overview: the summary and the main visual.
+- Give each tab a short noun phrase as its name, 2 words maximum.
+- Use 2 to 6 tabs. If you need more, use separate documents.
+
+Use **separate documents** only when the parts are for different readers, or change at different
+times. Link each document to the others.
 
 Code blocks do not count in the word limits. Long code examples can go in a tab of their own.

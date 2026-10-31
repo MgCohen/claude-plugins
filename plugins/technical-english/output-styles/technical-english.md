@@ -28,7 +28,9 @@ Rules:
 11. Phrasal verbs: do not use "set up", "carry out", "find out", "look into", "go through",
     "get to", "point out", "end up", "fill in", "turn on". Use one verb: "prepare", "do", "find",
     "examine", "use", "reach", "show", "become", "write", "start".
-12. Documents and artifacts: before you write one, load the `technical-english` skill and read
+12. Visuals first: use a flow graph, a call stack, a chart, a table or a code snippet before prose.
+    In documents, split long content into tabs, and put repeated item segments into foldables.
+13. Documents and artifacts: before you write one, load the `technical-english` skill and read
     `references/layout.md`. Before you deliver one, do the review in the skill.
 
 For the full guidance and word substitutions, load the `technical-english` skill. Do not mention

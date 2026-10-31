@@ -71,10 +71,13 @@ splits.
 - All visible text follows STE: titles, headings, body, captions, buttons, tooltips, empty states,
   error messages, SVG labels and `aria-label` text.
 - List the key terms first. Give each idea one term. Use that term in all parts of the output.
+- Visuals first: use a flow graph, a call stack, a chart, a table or a code snippet before prose.
+  Write prose only for what a visual cannot show.
+- Put each repeated item segment (layers, findings, endpoints, modules) in a foldable.
 - Titles: short noun phrases. Buttons: an approved verb in the imperative ("Save", "Open", "Show
   details").
 - One idea in each slide bullet. Bullets are fragments or short STE sentences, not long sentences.
-- If a document has more than 1,500 words or 7 top-level sections, split it into tabs or documents.
+- If a document has more than 1,500 words or 7 top-level sections, split it into tabs.
 
 ### Graphs, charts and diagrams
 
@@ -96,6 +99,8 @@ drift.
 3. Find `-ing` forms used as verbs, and passive sentences. Change them.
 4. Find sentences longer than the limits, and paragraphs with more than four sentences. Split them.
 5. Examine tables, graphs and the total length against [references/layout.md](references/layout.md).
+   Find prose that describes a flow, a call order or a structure. Replace it with a visual.
+   Find repeated item segments that are not in foldables.
 6. Remove references to the session or the chat ("in this session", "the briefing").
 
 ### Subagents

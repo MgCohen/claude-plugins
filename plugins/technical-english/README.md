@@ -37,7 +37,7 @@ claude --plugin-dir ./technical-english
 
 The plugin is stricter than ASD-STE100. Procedure sentences: 15 words maximum (standard: 20).
 Descriptive sentences: 20 words maximum (standard: 25). Paragraphs: four sentences maximum
-(standard: six). `references/layout.md` adds limits for tables, graphs, documents and splits.
+(standard: six). `references/layout.md` adds limits for tables, graphs, documents and splits, and rules for visuals first, tabs and foldables.
 
 ## Source of the rules
 
