@@ -17,32 +17,21 @@ Each rule is in one file that Claude reads.
 | Hook | Text |
 |---|---|
 | UserPromptSubmit | One-line reminder |
-| SubagentStart | Core rules (subagents do not get the output style) |
+| SubagentStart | The output style rules, from `hooks/subagent-start.sh` (subagents do not get the output style) |
 | PostToolUse (`Write` of `.md`, `.html`, `.txt`) | One-line check |
 | PostToolUse (`Artifact`) | One-line check |
 
-The hooks use only `cat` on prepared JSON files. They work on macOS, Linux and Windows (Git Bash).
+The hooks use `cat` on prepared JSON files, and `sh` with `awk` for the subagent rules. They work
+on macOS, Linux and Windows (Git Bash).
 
 ## Change the rules
 
-| To change | Edit | Then |
-|---|---|---|
-| Core rules | `rules/core.md` | Run the build |
-| Layout rules or examples | `SKILL.md` | Nothing |
-| Words | `references/words.md` | Nothing |
-| Hook text | `hooks/context/*.json` | Nothing |
-
-The build copies `rules/core.md` into the output style and the subagent hook:
-
-```bash
-python scripts/build.py
-```
-
-Before you commit, make sure that the copies are current:
-
-```bash
-python scripts/build.py --check
-```
+| To change | Edit |
+|---|---|
+| Core rules | `output-styles/technical-english.md` (subagents get the change automatically) |
+| Layout rules or examples | `skills/technical-english/SKILL.md` |
+| Words | `skills/technical-english/references/words.md` |
+| Other hook text | `hooks/context/*.json` |
 
 ## Install
 
