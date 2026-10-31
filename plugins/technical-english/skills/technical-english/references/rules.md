@@ -5,6 +5,9 @@ the sections of the standard. It is not the standard. For the full rules and the
 get the current issue of ASD-STE100 from the ASD STE maintenance group (asd-ste100.org). The
 specification is free of charge on request.
 
+This plugin uses stricter house limits for sentences and paragraphs, and adds layout rules. See
+`SKILL.md` and `layout.md`. The limits below are the limits of the standard.
+
 ## Section 1 — Words
 
 - Use approved words from the dictionary. Use them only in their approved meaning and as their

@@ -12,6 +12,8 @@ short, and has one meaning only — also for readers whose first language is not
 - Rules quick reference: [references/rules.md](references/rules.md)
 - Word substitutions (common unapproved words and their approved replacements):
   [references/words.md](references/words.md)
+- Layout rules for terms, tables, graphs, documents and splits:
+  [references/layout.md](references/layout.md)
 
 ## The ten direct rules
 
@@ -22,9 +24,10 @@ Apply these always. They cover most of the standard.
 2. **Approved words, plus technical names and technical verbs.** Use the approved word, not the
    long or formal one (`use`, not `utilize`; `start`, not `commence`). Names of code, tools,
    APIs, files, types and domain terms are technical names: keep them exactly as they are.
-3. **Short sentences.** Procedure (instruction) sentences: 20 words maximum. Descriptive sentences:
-   25 words maximum. One topic in each sentence.
-4. **Short paragraphs.** One topic in each paragraph. Six sentences maximum.
+3. **Short sentences.** Procedure (instruction) sentences: 15 words maximum. Descriptive sentences:
+   20 words maximum. One topic in each sentence. These limits are stricter than ASD-STE100
+   (20 and 25 words). They are a house rule of this plugin.
+4. **Short paragraphs.** One topic in each paragraph. Four sentences and 60 words maximum.
 5. **Imperative for instructions.** Write a command: "Run the gate." Not "You should run the gate"
    or "The gate should be run."
 6. **Active voice.** "The hook adds the context." Not "The context is added by the hook." Use the
@@ -59,20 +62,41 @@ Apply these always. They cover most of the standard.
 - Code comments: short, imperative or simple present. "Returns the card index." "Skip empty
   hands."
 
-### Artifacts (pages, documents, slides, reports)
+### Artifacts, documents and long files
+
+Before you write a document, an artifact, a README or a report, read
+[references/layout.md](references/layout.md). It has the limits for tables, graphs, documents and
+splits.
 
 - All visible text follows STE: titles, headings, body, captions, buttons, tooltips, empty states,
-  error messages.
+  error messages, SVG labels and `aria-label` text.
+- List the key terms first. Give each idea one term. Use that term in all parts of the output.
 - Titles: short noun phrases. Buttons: an approved verb in the imperative ("Save", "Open", "Show
   details").
 - One idea in each slide bullet. Bullets are fragments or short STE sentences, not long sentences.
+- If a document has more than 1,500 words or 7 top-level sections, split it into tabs or documents.
 
 ### Graphs, charts and diagrams
 
-- Node, edge and axis labels: short noun phrases, three nouns maximum in a row.
+- Node, edge and axis labels: short noun phrases, 4 words maximum.
 - Edge labels for actions: a verb in the simple present ("sends", "reads", "starts").
 - Titles say what the graph shows: "Cards in each zone after the draw step".
-- Legends and annotations use the same words as the text around the graph.
+- Legends and annotations use the same terms as the text around the graph.
+- Diagrams: 10 nodes maximum. Charts: 5 series and 12 categories maximum.
+
+### Review before you deliver
+
+Do this review for each document, artifact or file with more than 150 words of prose. Do it before
+you publish or give the output to the user. A long text drifts, and only a full review finds the
+drift.
+
+1. Find all words for each key term. If one idea has two or more words, use one word.
+2. Find phrasal verbs ("set up", "go through", "flow up"). Replace them from
+   [references/words.md](references/words.md).
+3. Find `-ing` forms used as verbs, and passive sentences. Change them.
+4. Find sentences longer than the limits, and paragraphs with more than four sentences. Split them.
+5. Examine tables, graphs and the total length against [references/layout.md](references/layout.md).
+6. Remove references to the session or the chat ("in this session", "the briefing").
 
 ### Subagents
 
