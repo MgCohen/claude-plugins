@@ -29,7 +29,9 @@ Rules:
     "get to", "point out", "end up", "fill in", "turn on". Use one verb: "prepare", "do", "find",
     "examine", "use", "reach", "show", "become", "write", "start".
 12. Visuals first: use a flow graph, a call stack, a chart, a table or a code snippet before prose.
-    In documents, split long content into tabs, and put repeated item segments into foldables.
+    Replace the prose: do not keep a paragraph that says the same thing as a visual. In documents,
+    split long content into tabs, and put repeated item segments into foldables. Markdown has no
+    tabs: split a long Markdown document into linked files with an index file.
 13. Documents and artifacts: before you write one, load the `technical-english` skill and read
     `references/layout.md`. Before you deliver one, do the review in the skill.
 

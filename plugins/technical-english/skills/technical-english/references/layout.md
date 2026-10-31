@@ -29,7 +29,13 @@ Use a visual before prose. Write prose only for the parts that a visual cannot s
 | Code behavior or an API | Code snippet |
 | A command to run | Command block |
 
+- **Replace, do not add.** When you add a visual, delete the prose that says the same thing. A
+  visual and a paragraph with the same content is a fault.
 - If a paragraph describes a flow, a call order or a structure, replace it with a visual.
+- **Minimum size.** A diagram needs 3 nodes or more. A table needs 3 rows or more. If the content
+  is smaller, write one sentence.
+- **Prose share.** Outside code blocks, prose is 50% of the words maximum. The other words are in
+  tables, diagrams and lists.
 - Give each visual a title that states its message. Add one or two sentences only if the visual
   needs them.
 - Keep snippets short: the lines that show the point, not the full file.
@@ -114,3 +120,16 @@ Use **separate documents** only when the parts are for different readers, or cha
 times. Link each document to the others.
 
 Code blocks do not count in the word limits. Long code examples can go in a tab of their own.
+
+## Markdown documents
+
+Markdown has no tabs. If a Markdown document is longer than the limits, do one of these:
+
+1. **Split into linked files (default).** Put the files in one folder. Add an index file with the
+   summary, the main visual and a link to each file. Each file has one topic.
+2. **One file only.** If the user asks for one file, or gives one path, keep the summary and the
+   main visual open. Put each large section (more than 300 words) in a foldable.
+
+- Use `<details>` only when the reader uses GitHub or a browser. Some editors show `<details>` as
+  plain text. If you are not sure, split into files.
+- A long single file is not permitted. Shorten it, or use one of the two options above.

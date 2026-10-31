@@ -73,6 +73,10 @@ splits.
 - List the key terms first. Give each idea one term. Use that term in all parts of the output.
 - Visuals first: use a flow graph, a call stack, a chart, a table or a code snippet before prose.
   Write prose only for what a visual cannot show.
+- Replace, do not add: when you add a visual, delete the prose that says the same thing. A diagram
+  needs 3 nodes or more. Prose is 50% of the words maximum.
+- Markdown has no tabs. If a Markdown document is too long, split it into linked files with an
+  index file. If the user asks for one file, put each large section in a foldable.
 - Put each repeated item segment (layers, findings, endpoints, modules) in a foldable.
 - Titles: short noun phrases. Buttons: an approved verb in the imperative ("Save", "Open", "Show
   details").
@@ -100,6 +104,7 @@ drift.
 4. Find sentences longer than the limits, and paragraphs with more than four sentences. Split them.
 5. Examine tables, graphs and the total length against [references/layout.md](references/layout.md).
    Find prose that describes a flow, a call order or a structure. Replace it with a visual.
+   Find prose that repeats a visual. Delete it. Find diagrams with fewer than 3 nodes.
    Find repeated item segments that are not in foldables.
 6. Remove references to the session or the chat ("in this session", "the briefing").
 
