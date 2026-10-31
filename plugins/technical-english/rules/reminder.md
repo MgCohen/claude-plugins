@@ -1,0 +1,1 @@
+Reminder: write this turn's prose (reply, files, artifacts, labels, subagent prompts) in ASD-STE100 Simplified Technical English. Load the technical-english skill if the rules are not in context.
