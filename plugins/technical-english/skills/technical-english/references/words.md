@@ -1,12 +1,14 @@
 # Word substitutions
 
-Common words that are not approved in STE, and an approved word or phrase to use. This is a short
-working list, not the ASD-STE100 dictionary. If you are not sure about a word, use the simplest
-common word with one clear meaning, and confirm in the dictionary of the current issue.
+Common words that are not approved in STE, and an approved word or phrase to use. Phrasal verbs
+are in their own table below. This is a short working list, not the ASD-STE100 dictionary.
+
+If you are not sure about a word, use the simplest common word with one clear meaning. Then
+examine the dictionary of the current issue.
 
 | Do not use | Use |
 |---|---|
-| accomplish, perform, carry out | do |
+| accomplish, perform | do |
 | additional | more |
 | adjacent | near, next to |
 | allow, permit (to let something happen) | let |
@@ -20,7 +22,6 @@ common word with one clear meaning, and confirm in the dictionary of the current
 | due to | because of |
 | ensure | make sure |
 | facilitate | help, make … easier |
-| find out | find, identify |
 | in order to | to |
 | indicate | show |
 | leverage, utilize | use |
@@ -33,7 +34,6 @@ common word with one clear meaning, and confirm in the dictionary of the current
 | provide | give, supply |
 | regarding | about |
 | retain | keep |
-| set up | install, prepare |
 | subsequently | then, after |
 | sufficient | enough |
 | terminate | stop |
@@ -46,7 +46,7 @@ Phrasal verbs have many meanings. Use one approved verb.
 
 | Do not use | Use |
 |---|---|
-| set up | install, prepare, make |
+| set up | prepare, install |
 | carry out | do |
 | find out | find, identify |
 | look into, look at (to examine) | examine |

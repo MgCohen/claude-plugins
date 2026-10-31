@@ -1,45 +1,56 @@
 # Technical English (ASD-STE100)
 
-This plugin makes Claude write in ASD-STE100 Simplified Technical English (STE).
+This plugin makes Claude write in ASD-STE100 Simplified Technical English (STE). It also adds
+house rules for visuals, tables, graphs and long documents.
 
-## Contents
+## Parts
 
-| Part | File | What it does |
-|---|---|---|
-| Skill | `skills/technical-english/` | The ten direct rules, how to apply STE to replies, files, artifacts, graphs and subagents, a review step, a rules quick reference, a word substitution list, and layout rules (`references/layout.md`). |
-| Output style | `output-styles/technical-english.md` | Forced for the plugin (`force-for-plugin: true`). It keeps the default coding instructions and adds the STE rules to the system prompt. |
-| Hook: SessionStart | `hooks/hooks.json` | Adds the core rules at startup, resume, clear and compact. |
-| Hook: UserPromptSubmit | `hooks/hooks.json` | Adds a one-line reminder on each turn. |
-| Hook: SubagentStart | `hooks/hooks.json` | Adds the core rules to each subagent, and tells it to write its report and files in STE. |
-| Hook: PostToolUse | `hooks/hooks.json` | After `Artifact`, and after `Write` of `.md`, `.html` or `.txt` files, adds the review checklist. |
+Each rule is in one file that Claude reads.
 
-The hooks use only `cat` on prepared JSON files. They work on macOS, Linux and Windows (Git Bash).
+| Part | File | When it loads | Contains |
+|---|---|---|---|
+| Output style | `output-styles/technical-english.md` | Always (forced) | Core rules |
+| Skill | `skills/technical-english/SKILL.md` | Before documents | Examples, layout, limits |
+| Word list | `skills/technical-english/references/words.md` | When necessary | Word substitutions |
+| Hooks | `hooks/hooks.json` | See the hook table | Short pointers |
+
+| Hook | Text |
+|---|---|
+| UserPromptSubmit | One-line reminder |
+| SubagentStart | The output style rules, from `hooks/subagent-start.sh` (subagents do not get the output style) |
+| PostToolUse (`Write` of `.md`, `.html`, `.txt`) | One-line check |
+| PostToolUse (`Artifact`) | One-line check |
+
+The hooks use `cat` on prepared JSON files, and `sh` with `awk` for the subagent rules. They work
+on macOS, Linux and Windows (Git Bash).
+
+## Change the rules
+
+| To change | Edit |
+|---|---|
+| Core rules | `output-styles/technical-english.md` (subagents get the change automatically) |
+| Layout rules or examples | `skills/technical-english/SKILL.md` |
+| Words | `skills/technical-english/references/words.md` |
+| Other hook text | `hooks/context/*.json` |
 
 ## Install
 
-This plugin is in the `mgcohen` marketplace (`MgCohen/claude-plugins`). On claude.ai, enable
-`technical-english` in that marketplace. It then syncs to each Claude Code session that is signed
-in to this account.
+The plugin is in the `MgCohen/claude-plugins` marketplace. Enable `technical-english` in that
+marketplace on claude.ai. claude.ai syncs it to each Claude Code session of this account.
 
-Local-only alternative:
+For a local test, load the folder directly:
 
-```
-claude plugin install technical-english@mgcohen --scope user
-```
-
-## Local test
-
-```
-claude --plugin-dir ./technical-english
+```bash
+claude --plugin-dir ./plugins/technical-english
 ```
 
 ## House limits
 
-The plugin is stricter than ASD-STE100. Procedure sentences: 15 words maximum (standard: 20).
-Descriptive sentences: 20 words maximum (standard: 25). Paragraphs: four sentences maximum
-(standard: six). `references/layout.md` adds limits for tables, graphs, documents and splits, and rules for visuals first, tabs and foldables.
+| Item | Plugin | ASD-STE100 |
+|---|---|---|
+| Procedure sentence | 15 words | 20 words |
+| Descriptive sentence | 20 words | 25 words |
+| Paragraph | 4 sentences | 6 sentences |
 
-## Source of the rules
-
-The rules are a summary of ASD-STE100. They are not the standard. Get the current issue and the
-full dictionary from asd-ste100.org.
+The rules are a summary of ASD-STE100, not the standard. Get the full dictionary from
+asd-ste100.org.
