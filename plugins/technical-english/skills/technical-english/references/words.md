@@ -40,6 +40,35 @@ common word with one clear meaning, and confirm in the dictionary of the current
 | verify | make sure, examine |
 | via | through, with |
 
+## Phrasal verbs
+
+Phrasal verbs have many meanings. Use one approved verb.
+
+| Do not use | Use |
+|---|---|
+| set up | install, prepare, make |
+| carry out | do |
+| find out | find, identify |
+| look into, look at (to examine) | examine |
+| go through | use, pass through, examine |
+| get to | reach, go to |
+| flow up, pass on | go to, apply to |
+| point out | show, tell |
+| end up | become, is at the end |
+| fill in, fill out | write, complete |
+| turn on, turn off | start, stop |
+| run into (a problem) | have, find |
+| name after | give the same name as |
+
+## Nouns used as verbs
+
+| Do not write | Write |
+|---|---|
+| "has no knowledge of X" | "does not know about X" |
+| "make an adjustment" | "adjust" |
+| "do a review of" | "examine" |
+| "give a description of" | "describe" |
+
 ## Style substitutions
 
 | Do not write | Write |

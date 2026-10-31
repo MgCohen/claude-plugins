@@ -1,8 +1,8 @@
 {
   "name": "technical-english",
   "displayName": "Technical English (ASD-STE100)",
-  "version": "1.0.0",
-  "description": "Write all output, files, artifacts and diagram text in ASD-STE100 Simplified Technical English. Ships a rules skill, a forced output style, and hooks that remind the main agent and every subagent.",
+  "version": "1.1.0",
+  "description": "Write all output, files, artifacts and diagram text in ASD-STE100 Simplified Technical English. Ships a rules skill with layout rules, a forced output style, hooks that remind the main agent and every subagent, and a review hook after documents and artifacts.",
   "author": {
     "name": "MgCohen"
   },
