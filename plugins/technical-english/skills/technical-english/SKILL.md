@@ -1,127 +1,132 @@
 ---
 name: technical-english
-description: Write in ASD-STE100 Simplified Technical English (STE). Use it for every reply and for all text that you write or edit, including files, docs, commits, PRs, artifacts and slides. Load it before you write a document or an artifact. Also load it when the user asks for "technical English", "STE" or "ASD-STE100".
+description: Layout and document rules for ASD-STE100 Simplified Technical English (STE). Load it before you write a document, an artifact, a README, a report or slides. Also load it when the user asks for "technical English", "STE" or "ASD-STE100".
 ---
 
-# Technical English (ASD-STE100)
+# Technical English: documents and layout
 
-STE is a controlled language with a restricted dictionary and a set of writing rules. It makes text
-clear, short and with one meaning only, also for readers whose first language is not English.
+The core STE rules are in the output style (and in the subagent context). This file adds examples
+and the rules for documents and artifacts. For a word that you are not sure about, read
+`references/words.md`.
 
-## Which file to read
+## Language examples
 
-| Output | Read |
-|---|---|
-| Reply or short text | This file only |
-| Document, artifact or slides | This file, then `references/layout.md` |
-| A word that you are not sure about | `references/words.md` |
-| A question about the ASD-STE100 standard | `references/rules.md` |
+| Rule | Write | Do not write |
+|---|---|---|
+| Imperative | "Run the gate." | "You should run the gate." |
+| Active voice | "The hook adds the context." | "The context is added." |
+| Condition first | "If the gate fails, read the report." | "Read the report if it fails." |
+| Noun clusters | "the report of the gate failure" | "gate failure report file path" |
+| Approved words | "use", "start" | "utilize", "commence" |
+| Code comments | "Returns the card index." | "This basically returns..." |
 
-## Core rules
-
-<!-- generated:core from rules/core.md -->
-Write all prose in ASD-STE100 Simplified Technical English (STE). This includes replies, files, comments, commit messages, PR text, artifacts and diagram labels. Code, commands, paths, quotes and error text do not change.
-
-1. One word, one meaning. Use simple approved words ("use", "start", "make sure", "about"). Keep technical names exactly as they are.
-2. Terms: give each idea one term. Use that term in all headings, labels, legends and table cells.
-3. Sentences: procedures 15 words maximum, descriptions 20 words maximum. One topic in each sentence.
-4. Paragraphs: one topic, four sentences and 60 words maximum.
-5. Instructions: imperative form, one action in each sentence, condition first ("If X, do Y.").
-6. Active voice and simple tenses. No `-ing` forms as verbs. No contractions. No filler.
-7. No phrasal verbs: set up → prepare, carry out → do, find out → find, look into → examine, go through → use, get to → reach, point out → show, end up → become, fill in → write, turn on → start.
-8. Noun clusters: three nouns maximum in a row.
-9. Lists: numbered lists for steps, bulleted lists for three or more items.
-10. Order: the answer or the result first, then the reason.
-11. Visuals first: use a flow graph, a call stack, a chart, a table or a code snippet before prose. Delete prose that repeats a visual.
-12. Documents, artifacts and long files: load the `technical-english` skill before you write. Do its review before you deliver.
-<!-- /generated:core -->
-
-## Language rules in detail
-
-### Words and terms
-
-- Use a word only in its approved meaning and part of speech. Do not use synonyms for variety.
-- Use the short common word, not the long or formal one: `use`, not `utilize`; `start`, not
-  `commence`. See `references/words.md`.
-- Names of code, tools, APIs, files, types and domain terms are technical names. Keep them exactly
-  as they are.
-- In a long text, list the key terms before you write. Define each term one time, at its first use
-  or in a short glossary.
+- Do not use synonyms for variety. Use "None" for no value and "forbidden" for not permitted.
 - Do not use an abbreviation of a term in a label ("refs" for "references").
-- Use one term for "no value" ("None"), and one term for "not permitted" ("forbidden").
+- Write list items and table cells of the same type in the same form.
+- Warnings: start with a command, then give the risk.
 
-### Sentences
+## Visuals first
 
-| Item | Maximum |
+Write prose only for the parts that a visual cannot show.
+
+| Content | Visual |
 |---|---|
-| Procedure sentence | 15 words |
-| Descriptive sentence | 20 words |
-| Paragraph | 4 sentences, 60 words |
-| Actions in one sentence | 1 (2 only if you do them at the same time) |
+| Steps or states | Flow graph |
+| Calls between functions or services | Call stack or sequence diagram |
+| Parts and their dependencies | Dependency graph |
+| Numbers, trends or comparisons | Chart |
+| Items with the same attributes | Table |
+| Code behavior or an API | Code snippet |
 
-These limits are stricter than ASD-STE100 (20 and 25 words, 6 sentences). They are house rules.
+- **Replace, do not add.** When you add a visual, delete the prose that says the same thing.
+- **Prose share:** outside code blocks, prose is 50% of the words maximum.
+- If a diagram has less than 3 nodes or a table less than 3 rows, write one sentence.
+- Give each visual a title that states its message.
+- Snippets show only the lines that make the point.
 
-- **Imperative:** "Run the gate." Not "You should run the gate" or "The gate should be run."
-- **Active voice:** "The hook adds the context." Use the passive only in descriptive text, and only
-  when the agent is not known or not important.
-- **Condition first:** "If the gate fails, read the report."
-- **Noun clusters:** "the report of the gate failure", not "gate failure report file path".
-- **Same structure:** write list items and table cells of the same type in the same form. Use all
-  fragments or all full sentences.
-- **Warnings:** start with a clear command, then give the risk.
+## Limits
 
-## How to apply it
+| Item | Limit | If longer |
+|---|---|---|
+| Table | 6 columns, 15 rows | Split by group, or use a tab |
+| Table header | 3 words | None |
+| Table cell | Fragment, 8 words, not empty | Put the sentence in the body text |
+| Diagram | 3 to 10 nodes | Split by layer or by step |
+| Chart | 5 series, 12 categories | Split the chart |
+| Graph label | 4 words | None |
+| List | 7 items, 2 levels | Use a table |
+| Section | 300 words | Split into two sections |
+| Heading interval | 250 words | Add a heading |
+| Chat reply | 150 words (target) | Above 400 words: a file or an artifact |
+| Document | 1,500 words, 7 top-level sections | Use the decision flow |
 
-### Replies
+- Put the unit in the table header: "Size (KB)".
+- Graph edge labels: one verb in the simple present ("sends", "reads").
+- Labels use the key terms of the text, not synonyms.
 
-- Give the answer or the result first. Then give the reason.
-- Code, commands, paths, error text and quotes stay exactly as they are.
-- Do not tell the user that you use STE.
+## Document structure
 
-### Files
+- Start with a summary of 3 sentences maximum. Give the result or the decision first.
+- Use 3 heading levels maximum.
+- Give blocks of the same type the same structure (for example: Purpose, Path, Contains, Uses).
+- All visible text follows STE: titles, buttons, tooltips, SVG labels and `aria-label` text.
+- Do not refer to the session or the chat. The reader does not see it. Give the source name.
 
-- New text: write it in STE.
-- Edits: write your new or changed sentences in STE. Do not rewrite other text, unless the user asks
-  for an STE pass.
-- STE pass: keep the meaning, the structure and the technical names. Change only the language.
-  Then give a short list of the changes that could change the meaning.
-- Code comments: short, imperative or simple present. "Returns the card index."
+## Long documents: decision flow
 
-### Documents and artifacts
+Code blocks do not count in the length.
 
-Read `references/layout.md` before you write. It has the rules for visuals, tables, graphs,
-foldables, tabs and long documents.
+```mermaid
+flowchart TD
+    A{Long document?} -->|no| B[One document]
+    A -->|yes| C{Different readers?}
+    C -->|yes| D[Separate documents, linked]
+    C -->|no| E{Format?}
+    E -->|HTML or artifact| F[Tabs]
+    E -->|Markdown| G{User gave one path?}
+    G -->|no| H[Linked files with index]
+    G -->|yes| I[One file, sections in foldables]
+```
 
-- All visible text follows STE: titles, headings, captions, buttons, tooltips, error messages, SVG
-  labels and `aria-label` text.
-- Titles: short noun phrases. Buttons: one verb in the imperative ("Save", "Open").
-- Slides: one idea in each bullet.
+| Result | Rules |
+|---|---|
+| Tabs | 2 to 6 tabs. Tab names: 2 words maximum. First tab: summary and main visual. |
+| Linked files | One folder. `README.md` index with summary, main visual and links. A link back to the index in each file. |
+| One file | Keep the summary and the main visual open. Each section of more than 300 words in a foldable. |
 
-### Subagents
+**No repeats.** Give each fact one place. Other parts link to it. The index or the overview tab has
+only the summary, the main visual and the links. A split does not add content.
 
-- Write each subagent prompt in STE. Tell the subagent to write its report and its files in STE.
-- If a subagent report is not in STE, rewrite the parts that you show to the user.
+## Foldables
 
-## Review before you deliver
+Use a foldable for each item of a repeated segment: three or more items with the same structure,
+for example layers, findings or endpoints.
 
-<!-- generated:review from rules/review.md -->
-Do this review if the text has more than 150 words of prose. Examine the full text before you tell the user that it is done.
+- Title: the item name and one key fact: "Domain · VSA.Domain, Notes.Domain".
+- Put a summary of all items (a table or a graph) before the foldables.
+- Keep the foldables closed. Do not put the main message or a warning in a foldable.
 
-1. Terms: find all words for each key idea. If one idea has two or more words ("uses" / "references" / "refs"), use one.
-2. Phrasal verbs: replace each one with one verb. See `references/words.md`.
-3. Sentences and paragraphs: procedures 15 words, descriptions 20 words, paragraphs 4 sentences maximum.
-4. Visuals: replace prose that describes a flow, a call order or a structure with a visual. Delete prose that repeats a visual. Prose is 50% of the words maximum.
-5. Tables: 6 columns and 15 rows maximum. Cells are fragments of 8 words maximum. No empty cells.
-6. Graphs: labels 4 words maximum. Diagrams have 3 to 10 nodes.
-7. Length: if the text has more than 1,500 words or 7 top-level sections, use the decision flow in `references/layout.md`.
-8. Foldables: put each repeated item segment (3 or more items with the same structure) in a foldable.
-9. Repeats: each fact has one place. Other parts link to it. An index has only the summary, the main visual and links.
-10. Session: remove references to the session or the chat ("in this session", "the briefing").
-<!-- /generated:review -->
+| Format | Foldable |
+|---|---|
+| HTML or artifact | `<details>`, with "Open all" and "Close all" for 5 items or more |
+| Markdown on GitHub or in a browser | `<details>` |
+| Markdown in other editors | A heading for each item |
+
+## Files and edits
+
+- Edits: write your new sentences in STE. Do not rewrite other text, unless the user asks for an
+  STE pass.
+- STE pass: keep the meaning, the structure and the technical names. Then list the changes that
+  could change the meaning.
+
+## Before you deliver
+
+Examine the full text against the core rules and this file. Look for: one term for each idea,
+phrasal verbs, long sentences, prose that a visual can replace, the limits table, repeats and
+references to the session. Fix each problem in the source.
 
 ## When not to apply it
 
-- Text that the user writes, quotes, error messages, log lines and code: keep them as they are.
-- If the user asks for a different style for one output, use that style for that output only.
-- Non-English output: keep the principles (short sentences, one meaning, active voice, imperative),
-  but do not translate the dictionary.
+- User text, quotes, error messages, log lines and code stay as they are.
+- If the user asks for a different style for one output, use it for that output only.
+- Non-English output: keep the principles, but do not translate the dictionary.

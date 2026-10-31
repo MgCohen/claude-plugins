@@ -1,4 +1,4 @@
-"""Build the generated parts of the plugin from the files in rules/.
+"""Copy rules/core.md into the output style and the subagent hook.
 
 Usage:
     python scripts/build.py          Write the generated files.
@@ -10,10 +10,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-RULES = ROOT / "rules"
-SKILL = ROOT / "skills" / "technical-english" / "SKILL.md"
+CORE = ROOT / "rules" / "core.md"
 STYLE = ROOT / "output-styles" / "technical-english.md"
-CONTEXT = ROOT / "hooks" / "context"
+SUBAGENT = ROOT / "hooks" / "context" / "subagent-start.json"
+MARKERS = re.compile(r"(<!-- generated:core from rules/core.md -->\n)(?:.*?\n)?(<!-- /generated:core -->)", re.S)
 
 
 def text_of(path):
@@ -21,54 +21,21 @@ def text_of(path):
     return path.read_text(encoding="utf-8").replace("\r\n", "\n")
 
 
-def read(name):
-    return text_of(RULES / name).strip()
-
-
-def hook_json(event, text):
-    body = {"hookSpecificOutput": {"hookEventName": event, "additionalContext": text}}
-    return json.dumps(body, indent=2, ensure_ascii=False) + "\n"
-
-
-def fill_block(text, name, content):
-    """Replace the text between the markers of one generated block."""
-    pattern = re.compile(
-        r"(<!-- generated:%s from rules/\S+ -->\n)(?:.*?\n)?(<!-- /generated:%s -->)" % (name, name),
-        re.S,
-    )
-    if not pattern.search(text):
-        raise SystemExit(f"Missing markers for block '{name}'")
-    return pattern.sub(lambda m: m.group(1) + content + "\n" + m.group(2), text)
-
-
 def outputs():
-    core = read("core.md")
-    review = read("review.md")
-    files = {
-        CONTEXT / "session-start.json": hook_json("SessionStart", read("session-start.md")),
-        CONTEXT / "user-prompt-submit.json": hook_json("UserPromptSubmit", read("reminder.md")),
-        CONTEXT / "subagent-start.json": hook_json(
-            "SubagentStart",
-            core + "\n\nWrite your final report and every file you create or edit in STE.",
-        ),
-        CONTEXT / "post-write-review.json": hook_json(
-            "PostToolUse",
-            "STE review: you wrote a text file.\n" + review
-            + "\n\nIf you find issues, fix them in the same file. Do not publish an artifact"
-            " or make any other output that the user did not ask for.",
-        ),
-        CONTEXT / "post-artifact-review.json": hook_json(
-            "PostToolUse",
-            "STE review: you published an artifact.\n" + review
-            + "\n\nIf you find issues, fix the source file and publish it again to the same artifact.",
-        ),
-    }
+    core = text_of(CORE).strip()
     style = text_of(STYLE)
-    files[STYLE] = fill_block(style, "core", core)
-    skill = text_of(SKILL)
-    skill = fill_block(skill, "core", core)
-    files[SKILL] = fill_block(skill, "review", review)
-    return files
+    if not MARKERS.search(style):
+        raise SystemExit("Missing the generated:core markers in the output style")
+    subagent = {
+        "hookSpecificOutput": {
+            "hookEventName": "SubagentStart",
+            "additionalContext": core + "\n\nWrite your final report and every file you create or edit in STE.",
+        }
+    }
+    return {
+        STYLE: MARKERS.sub(lambda m: m.group(1) + core + "\n" + m.group(2), style),
+        SUBAGENT: json.dumps(subagent, indent=2, ensure_ascii=False) + "\n",
+    }
 
 
 def main():

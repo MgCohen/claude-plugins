@@ -3,56 +3,42 @@
 This plugin makes Claude write in ASD-STE100 Simplified Technical English (STE). It also adds
 house rules for visuals, tables, graphs and long documents.
 
-## How the rules reach Claude
+## Parts
 
-```mermaid
-flowchart LR
-    core[rules/core.md] --> build[scripts/build.py]
-    review[rules/review.md] --> build
-    build --> style[Output style]
-    build --> skill[SKILL.md blocks]
-    build --> hooks[Hook context files]
-    style --> main[Main agent]
-    hooks --> sub[Subagents]
-    hooks --> after[After Write or Artifact]
-```
+Each rule is in one file that Claude reads.
 
-| Part | File | When it loads |
-|---|---|---|
-| Output style | `output-styles/technical-english.md` | Always (forced) |
-| Skill | `skills/technical-english/SKILL.md` | When Claude loads it |
-| Layout rules | `skills/technical-english/references/layout.md` | Before documents |
-| Word list | `skills/technical-english/references/words.md` | When necessary |
-| STE summary | `skills/technical-english/references/rules.md` | When necessary |
-| Hooks | `hooks/hooks.json` | See the hook table |
+| Part | File | When it loads | Contains |
+|---|---|---|---|
+| Output style | `output-styles/technical-english.md` | Always (forced) | Core rules |
+| Skill | `skills/technical-english/SKILL.md` | Before documents | Examples, layout, limits |
+| Word list | `skills/technical-english/references/words.md` | When necessary | Word substitutions |
+| Hooks | `hooks/hooks.json` | See the hook table | Short pointers |
 
 | Hook | Text |
 |---|---|
-| SessionStart | Short pointer to the skill |
 | UserPromptSubmit | One-line reminder |
-| SubagentStart | Core rules, and STE for the report |
-| PostToolUse (`Write` of `.md`, `.html`, `.txt`) | Review checklist |
-| PostToolUse (`Artifact`) | Review checklist |
+| SubagentStart | Core rules (subagents do not get the output style) |
+| PostToolUse (`Write` of `.md`, `.html`, `.txt`) | One-line check |
+| PostToolUse (`Artifact`) | One-line check |
 
 The hooks use only `cat` on prepared JSON files. They work on macOS, Linux and Windows (Git Bash).
 
 ## Change the rules
 
-Each rule has one source file. Do not edit generated text.
-
 | To change | Edit | Then |
 |---|---|---|
 | Core rules | `rules/core.md` | Run the build |
-| Review checklist | `rules/review.md` | Run the build |
-| Hook pointer or reminder | `rules/session-start.md`, `rules/reminder.md` | Run the build |
-| Layout rules | `references/layout.md` | Change `rules/review.md` if a limit changes |
+| Layout rules or examples | `SKILL.md` | Nothing |
 | Words | `references/words.md` | Nothing |
+| Hook text | `hooks/context/*.json` | Nothing |
+
+The build copies `rules/core.md` into the output style and the subagent hook:
 
 ```bash
 python scripts/build.py
 ```
 
-Before you commit, make sure that the generated files are current:
+Before you commit, make sure that the copies are current:
 
 ```bash
 python scripts/build.py --check
@@ -61,8 +47,7 @@ python scripts/build.py --check
 ## Install
 
 The plugin is in the `MgCohen/claude-plugins` marketplace. Enable `technical-english` in that
-marketplace on claude.ai. claude.ai syncs it to each Claude Code session of this account. A new
-session gets each new version.
+marketplace on claude.ai. claude.ai syncs it to each Claude Code session of this account.
 
 For a local test, load the folder directly:
 
@@ -78,7 +63,5 @@ claude --plugin-dir ./plugins/technical-english
 | Descriptive sentence | 20 words | 25 words |
 | Paragraph | 4 sentences | 6 sentences |
 
-## Source of the rules
-
-The STE rules are a summary of ASD-STE100. They are not the standard. Get the current issue and
-the full dictionary from asd-ste100.org.
+The rules are a summary of ASD-STE100, not the standard. Get the full dictionary from
+asd-ste100.org.
