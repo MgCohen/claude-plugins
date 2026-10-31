@@ -105,6 +105,7 @@ drift.
 5. Examine tables, graphs and the total length against [references/layout.md](references/layout.md).
    Find prose that describes a flow, a call order or a structure. Replace it with a visual.
    Find prose that repeats a visual. Delete it. Find diagrams with fewer than 3 nodes.
+   Find facts that occur in two tabs, files or foldables. Keep one, and link to it.
    Find repeated item segments that are not in foldables.
 6. Remove references to the session or the chat ("in this session", "the briefing").
 

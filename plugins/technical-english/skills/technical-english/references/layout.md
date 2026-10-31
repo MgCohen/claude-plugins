@@ -133,3 +133,15 @@ Markdown has no tabs. If a Markdown document is longer than the limits, do one o
 - Use `<details>` only when the reader uses GitHub or a browser. Some editors show `<details>` as
   plain text. If you are not sure, split into files.
 - A long single file is not permitted. Shorten it, or use one of the two options above.
+
+## No repeats across parts
+
+These rules apply to tabs, split files and foldables.
+
+- Give each fact one place only. Other parts link to that place. They do not copy it.
+- The index file or the overview tab has only the summary, the main visual and the links. It does
+  not copy the content of the other parts.
+- A split does not add content. Split the content that you have. Do not write more because you
+  have more files.
+- Do not repeat a warning or a status note in each part. Put it in the overview one time.
+- Do not repeat a table, a diagram or a list in a second part. Link to the first one.
