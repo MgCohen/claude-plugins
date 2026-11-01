@@ -6,8 +6,9 @@ Personal Claude Code plugin marketplace (`mgcohen`). Add it once on claude.ai an
 
 | Plugin | What it does |
 |---|---|
-| `core` | Personal skills, agents and hooks that follow me everywhere. Skill `triage` runs the Linear Triage intake. |
+| `core` | Personal skills, agents and hooks that follow me everywhere. |
 | `technical-english` | Writes all output, files, artifacts and diagram text in ASD-STE100 Simplified Technical English. |
+| `triage` | Runs the Linear Triage intake: `/idea` captures a request, `/triage` moves the stalest one a step. See [its README](plugins/triage/README.md). |
 
 ## Layout
 
