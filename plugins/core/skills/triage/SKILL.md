@@ -45,10 +45,10 @@ answer / accept    ─► Promote ─► gate check ─► next stage
 1. List the open issues in project `Triage`. Do not filter by the label `Intake`: Linear does not match a label group, so the result is empty.
 2. Keep the issues with no parent that have a label from the `Intake` group. The list shows label names without the group name, for example `1 · Captured`.
 3. Sort them yourself by the queue rules in the project description. Do not trust the order of the list.
-3. Take the first issue. Read its description, its sub-issues and its last comments.
-4. Show the owner: issue link, stage, kind (if known), and the open section.
-5. Do one step for the stage of the issue (see Stage steps).
-6. Stop after one step. Offer "next" or "skip".
+4. Take the first issue. Read its description, its sub-issues and its last comments.
+5. Show the owner: issue link, stage, kind (if known), and the open section.
+6. Do one step for the stage of the issue (see Stage steps).
+7. Stop after one step. Offer "next" or "skip".
 
 ### Stage steps
 
@@ -69,7 +69,7 @@ When the owner accepts a kind:
 
 Each question follows these rules:
 
-1. Do research first: the target repo, Linear docs and specs, and related issues.
+1. Do research first: the target repo, Linear docs and specs, and related issues. In the repo, read the open branches and worktrees too (`git branch -a`, `git worktree list`), not only the default branch. Much work is not merged yet.
 2. Propose an answer. Do not ask an open question if a proposal is possible.
 3. Use a yes/no question, or a choice of 2 to 3 options.
 4. Ask one question at a time.
