@@ -1,5 +1,7 @@
 # agent-tools
 
+**To add a tool, read [ADD-A-TOOL.md](ADD-A-TOOL.md) (five steps).** This README is the full reference.
+
 `agent-tools` is one MCP server that exposes local scripts as tools. Each tool declares itself in a `tool.toml` manifest next to its script, anywhere in the project. You keep no central list. The server uses only the Python 3.11+ standard library.
 
 ```mermaid

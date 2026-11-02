@@ -5,7 +5,7 @@ description: Make a local script available as an MCP tool with a tool.toml manif
 
 # Add a script as an agent tool
 
-The `agent-tools` MCP server exposes each tool that a `tool.toml` manifest declares. The full specification is in the plugin README (`${CLAUDE_PLUGIN_ROOT}/README.md`).
+The `agent-tools` MCP server exposes each tool that a `tool.toml` manifest declares. The short guide is `${CLAUDE_PLUGIN_ROOT}/ADD-A-TOOL.md`. The full specification is in `${CLAUDE_PLUGIN_ROOT}/README.md`.
 
 ## Steps
 
