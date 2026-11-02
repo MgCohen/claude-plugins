@@ -8,6 +8,7 @@ Personal Claude Code plugin marketplace (`mgcohen`). Add it once on claude.ai an
 |---|---|
 | `core` | Personal skills, agents and hooks that follow me everywhere. |
 | `technical-english` | Writes all output, files, artifacts and diagram text in ASD-STE100 Simplified Technical English. |
+| `agent-tools` | One MCP server that exposes local scripts as tools, from `tool.toml` manifests. See `plugins/agent-tools/README.md`. |
 
 ## Layout
 

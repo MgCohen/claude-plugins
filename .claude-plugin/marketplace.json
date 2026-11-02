@@ -21,6 +21,11 @@
       "name": "unity-worktrees",
       "source": "./plugins/unity-worktrees",
       "description": "Unity-ready worktrees for Claude Code sessions, with the Library seeded via the Unity CLI"
+    },
+    {
+      "name": "agent-tools",
+      "source": "./plugins/agent-tools",
+      "description": "One MCP server that exposes local scripts as tools, from tool.toml manifests. The tool list updates when a manifest changes."
     }
   ]
 }
