@@ -5,7 +5,6 @@ import subprocess
 import sys
 import tempfile
 import textwrap
-import time
 import unittest
 from unittest import mock
 
@@ -213,7 +212,7 @@ class ServerTests(unittest.TestCase):
     def test_scan_at_start_and_refresh_on_demand(self):
         self.start()
         write_tool(self.tmp, "tools/added", GOOD.format(name="added_tool"))
-        self.assertNotIn("added_tool", self.names())  # no watcher: list is fixed until refresh
+        self.assertNotIn("added_tool", self.names())  # the list is fixed until a refresh
         unknown = self.rpc("tools/call", {"name": "added_tool"})["result"]
         self.assertIn("agent_tools_refresh", unknown["content"][0]["text"])
         r = self.rpc("tools/call", {"name": "agent_tools_refresh"})["result"]
@@ -226,16 +225,6 @@ class ServerTests(unittest.TestCase):
         self.assertIn("No change.", again["content"][0]["text"])
         self.assertNotIn("notifications/tools/list_changed", self.notes)
 
-    def test_optional_watcher(self):
-        self.start("--poll", "0.2")
-        write_tool(self.tmp, "w", GOOD.format(name="watched_tool"))
-        deadline = time.time() + 5
-        while time.time() < deadline:
-            if json.loads(self.p.stdout.readline()).get("method") == "notifications/tools/list_changed":
-                break
-        else:
-            self.fail("no list_changed notification")
-        self.assertIn("watched_tool", self.names())
 
 
 class CatalogTests(unittest.TestCase):

@@ -19,7 +19,6 @@ flowchart LR
 |---|---|
 | Session start | The server scans once and loads the tools. The `SessionStart` hook writes a short catalog (each name and its first sentence) into the context |
 | On demand | The built-in tool `agent_tools_refresh` scans again. If the tools changed, it sends `notifications/tools/list_changed` |
-| Optional watcher | `serve --poll 2` scans every 2 seconds. Off by default |
 
 If you add a manifest during a session, the new tool appears only after a refresh. The prefix `agent_tools_` is reserved for built-in tools.
 
@@ -135,7 +134,6 @@ python3 <plugin>/server/main.py call notion_get '{"key":"SPEC-1"}'
 | `--root PATH` | Add a search root. You can repeat it |
 | `--project PATH` | Set the project folder |
 | `--allow-write` or `AGENT_TOOLS_ALLOW_WRITE=1` | Also expose `effect = "write"` tools |
-| `serve --poll S` | Seconds between manifest checks. Default `0`: no watcher |
 
 ## Refresh: client support
 

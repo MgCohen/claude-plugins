@@ -2,11 +2,10 @@
 
 Discovery: the server scans for manifests once, at start. The built-in tool
 agent_tools_refresh scans again and sends notifications/tools/list_changed if the
-tools changed. An optional watcher (poll > 0) does the same on a timer.
+tools changed. There is no watcher.
 """
 import json
 import sys
-import threading
 
 from . import __version__
 from . import manifest as mf
@@ -25,17 +24,13 @@ REFRESH_TOOL = {
 
 
 class Server:
-    def __init__(self, roots, allow_write=False, poll=0, out=None, inp=None, log=None):
+    def __init__(self, roots, allow_write=False, out=None, inp=None, log=None):
         self.roots = roots
         self.allow_write = allow_write
-        self.poll = poll
         self.out = out or sys.stdout.buffer
         self.inp = inp or sys.stdin.buffer
         self.log = log or sys.stderr
-        self.lock = threading.Lock()
         self.version = SUPPORTED[0]
-        self.stop = threading.Event()
-        self.fp = mf.fingerprint(roots)  # baseline of the watcher: the state at load time
         self.tools, errors = mf.load_all(roots, allow_write)
         self._report(errors)
 
@@ -43,27 +38,21 @@ class Server:
 
     def send(self, msg):
         data = (json.dumps(msg, ensure_ascii=False) + "\n").encode("utf-8")
-        with self.lock:
-            self.out.write(data)
-            self.out.flush()
+        self.out.write(data)
+        self.out.flush()
 
     def serve(self):
-        if self.poll:
-            threading.Thread(target=self._watch, daemon=True).start()
-        try:
-            for line in self.inp:
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    msg = json.loads(line)
-                except ValueError:
-                    self.send({"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "Parse error"}})
-                    continue
-                for m in (msg if isinstance(msg, list) else [msg]):
-                    self._dispatch(m)
-        finally:
-            self.stop.set()
+        for line in self.inp:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                msg = json.loads(line)
+            except ValueError:
+                self.send({"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "Parse error"}})
+                continue
+            for m in (msg if isinstance(msg, list) else [msg]):
+                self._dispatch(m)
 
     def _dispatch(self, msg):
         mid, method = msg.get("id"), msg.get("method")
@@ -114,7 +103,6 @@ class Server:
     # --- discovery --------------------------------------------------------
 
     def reload(self):
-        self.fp = mf.fingerprint(self.roots)
         self.tools, errors = mf.load_all(self.roots, self.allow_write)
         self._report(errors)
         return errors
@@ -143,11 +131,6 @@ class Server:
              "annotations": {"title": t.name, "readOnlyHint": t.effect == "read",
                              "destructiveHint": t.effect == "write", "openWorldHint": True}}
         return d
-
-    def _watch(self):
-        while not self.stop.wait(self.poll):
-            if mf.fingerprint(self.roots) != self.fp:
-                self.refresh()
 
     def _report(self, errors):
         for e in errors:

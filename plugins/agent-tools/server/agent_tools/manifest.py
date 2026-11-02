@@ -118,17 +118,6 @@ def _walk_manifests(root):
     return out
 
 
-def fingerprint(roots):
-    """Changes when a manifest is added, removed or edited."""
-    out = []
-    for p in manifest_paths(roots):
-        try:
-            out.append((p, os.stat(p).st_mtime_ns))
-        except OSError:
-            pass
-    return tuple(out)
-
-
 def load_all(roots, allow_write=False):
     """-> (tools by name, list of error strings). Bad manifests are skipped."""
     tools, errors = {}, []

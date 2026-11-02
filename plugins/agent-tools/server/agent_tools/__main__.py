@@ -27,9 +27,7 @@ def main(argv=None):
                    default=os.environ.get("AGENT_TOOLS_ALLOW_WRITE") == "1",
                    help="also expose tools with effect = \"write\"")
     sub = p.add_subparsers(dest="cmd", required=True)
-    s = sub.add_parser("serve")
-    s.add_argument("--poll", type=float, default=0.0,
-                   help="seconds between manifest checks; 0 (default) = scan at start and on refresh only")
+    sub.add_parser("serve")
     sub.add_parser("list")
     sub.add_parser("catalog", help="short tool list for session context (SessionStart hook)")
     sub.add_parser("check")
@@ -42,7 +40,7 @@ def main(argv=None):
     roots += [os.path.abspath(r) for r in a.root if os.path.abspath(r) not in roots]
 
     if a.cmd == "serve":
-        Server(roots, a.allow_write, a.poll).serve()
+        Server(roots, a.allow_write).serve()
         return 0
     if a.cmd == "catalog":
         return _catalog(roots, a.allow_write)
