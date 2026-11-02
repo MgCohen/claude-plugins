@@ -13,9 +13,9 @@
       "description": "Personal skills, agents and hooks that follow me everywhere"
     },
     {
-      "name": "technical-english",
-      "source": "./plugins/technical-english",
-      "description": "Write all output, files, artifacts and diagram text in ASD-STE100 Simplified Technical English."
+      "name": "writing",
+      "source": "./plugins/writing",
+      "description": "Write all output in ASD-STE100 Simplified Technical English, with content rules for documents, commits, PRs and code comments."
     },
     {
       "name": "unity-worktrees",

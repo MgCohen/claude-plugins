@@ -1,6 +1,0 @@
-{
-  "hookSpecificOutput": {
-    "hookEventName": "PostToolUse",
-    "additionalContext": "STE check: examine this artifact against the STE rules and the technical-english skill. Fix problems in the source file and publish again to the same artifact."
-  }
-}

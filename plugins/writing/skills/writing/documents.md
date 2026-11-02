@@ -1,29 +1,27 @@
----
-name: technical-english
-description: Layout and document rules for ASD-STE100 Simplified Technical English (STE). Load it before you write a document, an artifact, a README, a report or slides. Also load it when the user asks for "technical English", "STE" or "ASD-STE100".
----
+# Documents and artifacts
 
-# Technical English: documents and layout
+These rules apply to documents, artifacts, READMEs, reports and slides.
 
-The core STE rules are in the output style (and in the subagent context). This file adds examples
-and the rules for documents and artifacts. For a word that you are not sure about, read
-`references/words.md`.
+## Current state only
 
-## Language examples
+A document describes its subject as it is now. Write for a reader who never saw the session, the
+chat or an earlier version of the document.
 
-| Rule | Write | Do not write |
-|---|---|---|
-| Imperative | "Run the gate." | "You should run the gate." |
-| Active voice | "The hook adds the context." | "The context is added." |
-| Condition first | "If the gate fails, read the report." | "Read the report if it fails." |
-| Noun clusters | "the report of the gate failure" | "gate failure report file path" |
-| Approved words | "use", "start" | "utilize", "commence" |
-| Code comments | "Returns the card index." | "This basically returns..." |
+| Do not write in the body | Do this |
+|---|---|
+| "We removed the bulk delete endpoint." | Delete the endpoint from the document. Put the change in the commit or PR. |
+| "The API now returns 404." | "The API returns 404." |
+| "Instead of the old queue, X uses Y." | "X uses Y." |
+| "We decided not to support bulk delete." | Under "Non-goals": "No bulk delete. Reason: audit trail." |
+| "TBD: we still discuss the retry limit." | Under "Open questions": "Retry limit: 3 or 5?" |
 
-- Do not use synonyms for variety. Use "None" for no value and "forbidden" for not permitted.
-- Do not use an abbreviation of a term in a label ("refs" for "references").
-- Write list items and table cells of the same type in the same form.
-- Warnings: start with a command, then give the risk.
+- When the subject changes, rewrite or delete each sentence that the change makes false.
+- Do not use change words in the body: "now", "no longer", "new", "old", "updated", "removed",
+  "instead of", "we decided".
+- A "Non-goals" item is a rule with a reason. It is not a record of a change.
+- An "Open questions" item is an open question. When it is decided, put the answer in the body
+  and delete the item.
+- Do not refer to the session or the chat. Give the source name.
 
 ## Visuals first
 
@@ -64,13 +62,13 @@ Write prose only for the parts that a visual cannot show.
 - Graph edge labels: one verb in the simple present ("sends", "reads").
 - Labels use the key terms of the text, not synonyms.
 
-## Document structure
+## Structure
 
 - Start with a summary of 3 sentences maximum. Give the result or the decision first.
 - Use 3 heading levels maximum.
 - Give blocks of the same type the same structure (for example: Purpose, Path, Contains, Uses).
 - All visible text follows STE: titles, buttons, tooltips, SVG labels and `aria-label` text.
-- Do not refer to the session or the chat. The reader does not see it. Give the source name.
+- If the document has "Non-goals" or "Open questions", put them at the end.
 
 ## Long documents: decision flow
 
@@ -112,21 +110,8 @@ for example layers, findings or endpoints.
 | Markdown on GitHub or in a browser | `<details>` |
 | Markdown in other editors | A heading for each item |
 
-## Files and edits
+## Check list
 
-- Edits: write your new sentences in STE. Do not rewrite other text, unless the user asks for an
-  STE pass.
-- STE pass: keep the meaning, the structure and the technical names. Then list the changes that
-  could change the meaning.
-
-## Before you deliver
-
-Examine the full text against the core rules and this file. Look for: one term for each idea,
-phrasal verbs, long sentences, prose that a visual can replace, the limits table, repeats and
-references to the session. Fix each problem in the source.
-
-## When not to apply it
-
-- User text, quotes, error messages, log lines and code stay as they are.
-- If the user asks for a different style for one output, use it for that output only.
-- Non-English output: keep the principles, but do not translate the dictionary.
+- Read each sentence. If it only makes sense to a reader of an earlier version, delete or rewrite it.
+- No change words in the body. No references to the session.
+- Prose that a visual can replace. The limits table. Repeats.

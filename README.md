@@ -7,7 +7,7 @@ Personal Claude Code plugin marketplace (`mgcohen`). Add it once on claude.ai an
 | Plugin | What it does |
 |---|---|
 | `core` | Personal skills, agents and hooks that follow me everywhere. |
-| `technical-english` | Writes all output, files, artifacts and diagram text in ASD-STE100 Simplified Technical English. |
+| `writing` | Writes all output in ASD-STE100 Simplified Technical English, with content rules for each kind of text (documents, commits, PRs, code comments). |
 
 ## Layout
 
