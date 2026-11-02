@@ -1,30 +1,42 @@
 # agent-tools
 
-`agent-tools` is one MCP server that exposes local scripts as tools. Each tool declares itself in a `tool.toml` manifest. When a manifest is added, changed or removed, the server sends `notifications/tools/list_changed`, and the client gets the new tool list. The server uses only the Python 3.11+ standard library.
+`agent-tools` is one MCP server that exposes local scripts as tools. Each tool declares itself in a `tool.toml` manifest next to its script, anywhere in the project. You keep no central list. The server uses only the Python 3.11+ standard library.
 
 ```mermaid
 flowchart LR
-    A[Client] -->|tools/list| B[Scan search roots]
-    B --> C[Load tool.toml files]
-    A -->|tools/call| D[Validate arguments]
-    D --> E[Build argv]
-    E --> F[Run subprocess]
+    S[Session start] --> H[Hook: catalog into context]
+    S --> B[Server: scan for tool.toml]
+    B --> C[Tool list]
+    A[Agent] -->|tools/call| D[Validate, build argv]
+    D --> F[Run subprocess]
     F -->|text or JSON| A
-    W[Watcher, every 2 s] -->|list_changed| A
+    A -->|agent_tools_refresh| B
 ```
+
+## Discovery
+
+| When | What happens |
+|---|---|
+| Session start | The server scans once and loads the tools. The `SessionStart` hook writes a short catalog (each name and its first sentence) into the context |
+| On demand | The built-in tool `agent_tools_refresh` scans again. If the tools changed, it sends `notifications/tools/list_changed` |
+| Optional watcher | `serve --poll 2` scans every 2 seconds. Off by default |
+
+If you add a manifest during a session, the new tool appears only after a refresh. The prefix `agent_tools_` is reserved for built-in tools.
 
 ## Where tools live
 
-The server scans one level below each search root: `<root>/<folder>/tool.toml`.
+A manifest is a file named `tool.toml` at any depth below a search root.
 
 | Order | Search root | Use it for |
 |---|---|---|
 | 1 | `<plugin>/tools/` | Tools for every project |
-| 2 | `<project>/tools/` | Tools of one repository |
+| 2 | `<project>/` | Tools of one repository, in any folder |
 | 3 | Each path in `AGENT_TOOLS_PATH` | Other folders, for example a personal tool folder |
 
+- In a git work tree, `git ls-files` finds the manifests. It includes new files and obeys `.gitignore`. Elsewhere, a folder walk finds them, 10 levels deep maximum.
+- Both skip hidden folders and `node_modules`, `bin`, `obj`, `dist`, `build`, `target`, `venv`, `__pycache__`, `Library`, `Temp`, `Logs` and `fixtures`. Add folder names to `AGENT_TOOLS_EXCLUDE`.
 - `<project>` is `$CLAUDE_PROJECT_DIR` if it is set, else the server's current folder.
-- `AGENT_TOOLS_PATH` uses the path separator of the system (`:` on Linux and macOS, `;` on Windows).
+- `AGENT_TOOLS_PATH` and `AGENT_TOOLS_EXCLUDE` use the path separator of the system (`:` on Linux and macOS, `;` on Windows).
 - If two manifests declare the same tool name, the first one wins. `check` shows the conflict.
 
 ## Manifest (`tool.toml`)
@@ -114,6 +126,7 @@ Run them from the project folder:
 ```sh
 python3 <plugin>/server/main.py check                 # validate manifests, show the search roots
 python3 <plugin>/server/main.py list                  # tools that the server exposes
+python3 <plugin>/server/main.py catalog               # the text that the SessionStart hook writes
 python3 <plugin>/server/main.py call notion_get '{"key":"SPEC-1"}'
 ```
 
@@ -122,9 +135,11 @@ python3 <plugin>/server/main.py call notion_get '{"key":"SPEC-1"}'
 | `--root PATH` | Add a search root. You can repeat it |
 | `--project PATH` | Set the project folder |
 | `--allow-write` or `AGENT_TOOLS_ALLOW_WRITE=1` | Also expose `effect = "write"` tools |
-| `serve --poll S` | Seconds between manifest checks. `0` stops the watcher |
+| `serve --poll S` | Seconds between manifest checks. Default `0`: no watcher |
 
-## Dynamic list: client support
+## Refresh: client support
+
+`agent_tools_refresh` needs a client that acts on `list_changed`.
 
 | Client | `list_changed` | If not supported |
 |---|---|---|
@@ -132,7 +147,7 @@ python3 <plugin>/server/main.py call notion_get '{"key":"SPEC-1"}'
 | Cursor | Not reliable | Restart the server |
 | Others | Unknown | Reconnect (`/mcp`) or start a new session |
 
-With tool search, a new tool is deferred. Its description must contain the words that an agent searches for.
+With tool search, Claude Code loads only the tool names at start. The full description loads when the agent searches. Thus, the description must contain the words that an agent searches for.
 
 ## Tests
 
@@ -140,4 +155,4 @@ With tool search, a new tool is deferred. Its description must contain the words
 cd server && python3 -m unittest discover -s tests
 ```
 
-The tests start the real server as a subprocess, call a fixture tool, and add a manifest while the server runs.
+The tests start the real server as a subprocess. They call a fixture tool, add a manifest and call `agent_tools_refresh`, and check the git scan with `.gitignore`.

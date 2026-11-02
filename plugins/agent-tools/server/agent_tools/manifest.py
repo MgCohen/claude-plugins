@@ -1,10 +1,13 @@
 """Find and load tool manifests (tool.toml), and compile their input schemas.
 
-A manifest folder is any directory that holds a `tool.toml` file, one level
-below a search root: <root>/<folder>/tool.toml.
+A manifest is a file named `tool.toml` at any depth below a search root.
+In a git work tree, `git ls-files` finds them (tracked files, and new files
+that .gitignore does not exclude). Elsewhere, a folder walk finds them.
+Both skip the folders in EXCLUDE_DIRS and AGENT_TOOLS_EXCLUDE.
 """
 import os
 import re
+import subprocess
 import tomllib
 from dataclasses import dataclass, field
 
@@ -41,13 +44,18 @@ class Tool:
     schema: dict = field(default_factory=dict)
 
 
+MANIFEST = "tool.toml"
+EXCLUDE_DIRS = {"node_modules", "bin", "obj", "dist", "build", "target", "venv", "__pycache__",
+                "Library", "Temp", "Logs", "fixtures"}
+MAX_DEPTH = 10
+
+
 def search_roots(plugin_root=None, project_dir=None, extra=None):
-    """Ordered roots: plugin tools, project tools, then AGENT_TOOLS_PATH entries."""
+    """Ordered roots: plugin tools folder, project folder, then AGENT_TOOLS_PATH entries."""
     roots = []
     if plugin_root:
         roots.append(os.path.join(plugin_root, "tools"))
-    project = project_dir or os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
-    roots.append(os.path.join(project, "tools"))
+    roots.append(project_dir or os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd())
     for p in (extra if extra is not None else os.environ.get("AGENT_TOOLS_PATH", "")).split(os.pathsep):
         if p:
             roots.append(p)
@@ -60,14 +68,54 @@ def search_roots(plugin_root=None, project_dir=None, extra=None):
     return out
 
 
+def excluded_dirs():
+    extra = {d for d in os.environ.get("AGENT_TOOLS_EXCLUDE", "").split(os.pathsep) if d}
+    return EXCLUDE_DIRS | extra
+
+
 def manifest_paths(roots):
+    seen = set()
     for root in roots:
         if not os.path.isdir(root):
             continue
-        for entry in sorted(os.listdir(root)):
-            p = os.path.join(root, entry, "tool.toml")
-            if os.path.isfile(p):
+        found = _git_manifests(root)
+        if found is None:
+            found = _walk_manifests(root)
+        skip = excluded_dirs()
+        for p in sorted(found):
+            rel = os.path.relpath(p, root).split(os.sep)[:-1]
+            if any(part in skip or part.startswith(".") for part in rel):
+                continue
+            if p not in seen and os.path.isfile(p):
+                seen.add(p)
                 yield p
+
+
+def _git_manifests(root):
+    """Manifest paths from git, or None if root is not in a git work tree."""
+    try:
+        r = subprocess.run(
+            ["git", "-C", root, "ls-files", "-z", "--cached", "--others", "--exclude-standard",
+             "--", MANIFEST, f":(glob)**/{MANIFEST}"],
+            capture_output=True, timeout=15, stdin=subprocess.DEVNULL)
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    if r.returncode != 0:
+        return None
+    names = [n for n in r.stdout.decode("utf-8", "replace").split("\0") if n]
+    return [os.path.normpath(os.path.join(root, n)) for n in names]
+
+
+def _walk_manifests(root):
+    skip = excluded_dirs()
+    out = []
+    base = root.rstrip(os.sep).count(os.sep)
+    for folder, dirs, files in os.walk(root):
+        depth = folder.count(os.sep) - base
+        dirs[:] = [d for d in dirs if d not in skip and not d.startswith(".") and depth < MAX_DEPTH]
+        if MANIFEST in files:
+            out.append(os.path.join(folder, MANIFEST))
+    return out
 
 
 def fingerprint(roots):
@@ -126,6 +174,8 @@ def _tool(d, folder, path):
             raise ManifestError(f"tool {where}: {k!r} is required")
     if not NAME_RE.match(d["name"]):
         raise ManifestError(f"tool {where}: name must match {NAME_RE.pattern}")
+    if d["name"].startswith("agent_tools_"):
+        raise ManifestError(f"tool {where}: the prefix agent_tools_ is reserved for built-in tools")
     desc = " ".join(d["description"].split())
     if not 20 <= len(desc) <= 1024:
         raise ManifestError(f"tool {where}: description must be 20 to 1024 characters")

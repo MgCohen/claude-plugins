@@ -69,7 +69,36 @@ class ManifestTests(unittest.TestCase):
     def test_search_roots_order_and_env(self):
         with mock.patch.dict(os.environ, {"AGENT_TOOLS_PATH": os.pathsep.join(["/x", "/y"])}, clear=False):
             roots = mf.search_roots("/plugin", "/proj")
-        self.assertEqual(roots, [os.path.abspath(p) for p in ("/plugin/tools", "/proj/tools", "/x", "/y")])
+        self.assertEqual(roots, [os.path.abspath(p) for p in ("/plugin/tools", "/proj", "/x", "/y")])
+
+    def test_walk_finds_nested_manifests_and_skips_excluded(self):
+        write_tool(self.tmp, "a/b/c", GOOD.format(name="deep_tool"))
+        write_tool(self.tmp, "node_modules/x", GOOD.format(name="npm_tool"))
+        write_tool(self.tmp, ".hidden", GOOD.format(name="hidden_tool"))
+        write_tool(self.tmp, "src/fixtures/t", GOOD.format(name="fixture_tool"))
+        write_tool(self.tmp, "custom", GOOD.format(name="custom_tool"))
+        with mock.patch.dict(os.environ, {"AGENT_TOOLS_EXCLUDE": "custom"}):
+            tools, errors = mf.load_all([self.tmp])
+        self.assertEqual((list(tools), errors), (["deep_tool"], []))
+
+    def test_git_scan_obeys_gitignore_and_sees_new_files(self):
+        run = lambda *a: subprocess.run(["git", "-C", self.tmp, *a], check=True, capture_output=True)
+        run("init", "-q")
+        write_tool(self.tmp, "tracked", GOOD.format(name="tracked_tool"))
+        write_tool(self.tmp, "ignored", GOOD.format(name="ignored_tool"))
+        with open(os.path.join(self.tmp, ".gitignore"), "w") as f:
+            f.write("ignored/\n")
+        run("add", "tracked", ".gitignore")
+        write_tool(self.tmp, "deep/new", GOOD.format(name="new_tool"))  # not committed
+        self.assertIsNotNone(mf._git_manifests(self.tmp))
+        tools, _ = mf.load_all([self.tmp])
+        self.assertEqual(sorted(tools), ["new_tool", "tracked_tool"])
+
+    def test_reserved_prefix(self):
+        write_tool(self.tmp, "r", GOOD.format(name="agent_tools_mine"))
+        tools, errors = mf.load_all([self.tmp])
+        self.assertEqual(tools, {})
+        self.assertIn("reserved", errors[0])
 
     def test_validate(self):
         t = mf.load_all([FIXTURES])[0]["echo_args"]
@@ -139,15 +168,18 @@ class RunnerTests(unittest.TestCase):
 class ServerTests(unittest.TestCase):
     """Starts the real server as a subprocess and talks JSON-RPC over stdio."""
 
-    def setUp(self):
+    def start(self, *extra):
         self.tmp = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, self.tmp)
         self.p = subprocess.Popen(
-            [sys.executable, MAIN, "--project", self.tmp, "--root", FIXTURES, "--root", self.tmp,
-             "serve", "--poll", "0.2"],
+            [sys.executable, MAIN, "--project", self.tmp, "--root", FIXTURES, "serve", *extra],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
         self.addCleanup(self._close)
         self.n = 0
+        init = self.rpc("initialize", {"protocolVersion": "2025-06-18", "capabilities": {},
+                                       "clientInfo": {"name": "t"}})
+        self.assertEqual(init["result"]["protocolVersion"], "2025-06-18")
+        self.assertTrue(init["result"]["capabilities"]["tools"]["listChanged"])
 
     def _close(self):
         self.p.stdin.close()
@@ -159,39 +191,71 @@ class ServerTests(unittest.TestCase):
         self.p.stdin.write((json.dumps({"jsonrpc": "2.0", "id": self.n, "method": method,
                                         "params": params or {}}) + "\n").encode())
         self.p.stdin.flush()
+        self.notes = []
         while True:
             msg = json.loads(self.p.stdout.readline())
             if msg.get("id") == self.n:
                 return msg
+            self.notes.append(msg.get("method"))
 
-    def test_protocol_and_dynamic_list(self):
-        init = self.rpc("initialize", {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "t"}})
-        self.assertEqual(init["result"]["protocolVersion"], "2025-06-18")
-        self.assertTrue(init["result"]["capabilities"]["tools"]["listChanged"])
+    def names(self):
+        return [t["name"] for t in self.rpc("tools/list")["result"]["tools"]]
 
-        names = [t["name"] for t in self.rpc("tools/list")["result"]["tools"]]
-        self.assertEqual(names, ["echo_args", "echo_fail", "echo_sleep"])
-
+    def test_protocol(self):
+        self.start()
+        self.assertEqual(self.names(), ["agent_tools_refresh", "echo_args", "echo_fail", "echo_sleep"])
         call = self.rpc("tools/call", {"name": "echo_args", "arguments": {"word": "w"}})["result"]
         self.assertFalse(call["isError"])
         self.assertEqual(call["structuredContent"]["argv"], ["show", "w", "--n=1"])
-
-        bad = self.rpc("tools/call", {"name": "echo_args", "arguments": {}})["result"]
-        self.assertTrue(bad["isError"])
+        self.assertTrue(self.rpc("tools/call", {"name": "echo_args", "arguments": {}})["result"]["isError"])
         self.assertEqual(self.rpc("nope")["error"]["code"], -32601)
 
-        write_tool(self.tmp, "added", GOOD.format(name="added_tool"))
+    def test_scan_at_start_and_refresh_on_demand(self):
+        self.start()
+        write_tool(self.tmp, "tools/added", GOOD.format(name="added_tool"))
+        self.assertNotIn("added_tool", self.names())  # no watcher: list is fixed until refresh
+        unknown = self.rpc("tools/call", {"name": "added_tool"})["result"]
+        self.assertIn("agent_tools_refresh", unknown["content"][0]["text"])
+        r = self.rpc("tools/call", {"name": "agent_tools_refresh"})["result"]
+        self.assertIn("Added: added_tool", r["content"][0]["text"])
+        self.assertIn("notifications/tools/list_changed", self.notes)
+        self.assertIn("added_tool", self.names())
+        call = self.rpc("tools/call", {"name": "added_tool", "arguments": {}})["result"]
+        self.assertEqual(call["content"][0]["text"].strip(), "hi")
+        again = self.rpc("tools/call", {"name": "agent_tools_refresh"})["result"]
+        self.assertIn("No change.", again["content"][0]["text"])
+        self.assertNotIn("notifications/tools/list_changed", self.notes)
+
+    def test_optional_watcher(self):
+        self.start("--poll", "0.2")
+        write_tool(self.tmp, "w", GOOD.format(name="watched_tool"))
         deadline = time.time() + 5
         while time.time() < deadline:
-            msg = json.loads(self.p.stdout.readline())
-            if msg.get("method") == "notifications/tools/list_changed":
+            if json.loads(self.p.stdout.readline()).get("method") == "notifications/tools/list_changed":
                 break
         else:
             self.fail("no list_changed notification")
-        names = [t["name"] for t in self.rpc("tools/list")["result"]["tools"]]
-        self.assertIn("added_tool", names)
-        call = self.rpc("tools/call", {"name": "added_tool", "arguments": {}})["result"]
-        self.assertEqual(call["content"][0]["text"].strip(), "hi")
+        self.assertIn("watched_tool", self.names())
+
+
+class CatalogTests(unittest.TestCase):
+    def catalog(self, project):
+        return subprocess.run([sys.executable, MAIN, "--project", project, "catalog"],
+                              capture_output=True, text=True, timeout=30)
+
+    def test_lists_first_sentences(self):
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tmp)
+        write_tool(tmp, "t", GOOD.format(name="cat_tool"))
+        r = self.catalog(tmp)
+        self.assertEqual(r.returncode, 0)
+        self.assertIn("- cat_tool: A tool for tests.", r.stdout)
+        self.assertNotIn("Returns a short text", r.stdout)
+
+    def test_silent_when_no_tools(self):
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tmp)
+        self.assertEqual(self.catalog(tmp).stdout, "")
 
 
 if __name__ == "__main__":

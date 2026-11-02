@@ -1,7 +1,8 @@
-"""CLI: serve | list | check | call.
+"""CLI: serve | list | catalog | check | call.
 
   serve            run the MCP server on stdio
   list             print the tools that the server would expose
+  catalog          print a short tool list for the session context (SessionStart hook)
   check            validate all manifests; exit 1 on errors
   call NAME JSON   run one tool, as the server does, and print the result
 """
@@ -27,8 +28,10 @@ def main(argv=None):
                    help="also expose tools with effect = \"write\"")
     sub = p.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("serve")
-    s.add_argument("--poll", type=float, default=2.0, help="seconds between manifest checks; 0 = off")
+    s.add_argument("--poll", type=float, default=0.0,
+                   help="seconds between manifest checks; 0 (default) = scan at start and on refresh only")
     sub.add_parser("list")
+    sub.add_parser("catalog", help="short tool list for session context (SessionStart hook)")
     sub.add_parser("check")
     c = sub.add_parser("call")
     c.add_argument("name")
@@ -41,6 +44,8 @@ def main(argv=None):
     if a.cmd == "serve":
         Server(roots, a.allow_write, a.poll).serve()
         return 0
+    if a.cmd == "catalog":
+        return _catalog(roots, a.allow_write)
     tools, errors = mf.load_all(roots, a.allow_write)
     if a.cmd == "list":
         for t in tools.values():
@@ -67,6 +72,29 @@ def main(argv=None):
         (sys.stderr if r.is_error else sys.stdout).write(r.text if r.text.endswith("\n") else r.text + "\n")
         return 1 if r.is_error else 0
     return 2
+
+
+def _catalog(roots, allow_write):
+    """Print nothing if there are no tools. Never fail: this runs at session start."""
+    try:
+        tools, errors = mf.load_all(roots, allow_write)
+    except Exception as e:  # noqa: BLE001
+        print(f"agent-tools: catalog failed: {e}", file=sys.stderr)
+        return 0
+    if not tools and not errors:
+        return 0
+    print('Agent tools (MCP server "agent-tools"). After you add or change a tool.toml, '
+          "call agent_tools_refresh.")
+    for t in tools.values():
+        print(f"- {t.name}: {_first_sentence(t.description)}")
+    if errors:
+        print(f"- {len(errors)} manifest(s) have errors. Run the check command of agent-tools.")
+    return 0
+
+
+def _first_sentence(text, limit=160):
+    s = text.split(". ")[0].rstrip(".") + "."
+    return s if len(s) <= limit else s[:limit - 1].rstrip() + "…"
 
 
 if __name__ == "__main__":

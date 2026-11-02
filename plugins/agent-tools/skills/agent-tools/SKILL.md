@@ -9,12 +9,13 @@ The `agent-tools` MCP server exposes each tool that a `tool.toml` manifest decla
 
 ## Steps
 
-1. Put the script in its own folder: `<project>/tools/<folder>/` for one repository, or `<plugin>/tools/<folder>/` for all projects.
+1. Put the script and its `tool.toml` in one folder. Any folder of the project is permitted, for example next to the code that the tool uses. For a tool for all projects, use `<plugin>/tools/<folder>/`.
 2. Make the script deterministic. It must write the result to stdout, write errors to stderr, and exit with a code that is not 0 on failure.
 3. Write `tool.toml` in the same folder. Use one `[[tool]]` entry for each agent task, not one for each flag.
 4. Run `python3 ${CLAUDE_PLUGIN_ROOT}/server/main.py check`. Fix each `ERROR` line.
 5. Run `python3 ${CLAUDE_PLUGIN_ROOT}/server/main.py call <name> '<json>'` with sample input.
-6. If the script is a Python CLI with argparse, add a drift test: build the argv from the manifest and give it to the parser.
+6. Call the MCP tool `agent_tools_refresh`. The new tool is then available in this session.
+7. If the script is a Python CLI with argparse, add a drift test: build the argv from the manifest and give it to the parser.
 
 ## Rules for a good tool
 
