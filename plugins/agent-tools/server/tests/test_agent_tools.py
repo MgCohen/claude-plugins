@@ -93,6 +93,23 @@ class ManifestTests(unittest.TestCase):
         tools, _ = mf.load_all([self.tmp])
         self.assertEqual(sorted(tools), ["new_tool", "tracked_tool"])
 
+    def test_wrong_types_are_reported_not_fatal(self):
+        base = GOOD.format(name="t_tool")
+        cases = {
+            "timeout": base + 'timeout = "abc"\n',
+            "desc": base.replace('description = "A tool for tests. Returns a short text."', "description = 5"),
+            "env": base + 'env = "FOO"\n',
+            "input": base + 'input = "x"\n',
+            "star": base.replace("args = []", 'args = ["{w*}"]') + '[tool.input]\nw = { type = "string", description = "d" }\n',
+            "flag": base.replace("args = []", 'args = ["{w|--w}"]') + '[tool.input]\nw = { type = "string", description = "d" }\n',
+            "plain": base.replace("args = []", 'args = ["{w}"]') + '[tool.input]\nw = { type = "array", description = "d" }\n',
+        }
+        for folder, body in cases.items():
+            write_tool(self.tmp, folder, body)
+        tools, errors = mf.load_all([self.tmp])
+        self.assertEqual(tools, {})
+        self.assertEqual(len(errors), len(cases), errors)
+
     def test_reserved_prefix(self):
         write_tool(self.tmp, "r", GOOD.format(name="agent_tools_mine"))
         tools, errors = mf.load_all([self.tmp])
@@ -123,6 +140,9 @@ class ArgvTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "must not start"):
             argvmod.build(["c"], self.T, {"key": "--out=/etc/x"})
         self.assertEqual(argvmod.build(["c"], ["--doc={d}"], {"d": "-x"}), ["c", "--doc=-x"])  # attached: safe
+        with self.assertRaisesRegex(ValueError, "must not start"):
+            argvmod.build(["c"], ["{w*}"], {"w": ["ok", "--output=/etc/x"]})
+        self.assertEqual(argvmod.build(["c"], ["--w={w*}"], {"w": ["-x"]}), ["c", "--w=-x"])
 
     def test_one_placeholder_per_element(self):
         with self.assertRaises(ValueError):
@@ -208,6 +228,11 @@ class ServerTests(unittest.TestCase):
         self.assertEqual(call["structuredContent"]["argv"], ["show", "w", "--n=1"])
         self.assertTrue(self.rpc("tools/call", {"name": "echo_args", "arguments": {}})["result"]["isError"])
         self.assertEqual(self.rpc("nope")["error"]["code"], -32601)
+        for bad in (b"5\n", b"[1]\n"):  # not an object: error, and the server keeps running
+            self.p.stdin.write(bad)
+            self.p.stdin.flush()
+            self.assertEqual(json.loads(self.p.stdout.readline())["error"]["code"], -32600)
+        self.assertEqual(self.rpc("ping")["result"], {})
 
     def test_scan_at_start_and_refresh_on_demand(self):
         self.start()

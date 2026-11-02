@@ -101,7 +101,9 @@ Each element of `args` has one placeholder maximum.
 | `"--where={where*}"` | `["A=1", "B=2"]` | `--where=A=1 --where=B=2` |
 | `"{verbose\|--verbose}"` | `true` | `--verbose`. Removed if `false` |
 
-A value in a standalone placeholder (`"{key}"`) cannot start with `-`. This stops option injection. Attach the value to its flag (`"--doc={doc}"`) if it can start with `-`.
+A value in a standalone placeholder (`"{key}"`, or an item of `"{items*}"`) cannot start with `-`. This stops option injection. It also rejects a negative number such as `-5`. Attach the value to its flag (`"--n={n}"`) if it can start with `-`.
+
+The modifier must agree with the input type: `*` only for `array`, `|` only for `boolean`, and no modifier or `?` only for the other types.
 
 ## What the server does for each call
 
@@ -112,9 +114,20 @@ A value in a standalone placeholder (`"{key}"`) cannot start with `-`. This stop
 5. Cuts stdout to 100 KB and stderr to 8 KB.
 6. If the exit code is not 0, returns `isError` with stderr.
 
+## Trust
+
+The server runs the commands that the manifests in the opened project declare. Treat a `tool.toml` like a script in the repository:
+
+- Enable the plugin only for repositories that you trust. A manifest in a cloned repository can run any program that is on `PATH`.
+- `effect = "read"` is what the manifest says about itself. The server does not verify it.
+- The `SessionStart` catalog puts tool descriptions from the repository into the session context. Do not trust the text of a manifest that you did not read.
+- `cwd` and a `./` command are relative to the manifest folder, and can use `..`.
+
 ## Install
 
-The plugin starts the server automatically (`.mcp.json` → `sh server/run.sh serve`). `run.sh` uses the first Python 3.11+ on `PATH`. On Windows, it needs Git Bash.
+The plugin starts the server automatically (`.mcp.json` → `sh server/run.sh serve`). `run.sh` uses the first Python 3.11+ on `PATH`.
+
+On Windows, Claude Code starts the MCP server as a Windows process, not in Git Bash. Thus, `sh.exe` must be on the Windows `PATH`. The default Git for Windows install adds only `Git\cmd`. Add `C:\Program Files\Git\usr\bin` (or `Git\bin`) to `PATH`, or the server does not start.
 
 Plugins cannot ship environment values. Set each variable that a tool declares, for example `NOTION_TOKEN`, in `~/.claude/settings.json` (`env`) or in the cloud environment settings.
 

@@ -11,7 +11,7 @@ import subprocess
 import tomllib
 from dataclasses import dataclass, field
 
-from .argv import placeholders
+from .argv import placeholder_modes
 
 NAME_RE = re.compile(r"^[a-z][a-z0-9_]{0,47}$")
 TYPES = {"string", "integer", "number", "boolean", "array"}
@@ -134,8 +134,8 @@ def load_all(roots, allow_write=False):
                 tools[t.name] = t
         except ManifestError as e:
             errors.append(f"{path}: {e}")
-        except (OSError, tomllib.TOMLDecodeError) as e:
-            errors.append(f"{path}: {e}")
+        except (OSError, tomllib.TOMLDecodeError, TypeError, ValueError, AttributeError, KeyError) as e:
+            errors.append(f"{path}: {type(e).__name__}: {e}")  # one bad manifest never stops the server
     return tools, errors
 
 
@@ -165,6 +165,8 @@ def _tool(d, folder, path):
         raise ManifestError(f"tool {where}: name must match {NAME_RE.pattern}")
     if d["name"].startswith("agent_tools_"):
         raise ManifestError(f"tool {where}: the prefix agent_tools_ is reserved for built-in tools")
+    if not isinstance(d["description"], str):
+        raise ManifestError(f"tool {where}: description must be a string")
     desc = " ".join(d["description"].split())
     if not 20 <= len(desc) <= 1024:
         raise ManifestError(f"tool {where}: description must be 20 to 1024 characters")
@@ -176,13 +178,34 @@ def _tool(d, folder, path):
         raise ManifestError(f"tool {where}: effect must be one of {sorted(EFFECTS)}")
     if d["output"] not in OUTPUTS:
         raise ManifestError(f"tool {where}: output must be one of {sorted(OUTPUTS)}")
+    if not isinstance(d["timeout"], (int, float)) or isinstance(d["timeout"], bool) or d["timeout"] <= 0:
+        raise ManifestError(f"tool {where}: timeout must be a number above 0")
+    if not (isinstance(d["env"], list) and all(isinstance(e, str) for e in d["env"])):
+        raise ManifestError(f"tool {where}: env must be a list of strings")
+    if not isinstance(d["cwd"], str) or not isinstance(d["enabled"], bool):
+        raise ManifestError(f"tool {where}: cwd must be a string and enabled a boolean")
     inputs = d.get("input", {})
+    if not isinstance(inputs, dict):
+        raise ManifestError(f"tool {where}: input must be a table")
     for name, spec in inputs.items():
+        if not isinstance(spec, dict):
+            raise ManifestError(f"tool {where}: input {name} must be a table")
         _check_input(where, name, spec)
     try:
-        used = placeholders(d["args"])
+        mods = placeholder_modes(d["args"])
     except ValueError as e:
         raise ManifestError(f"tool {where}: {e}") from None
+    used = set(mods)
+    for name, mode in mods.items():
+        t = inputs.get(name, {}).get("type")
+        if t is None:
+            continue
+        if mode == "*" and t != "array":
+            raise ManifestError(f"tool {where}: {{{name}*}} needs an array input")
+        if mode == "|" and t != "boolean":
+            raise ManifestError(f"tool {where}: {{{name}|...}} needs a boolean input")
+        if mode in ("", "?") and t == "array":
+            raise ManifestError(f"tool {where}: array input {name} needs {{{name}*}}")
     unknown = used - set(inputs)
     if unknown:
         raise ManifestError(f"tool {where}: args use undeclared inputs {sorted(unknown)}")
@@ -191,7 +214,7 @@ def _tool(d, folder, path):
         raise ManifestError(f"tool {where}: inputs not used in args {sorted(unused)}")
     t = Tool(name=d["name"], description=desc, command=d["command"], args=d["args"], input=inputs,
              output=d["output"], effect=d["effect"], env=list(d["env"]), timeout=float(d["timeout"]),
-             cwd=os.path.normpath(os.path.join(folder, d["cwd"])), source=path, enabled=bool(d["enabled"]))
+             cwd=os.path.normpath(os.path.join(folder, d["cwd"])), source=path, enabled=d["enabled"])
     t.schema = compile_schema(inputs)
     return t
 

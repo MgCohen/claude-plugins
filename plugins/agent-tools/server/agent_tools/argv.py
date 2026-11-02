@@ -12,14 +12,23 @@ import re
 PH = re.compile(r"\{([a-z][a-z0-9_]*)(\?|\*|\|[^}]*)?\}")
 
 
-def placeholders(template):
-    names = set()
+def placeholder_modes(template):
+    """{name: mode}; mode is "", "?", "*" or "|"."""
+    modes = {}
     for el in template:
         found = PH.findall(el)
         if len(found) > 1:
             raise ValueError(f"one placeholder at most in each element: {el!r}")
-        names |= {n for n, _ in found}
-    return names
+        for n, mod in found:
+            m = mod[:1]
+            if modes.get(n, m) != m:
+                raise ValueError(f"placeholder {n!r} is used with different modifiers")
+            modes[n] = m
+    return modes
+
+
+def placeholders(template):
+    return set(placeholder_modes(template))
 
 
 def build(command, template, args):
@@ -38,7 +47,10 @@ def build(command, template, args):
             continue
         if mod == "*":
             for item in (v or []):
-                out.append(pre + _text(item) + post)
+                s = _text(item)
+                if not pre and s.startswith("-"):
+                    raise ValueError(f"items of {name!r} must not start with '-'")
+                out.append(pre + s + post)
             continue
         if v is None:
             if mod == "?":

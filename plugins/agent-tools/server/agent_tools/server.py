@@ -55,6 +55,9 @@ class Server:
                 self._dispatch(m)
 
     def _dispatch(self, msg):
+        if not isinstance(msg, dict):
+            self.send({"jsonrpc": "2.0", "id": None, "error": {"code": -32600, "message": "Invalid Request"}})
+            return
         mid, method = msg.get("id"), msg.get("method")
         if mid is None:
             return  # notification: initialized, cancelled, ...

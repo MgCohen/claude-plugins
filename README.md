@@ -33,9 +33,10 @@ claude plugin marketplace add MgCohen/claude-plugins
 claude plugin install core@mgcohen --scope user
 ```
 
-## Plugins
+## Plugin notes
 
 - `core`: personal skills, agents and hooks.
+- `agent-tools`: one MCP server for local scripts. Each tool declares itself in a `tool.toml` file anywhere in the project. See `plugins/agent-tools/README.md`.
 - `unity-worktrees`: every worktree session in a Unity repo gets a worktree beside the repo (`<repo>.wt/<name>`) made by the Unity CLI (`unity vcs git worktree add`), with its `Library` seeded so Unity doesn't re-import. In other repos it makes the plain worktree Claude Code would. Removing a session's worktree keeps it while it has uncommitted changes, and always keeps the branch. Option `seed`: `cache` (default), `full` or `none`. Needs the Unity CLI (`unity`) on PATH. Enable it per Unity repo in that repo's `.claude/settings.json`:
 
   ```json
