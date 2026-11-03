@@ -17,6 +17,7 @@ from agent_tools import runner  # noqa: E402
 
 FIXTURES = os.path.join(HERE, "fixtures")
 MAIN = os.path.join(os.path.dirname(HERE), "main.py")
+NO_PLUGIN = os.path.join(FIXTURES, "no-plugin")  # has no tools/ folder: the real plugin tools stay out of the tests
 
 
 def write_tool(root, folder, body):
@@ -161,6 +162,13 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(r.data["secret"], "s3")
         self.assertIsNone(r.data["other"])  # not declared: not passed
 
+    def test_project_dir_is_passed(self):
+        t = self.tools["echo_args"]
+        env, _ = runner.environment(t, {"CLAUDE_PROJECT_DIR": "/proj"})
+        self.assertEqual(env["CLAUDE_PROJECT_DIR"], "/proj")
+        env, _ = runner.environment(t, {})
+        self.assertEqual(env["CLAUDE_PROJECT_DIR"], os.getcwd())
+
     def test_required_env_missing(self):
         t = self.tools["echo_args"]
         t.env = ["ECHO_REQUIRED"]
@@ -191,7 +199,7 @@ class ServerTests(unittest.TestCase):
         self.tmp = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, self.tmp)
         self.p = subprocess.Popen(
-            [sys.executable, MAIN, "--project", self.tmp, "--root", FIXTURES, "serve", *extra],
+            [sys.executable, MAIN, "--plugin-root", NO_PLUGIN, "--project", self.tmp, "--root", FIXTURES, "serve", *extra],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
         self.addCleanup(self._close)
         self.n = 0
@@ -254,7 +262,7 @@ class ServerTests(unittest.TestCase):
 
 class CatalogTests(unittest.TestCase):
     def catalog(self, project):
-        return subprocess.run([sys.executable, MAIN, "--project", project, "catalog"],
+        return subprocess.run([sys.executable, MAIN, "--plugin-root", NO_PLUGIN, "--project", project, "catalog"],
                               capture_output=True, text=True, timeout=30)
 
     def test_lists_first_sentences(self):

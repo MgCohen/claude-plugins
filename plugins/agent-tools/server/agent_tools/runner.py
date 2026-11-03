@@ -34,6 +34,8 @@ def environment(tool, source=None):
     src = os.environ if source is None else source
     env = {k: src[k] for k in BASE_ENV if k in src}
     env["PYTHONIOENCODING"] = "utf-8"
+    # A tool runs in its manifest folder, so it gets the project folder here (same rule as search_roots).
+    env["CLAUDE_PROJECT_DIR"] = src.get("CLAUDE_PROJECT_DIR") or os.getcwd()
     missing = []
     for name in tool.env:
         optional = name.endswith("?")
