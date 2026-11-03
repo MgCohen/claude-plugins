@@ -1,0 +1,6 @@
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PostToolUse",
+    "additionalContext": "Writing check: examine this file against the STE rules and the `writing` skill. Fix problems in the same file. Do not make other outputs."
+  }
+}

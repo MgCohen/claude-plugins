@@ -1,0 +1,18 @@
+{
+  "name": "writing",
+  "displayName": "Writing (ASD-STE100)",
+  "version": "2.0.0",
+  "description": "Write all output in ASD-STE100 Simplified Technical English, with content rules for each kind of text: documents describe the current state, commits and PRs record changes. Ships a forced output style, a router skill with one file for each kind of text, and short hooks for subagents and for a check after documents and artifacts.",
+  "author": {
+    "name": "MgCohen"
+  },
+  "keywords": [
+    "writing",
+    "documents",
+    "ste",
+    "asd-ste100",
+    "simplified-technical-english",
+    "style"
+  ],
+  "license": "MIT"
+}
