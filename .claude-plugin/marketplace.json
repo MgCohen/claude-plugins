@@ -26,6 +26,11 @@
       "name": "agent-tools",
       "source": "./plugins/agent-tools",
       "description": "One MCP server that exposes local scripts as tools, from tool.toml manifests. Scans at session start and on demand."
+    },
+    {
+      "name": "notion-context",
+      "source": "./plugins/notion-context",
+      "description": "Reads a Notion page and its related pages as one document. Needs the agent-tools plugin, which exposes notion_get and notion_query."
     }
   ]
 }

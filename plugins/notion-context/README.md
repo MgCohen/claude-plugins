@@ -152,7 +152,7 @@ The tool reads nested blocks recursively, to 8 levels. Mentions show as their pl
 
 ## Agent tool (MCP)
 
-`tool.toml` declares two MCP tools, `notion_get` and `notion_query`. This folder is in `plugins/agent-tools/tools/`, so the tools are available in every project where the `agent-tools` plugin is on. Set `NOTION_TOKEN` in the client environment, and put `notion-context.toml` in the project root.
+`tool.toml` declares two MCP tools, `notion_get` and `notion_query`. This folder is a plugin of its own. agent-tools scans the installed plugins, so the tools are available in every project where both plugins are installed. Set `NOTION_TOKEN` in the client environment, and put `notion-context.toml` in the project root.
 
 `tests/test_tool_manifest.py` builds the argv of each tool from the manifest and parses it with the real CLI parser. If a flag changes in one place only, the test fails.
 

@@ -1,0 +1,15 @@
+{
+  "name": "notion-context",
+  "displayName": "Notion context",
+  "version": "0.1.0",
+  "description": "Reads a Notion page and its related pages as one Markdown or JSON document. Exposes notion_get and notion_query through the agent-tools plugin.",
+  "author": {
+    "name": "MgCohen"
+  },
+  "keywords": [
+    "notion",
+    "context",
+    "agent-tools"
+  ],
+  "license": "MIT"
+}
