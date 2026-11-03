@@ -38,8 +38,14 @@ A manifest is a file named `tool.toml` at any depth below a search root.
 
 ### Installed plugins
 
-agent-tools scans the plugins that Claude Code installed in `~/.claude/plugins/` (`cache/` and `synced/`). A plugin can thus ship a `tool.toml` anywhere in its folder, and its tools are available in every project.
+A plugin can ship a `tool.toml` anywhere in its folder, and its tools are available in every project. agent-tools scans two places for installed plugins:
 
+| Order | Place | Host that uses it |
+|---|---|---|
+| 1 | The folders next to the agent-tools folder | Each host. The desktop app keeps its plugins only here. |
+| 2 | `~/.claude/plugins/` (`cache/` and `synced/`) | The CLI and cloud sessions |
+
+- If a plugin name is in place 1, agent-tools does not scan place 2 for that name.
 - Claude Code keeps old versions and old generations on disk. agent-tools uses only the newest copy of each plugin (newest `.claude-plugin/plugin.json`).
 - agent-tools does not scan itself again. Its own tools are in `tools/`.
 - agent-tools cannot see if a plugin is disabled. A disabled plugin that is still installed gives its tools. To stop this, uninstall the plugin, or set `plugins = false`.
@@ -156,9 +162,15 @@ The server runs the commands that the manifests in the opened project declare. T
 
 ## Install
 
-The plugin starts the server automatically (`.mcp.json` → `sh server/run.sh serve`). `run.sh` uses the first Python 3.11+ on `PATH`.
+The plugin starts the server automatically. Each start needs Python 3.11 or later.
 
-On Windows, Claude Code starts the MCP server as a Windows process, not in Git Bash. Thus, `sh.exe` must be on the Windows `PATH`. The default Git for Windows install adds only `Git\cmd`. Add `C:\Program Files\Git\usr\bin` (or `Git\bin`) to `PATH`, or the server does not start.
+| Start | Command | Shell |
+|---|---|---|
+| MCP server (`.mcp.json`) | `python server/main.py serve` | None. On Windows, Claude Code starts it as a Windows process. |
+| `SessionStart` catalog (`hooks/hooks.json`) | `sh server/run.sh catalog` | `sh`. On Windows, Claude Code runs hooks in Git Bash. |
+
+- `python` must be on `PATH`. On Windows, `python3` is often the Microsoft Store stub, so the server does not use it.
+- `run.sh` uses the first Python 3.11+ on `PATH` (`python3`, `python`, `py`).
 
 Plugins cannot ship environment values. Set each variable that a tool declares, for example `NOTION_TOKEN`, in `~/.claude/settings.json` (`env`) or in the cloud environment settings.
 
