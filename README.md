@@ -6,10 +6,11 @@ Personal Claude Code plugin marketplace (`mgcohen`). Add it once on claude.ai an
 
 | Plugin | What it does |
 |---|---|
-| `core` | Personal skills, agents and hooks that follow me everywhere. |
+| `core` | Personal skills, agents and hooks that follow me everywhere. Skill `spawn` starts a background session with Remote Control on. |
 | `technical-english` | Writes all output, files, artifacts and diagram text in ASD-STE100 Simplified Technical English. |
 | `agent-tools` | One MCP server that exposes local scripts as tools, from `tool.toml` manifests. To add a tool, see `plugins/agent-tools/ADD-A-TOOL.md`. |
 | `notion-context` | Reads a Notion page and its related pages as one document. Needs `agent-tools`, which exposes `notion_get` and `notion_query`. |
+| `triage` | Runs the Linear Triage intake: `/idea` captures a request, `/triage` moves the stalest one a step. See [its README](plugins/triage/README.md). |
 
 ## Layout
 
@@ -39,7 +40,7 @@ claude plugin install core@mgcohen --scope user
 - `core`: personal skills, agents and hooks.
 - `agent-tools`: one MCP server for local scripts. Each tool declares itself in a `tool.toml` file in the project, in an installed plugin, or in a folder from `agent-tools.toml`. See `plugins/agent-tools/README.md`.
 - `notion-context`: a plugin with only a `tool.toml` and its script. agent-tools finds it in the installed plugins. Put `notion-context.toml` in the root of each project, and set `NOTION_TOKEN`. See `plugins/notion-context/README.md`.
-- `unity-worktrees`: every worktree session in a Unity repo gets a worktree beside the repo (`<repo>.wt/<name>`) made by the Unity CLI (`unity vcs git worktree add`), with its `Library` seeded so Unity doesn't re-import. In other repos it makes the plain worktree Claude Code would. Removing a session's worktree keeps it while it has uncommitted changes, and always keeps the branch. Option `seed`: `cache` (default), `full` or `none`. Needs the Unity CLI (`unity`) on PATH. Enable it per Unity repo in that repo's `.claude/settings.json`:
+- `unity-worktrees`: every worktree session in a Unity repo gets a worktree beside the repo (`<repo>.wt/<name>`) made by the Unity CLI (`unity vcs git worktree add`), with its `Library` seeded so Unity doesn't re-import. In other repos it makes the plain worktree Claude Code would. Removing a session's worktree keeps it while it has uncommitted changes, and always keeps the branch. Option `seed`: `cache` (default), `full` or `none`. A `PreToolUse` hook denies `git worktree add` (also `git -C <path> worktree add`) from the Bash and PowerShell tools in a Unity repo, and the `unity-worktree` skill gives the Unity CLI command to use. Needs the Unity CLI (`unity`) on PATH. Enable it per Unity repo in that repo's `.claude/settings.json`:
 
   ```json
   {
