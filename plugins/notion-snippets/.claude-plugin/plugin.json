@@ -1,0 +1,16 @@
+{
+  "name": "notion-snippets",
+  "displayName": "Notion snippets",
+  "version": "0.1.0",
+  "description": "Keeps native Notion code blocks equal to code in a GitHub repo. A Snippets database row selects a method or a line range, and a GitHub Action writes the code.",
+  "author": {
+    "name": "MgCohen"
+  },
+  "keywords": [
+    "notion",
+    "github",
+    "snippets",
+    "documentation"
+  ],
+  "license": "MIT"
+}

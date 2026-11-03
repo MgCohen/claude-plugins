@@ -1,0 +1,33 @@
+name: Notion snippets
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        options: [plan, apply, force]
+        default: apply
+
+concurrency:
+  group: notion-snippets-${{ github.ref }}
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python .github/notion-snippets/sync_snippets.py ${{ github.event_name == 'pull_request' && 'plan' || inputs.mode || 'apply' }}
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_SNIPPETS_DATABASE: ${{ vars.NOTION_SNIPPETS_DATABASE }}
