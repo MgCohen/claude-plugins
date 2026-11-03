@@ -1,0 +1,16 @@
+{
+  "name": "agent-tools",
+  "displayName": "Agent tools",
+  "version": "0.1.0",
+  "description": "One MCP server that exposes local scripts as tools. Each tool declares itself in a tool.toml manifest in the project, in an installed plugin, or in a folder from agent-tools.toml. The server scans at session start; the agent_tools_refresh tool scans again on demand.",
+  "author": {
+    "name": "MgCohen"
+  },
+  "keywords": [
+    "mcp",
+    "tools",
+    "scripts",
+    "manifest"
+  ],
+  "license": "MIT"
+}

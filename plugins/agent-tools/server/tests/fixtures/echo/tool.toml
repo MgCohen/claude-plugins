@@ -1,0 +1,34 @@
+# Test fixture: prints its argv and selected environment as JSON.
+[defaults]
+command = ["python3", "echo.py"]
+env = ["ECHO_SECRET?"]
+timeout = 10
+
+[[tool]]
+name = "echo_args"
+description = "Test tool. Returns the argv that it received and the value of ECHO_SECRET, as JSON."
+args = ["show", "{word}", "--tag={tag?}", "--item={items*}", "{loud|--loud}", "--n={count}"]
+output = "json"
+[tool.input]
+word  = { type = "string", required = true, description = "A word to echo" }
+tag   = { type = "string", enum = ["a", "b"] }
+items = { type = "array", items = "string", description = "Repeated items" }
+loud  = { type = "boolean", description = "Adds --loud" }
+count = { type = "integer", default = 1, description = "A number" }
+
+[[tool]]
+name = "echo_fail"
+description = "Test tool. Exits with code 3 and writes a message to stderr."
+args = ["fail"]
+
+[[tool]]
+name = "echo_sleep"
+description = "Test tool. Sleeps for 5 seconds; used to test the timeout."
+args = ["sleep"]
+timeout = 0.5
+
+[[tool]]
+name = "echo_write"
+description = "Test tool with effect write. Hidden unless writes are allowed."
+args = ["show", "write"]
+effect = "write"
