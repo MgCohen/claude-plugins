@@ -1,0 +1,16 @@
+{
+  "name": "triage",
+  "displayName": "Linear Triage",
+  "version": "0.1.0",
+  "description": "Runs the Linear Triage intake: capture requests, work a stalest-first queue, fill a template for each kind of work in small steps, review, and route each request to the correct level.",
+  "author": {
+    "name": "MgCohen"
+  },
+  "keywords": [
+    "linear",
+    "triage",
+    "intake",
+    "workflow"
+  ],
+  "license": "MIT"
+}
