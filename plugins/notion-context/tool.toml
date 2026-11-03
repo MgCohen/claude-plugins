@@ -1,0 +1,30 @@
+# agent-tools manifest: exposes notion-context as MCP tools.
+# Spec: MgCohen/claude-plugins, plugins/agent-tools/README.md
+
+[defaults]
+command = ["python3", "-m", "notion_context"]
+env = ["NOTION_TOKEN", "NOTION_CONTEXT_CONFIG?"]
+timeout = 120
+
+[[tool]]
+name = "notion_get"
+description = """Read one Notion page by its key (for example SPEC-1 or ISS-12), with its related \
+pages, as one document. Use it before you work on a spec, an issue, a feature or a decision. \
+Returns Markdown, or a JSON tree if format is json."""
+args = ["get", "{key}", "--doc={doc?}", "--database={database?}", "--format={format}"]
+[tool.input]
+key      = { type = "string", required = true, description = "Page key, for example SPEC-1" }
+doc      = { type = "string", description = "Document recipe from notion-context.toml. Default: the recipe of the database" }
+database = { type = "string", description = "Database alias. Only for keys with no prefix" }
+format   = { type = "string", enum = ["md", "json"], default = "md" }
+
+[[tool]]
+name = "notion_query"
+description = """List the rows of one Notion database that match all filters, as JSON. \
+Use it to find work items, for example the issues with Status=Ready."""
+args = ["query", "{database}", "--where={where*}", "--columns={columns?}", "--format=json"]
+output = "json"
+[tool.input]
+database = { type = "string", required = true, description = "Database alias from notion-context.toml, for example issues" }
+where    = { type = "array", items = "string", description = "Filters PROP=VALUE; all must match; a value that starts with ! negates" }
+columns  = { type = "string", description = "Comma-separated property names to return" }

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "agent-tools": {
+      "command": "sh",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/server/run.sh", "serve"]
+    }
+  }
+}
