@@ -22,6 +22,8 @@ def main(argv=None):
     p = argparse.ArgumentParser(prog="agent-tools")
     p.add_argument("--root", action="append", default=[],
                    help="extra search root (folder that holds <tool>/tool.toml); repeatable")
+    p.add_argument("--plugin-root", default=PLUGIN_ROOT,
+                   help="plugin folder; its tools/ folder is searched first (default: this plugin)")
     p.add_argument("--project", help="project folder (default: $CLAUDE_PROJECT_DIR or the current folder)")
     p.add_argument("--allow-write", action="store_true",
                    default=os.environ.get("AGENT_TOOLS_ALLOW_WRITE") == "1",
@@ -36,7 +38,7 @@ def main(argv=None):
     c.add_argument("arguments", nargs="?", default="{}", help="JSON object")
     a = p.parse_args(argv)
 
-    roots = mf.search_roots(PLUGIN_ROOT, a.project)
+    roots = mf.search_roots(a.plugin_root, a.project)
     roots += [os.path.abspath(r) for r in a.root if os.path.abspath(r) not in roots]
 
     if a.cmd == "serve":

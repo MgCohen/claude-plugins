@@ -111,7 +111,7 @@ The modifier must agree with the input type: `*` only for `array`, `|` only for 
 
 1. Validates the arguments against the input schema. If they are not valid, it returns `isError` with the reason.
 2. Builds argv as a list and runs it with no shell.
-3. Passes only a base environment (`PATH`, `HOME`, proxy and certificate variables) and the `env` names of the tool.
+3. Passes only a base environment (`PATH`, `HOME`, proxy and certificate variables) and the `env` names of the tool. It also sets `CLAUDE_PROJECT_DIR` to the project folder, because the tool runs in its manifest folder.
 4. Stops the process after `timeout`.
 5. Cuts stdout to 100 KB and stderr to 8 KB.
 6. If the exit code is not 0, returns `isError` with stderr.
