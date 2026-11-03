@@ -7,7 +7,9 @@ Five steps. You need two files: your script and a `tool.toml` next to it.
 | Put the folder in | The tool is available |
 |---|---|
 | Any folder of your project | In that project only |
-| `<plugin>/tools/<name>/` | In all projects |
+| A plugin of its own (`plugins/<name>/`, with `.claude-plugin/plugin.json`) | In all projects where the plugin is installed |
+| A folder in `paths` of `~/.claude/agent-tools.toml` | In all projects on that machine |
+| `<agent-tools>/tools/<name>/` | In all projects. Only for tools that ship with agent-tools |
 
 Any folder in the project is permitted, for example next to the code that the tool uses. The server does not look in these folders:
 

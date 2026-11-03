@@ -30,9 +30,37 @@ A manifest is a file named `tool.toml` at any depth below a search root.
 
 | Order | Search root | Use it for |
 |---|---|---|
-| 1 | `<plugin>/tools/` | Tools for every project |
+| 1 | `<agent-tools>/tools/` | Tools that ship with agent-tools |
 | 2 | `<project>/` | Tools of one repository, in any folder |
-| 3 | Each path in `AGENT_TOOLS_PATH` | Other folders, for example a personal tool folder |
+| 3 | Each path in `paths` of `<project>/.claude/agent-tools.toml`, then of `~/.claude/agent-tools.toml` | Custom folders for one project, or for all projects |
+| 4 | Each path in `AGENT_TOOLS_PATH` | Custom folders for one machine or one environment |
+| 5 | Each other installed plugin | Tools that a plugin ships, for example `notion-context` |
+
+### Installed plugins
+
+agent-tools scans the plugins that Claude Code installed in `~/.claude/plugins/` (`cache/` and `synced/`). A plugin can thus ship a `tool.toml` anywhere in its folder, and its tools are available in every project.
+
+- Claude Code keeps old versions and old generations on disk. agent-tools uses only the newest copy of each plugin (newest `.claude-plugin/plugin.json`).
+- agent-tools does not scan itself again. Its own tools are in `tools/`.
+- agent-tools cannot see if a plugin is disabled. A disabled plugin that is still installed gives its tools. To stop this, uninstall the plugin, or set `plugins = false`.
+- `CLAUDE_CONFIG_DIR` replaces `~/.claude` if it is set.
+
+### Custom paths (`agent-tools.toml`)
+
+```toml
+# <project>/.claude/agent-tools.toml or ~/.claude/agent-tools.toml
+paths = ["../shared-tools", "~/my-tools"]   # relative to the folder of this file; ~ is permitted
+plugins = true                              # false: do not scan the installed plugins
+```
+
+| Key | Default | Rule |
+|---|---|---|
+| `paths` | `[]` | List of folders. Each folder is a search root |
+| `plugins` | `true` | If one of the two files sets `false`, agent-tools does not scan the installed plugins |
+
+The server reads both files again on each `agent_tools_refresh`. `check` shows the errors in them.
+
+### Scan rules
 
 - In a git work tree, `git ls-files` finds the manifests. It includes new files and obeys `.gitignore`. Elsewhere, a folder walk finds them, 10 levels deep maximum.
 - Both skip hidden folders and `node_modules`, `bin`, `obj`, `dist`, `build`, `target`, `venv`, `__pycache__`, `Library`, `Temp`, `Logs` and `fixtures`. Add folder names to `AGENT_TOOLS_EXCLUDE`.
@@ -124,6 +152,7 @@ The server runs the commands that the manifests in the opened project declare. T
 - `effect = "read"` is what the manifest says about itself. The server does not verify it.
 - The `SessionStart` catalog puts tool descriptions from the repository into the session context. Do not trust the text of a manifest that you did not read.
 - `cwd` and a `./` command are relative to the manifest folder, and can use `..`.
+- A manifest in an installed plugin, or in a folder from `agent-tools.toml` or `AGENT_TOOLS_PATH`, runs in every project. Install only plugins that you trust.
 
 ## Install
 
@@ -147,6 +176,7 @@ python3 <plugin>/server/main.py call notion_get '{"key":"SPEC-1"}'
 | Option | Use |
 |---|---|
 | `--root PATH` | Add a search root. You can repeat it |
+| `--plugin-root PATH` | Use a different agent-tools folder. Its `tools/` is root 1. The tests use it |
 | `--project PATH` | Set the project folder |
 | `--allow-write` or `AGENT_TOOLS_ALLOW_WRITE=1` | Also expose `effect = "write"` tools |
 

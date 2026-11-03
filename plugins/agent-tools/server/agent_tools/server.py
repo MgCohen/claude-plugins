@@ -25,14 +25,14 @@ REFRESH_TOOL = {
 
 class Server:
     def __init__(self, roots, allow_write=False, out=None, inp=None, log=None):
-        self.roots = roots
+        """roots: a list, or a function that returns (roots, errors); refresh calls it again."""
+        self.find_roots = roots if callable(roots) else (lambda: (roots, []))
         self.allow_write = allow_write
         self.out = out or sys.stdout.buffer
         self.inp = inp or sys.stdin.buffer
         self.log = log or sys.stderr
         self.version = SUPPORTED[0]
-        self.tools, errors = mf.load_all(roots, allow_write)
-        self._report(errors)
+        self.reload()
 
     # --- transport ---------------------------------------------------------
 
@@ -106,7 +106,9 @@ class Server:
     # --- discovery --------------------------------------------------------
 
     def reload(self):
-        self.tools, errors = mf.load_all(self.roots, self.allow_write)
+        roots, errors = self.find_roots()
+        self.tools, load_errors = mf.load_all(roots, self.allow_write)
+        errors = errors + load_errors
         self._report(errors)
         return errors
 

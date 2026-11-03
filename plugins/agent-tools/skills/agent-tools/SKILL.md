@@ -9,7 +9,7 @@ The `agent-tools` MCP server exposes each tool that a `tool.toml` manifest decla
 
 ## Steps
 
-1. Put the script and its `tool.toml` in one folder. Any folder of the project is permitted, for example next to the code that the tool uses. For a tool for all projects, use `<plugin>/tools/<folder>/`.
+1. Put the script and its `tool.toml` in one folder. Any folder of the project is permitted, for example next to the code that the tool uses. For a tool for all projects, make it a plugin of its own (agent-tools scans the installed plugins), or add its folder to `paths` in `~/.claude/agent-tools.toml`.
 2. Make the script deterministic. It must write the result to stdout, write errors to stderr, and exit with a code that is not 0 on failure.
 3. Write `tool.toml` in the same folder. Use one `[[tool]]` entry for each agent task, not one for each flag.
 4. Run `python3 ${CLAUDE_PLUGIN_ROOT}/server/main.py check`. Fix each `ERROR` line.

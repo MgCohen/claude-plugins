@@ -18,6 +18,22 @@ from agent_tools import runner  # noqa: E402
 FIXTURES = os.path.join(HERE, "fixtures")
 MAIN = os.path.join(os.path.dirname(HERE), "main.py")
 NO_PLUGIN = os.path.join(FIXTURES, "no-plugin")  # has no tools/ folder: the real plugin tools stay out of the tests
+# An empty Claude config folder: the installed plugins and ~/.claude/agent-tools.toml of this
+# machine stay out of the tests. The server subprocesses inherit it.
+os.environ["CLAUDE_CONFIG_DIR"] = tempfile.mkdtemp(prefix="agent-tools-claude-")
+
+
+def write_file(path, text):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(textwrap.dedent(text))
+
+
+def write_plugin(folder, name, mtime=None):
+    path = os.path.join(folder, ".claude-plugin", "plugin.json")
+    write_file(path, json.dumps({"name": name}))
+    if mtime is not None:
+        os.utime(path, (mtime, mtime))
 
 
 def write_tool(root, folder, body):
@@ -67,9 +83,46 @@ class ManifestTests(unittest.TestCase):
             self.assertIn(needle, text)
 
     def test_search_roots_order_and_env(self):
-        with mock.patch.dict(os.environ, {"AGENT_TOOLS_PATH": os.pathsep.join(["/x", "/y"])}, clear=False):
-            roots = mf.search_roots("/plugin", "/proj")
-        self.assertEqual(roots, [os.path.abspath(p) for p in ("/plugin/tools", "/proj", "/x", "/y")])
+        claude, proj = os.path.join(self.tmp, "claude"), os.path.join(self.tmp, "proj")
+        write_plugin(os.path.join(claude, "plugins", "cache", "mkt", "notes", "1.0"), "notes")
+        write_file(os.path.join(proj, ".claude", "agent-tools.toml"), 'paths = ["../shared"]\n')
+        write_file(os.path.join(claude, "agent-tools.toml"), 'paths = ["mine"]\n')
+        env = {"CLAUDE_CONFIG_DIR": claude, "AGENT_TOOLS_PATH": os.pathsep.join(["/x", "/y"])}
+        with mock.patch.dict(os.environ, env):
+            errors = []
+            roots = mf.search_roots("/plugin", proj, errors=errors)
+        self.assertEqual(errors, [])
+        self.assertEqual(roots, [os.path.abspath(p) for p in (
+            "/plugin/tools", proj, os.path.join(proj, ".claude", "..", "shared"),
+            os.path.join(claude, "mine"), "/x", "/y",
+            os.path.join(claude, "plugins", "cache", "mkt", "notes", "1.0"))])
+
+    def test_installed_plugins_newest_copy_and_skip(self):
+        home = os.path.join(self.tmp, "plugins")
+        write_plugin(os.path.join(home, "cache", "mkt", "notes", "1.0"), "notes", mtime=100)
+        write_plugin(os.path.join(home, "cache", "mkt", "notes", "2.0"), "notes", mtime=200)
+        write_plugin(os.path.join(home, "synced", "acct", "notes"), "notes", mtime=300)
+        write_plugin(os.path.join(home, "synced", "acct", "notes~g2"), "notes", mtime=400)
+        write_plugin(os.path.join(home, "synced", "acct", ".staging", "notes"), "notes", mtime=500)
+        write_plugin(os.path.join(home, "synced", "acct", "agent-tools~g3"), "agent-tools")
+        me = os.path.join(self.tmp, "me")
+        write_plugin(me, "agent-tools")
+        found = mf.installed_plugins(home, skip=me)
+        self.assertEqual(found, [os.path.join(home, "cache", "mkt", "notes", "2.0"),
+                                 os.path.join(home, "synced", "acct", "notes~g2")])
+
+    def test_config_errors_and_plugins_false(self):
+        claude, proj = os.path.join(self.tmp, "claude"), os.path.join(self.tmp, "proj")
+        write_plugin(os.path.join(claude, "plugins", "cache", "mkt", "notes", "1.0"), "notes")
+        write_file(os.path.join(proj, ".claude", "agent-tools.toml"), "plugins = false\n")
+        write_file(os.path.join(claude, "agent-tools.toml"), 'paths = "one"\ncolour = 1\n')
+        with mock.patch.dict(os.environ, {"CLAUDE_CONFIG_DIR": claude, "AGENT_TOOLS_PATH": ""}):
+            errors = []
+            roots = mf.search_roots(None, proj, errors=errors)
+        self.assertEqual(roots, [os.path.abspath(proj)])  # no plugins: the project set false
+        text = "\n".join(errors)
+        self.assertIn("unknown keys ['colour']", text)
+        self.assertIn("paths must be a list", text)
 
     def test_walk_finds_nested_manifests_and_skips_excluded(self):
         write_tool(self.tmp, "a/b/c", GOOD.format(name="deep_tool"))
@@ -227,6 +280,18 @@ class ServerTests(unittest.TestCase):
 
     def names(self):
         return [t["name"] for t in self.rpc("tools/list")["result"]["tools"]]
+
+    def test_refresh_reads_project_config_again(self):
+        self.start()
+        shared = tempfile.mkdtemp()  # outside the project: only the config can add it
+        self.addCleanup(shutil.rmtree, shared)
+        write_tool(shared, "t", GOOD.format(name="shared_tool"))
+        self.rpc("tools/call", {"name": "agent_tools_refresh"})
+        self.assertNotIn("shared_tool", self.names())
+        write_file(os.path.join(self.tmp, ".claude", "agent-tools.toml"),
+                   f"paths = [{json.dumps(shared)}]\n")
+        self.rpc("tools/call", {"name": "agent_tools_refresh"})
+        self.assertIn("shared_tool", self.names())
 
     def test_protocol(self):
         self.start()

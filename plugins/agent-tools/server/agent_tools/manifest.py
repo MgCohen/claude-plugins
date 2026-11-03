@@ -1,10 +1,11 @@
 """Find and load tool manifests (tool.toml), and compile their input schemas.
 
-A manifest is a file named `tool.toml` at any depth below a search root.
-In a git work tree, `git ls-files` finds them (tracked files, and new files
+A manifest is a file named `tool.toml` at any depth below a search root
+(see search_roots). In a git work tree, `git ls-files` finds them (tracked files, and new files
 that .gitignore does not exclude). Elsewhere, a folder walk finds them.
 Both skip the folders in EXCLUDE_DIRS and AGENT_TOOLS_EXCLUDE.
 """
+import json
 import os
 import re
 import subprocess
@@ -50,15 +51,39 @@ EXCLUDE_DIRS = {"node_modules", "bin", "obj", "dist", "build", "target", "venv",
 MAX_DEPTH = 10
 
 
-def search_roots(plugin_root=None, project_dir=None, extra=None):
-    """Ordered roots: plugin tools folder, project folder, then AGENT_TOOLS_PATH entries."""
+CONFIG = "agent-tools.toml"
+PLUGIN_STORES = ("cache", "synced")   # below <claude config>/plugins/
+PLUGIN_JSON = os.path.join(".claude-plugin", "plugin.json")
+PLUGIN_DEPTH = 4                       # cache/<marketplace>/<plugin>/<version>
+
+
+def claude_dir():
+    return os.environ.get("CLAUDE_CONFIG_DIR") or os.path.join(os.path.expanduser("~"), ".claude")
+
+
+def search_roots(plugin_root=None, project_dir=None, extra=None, errors=None):
+    """Ordered roots. The first manifest that declares a tool name wins.
+
+    1. <agent-tools>/tools/  2. the project  3. paths from the project and user agent-tools.toml
+    4. AGENT_TOOLS_PATH  5. the newest copy of each other installed plugin.
+    Problems with an agent-tools.toml go to `errors` (a list), if given.
+    """
+    errors = [] if errors is None else errors
+    project = project_dir or os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
     roots = []
     if plugin_root:
         roots.append(os.path.join(plugin_root, "tools"))
-    roots.append(project_dir or os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd())
+    roots.append(project)
+    scan_plugins = True
+    for cfg in (os.path.join(project, ".claude", CONFIG), os.path.join(claude_dir(), CONFIG)):
+        paths, plugins = read_config(cfg, errors)
+        roots += paths
+        scan_plugins = scan_plugins and plugins
     for p in (extra if extra is not None else os.environ.get("AGENT_TOOLS_PATH", "")).split(os.pathsep):
         if p:
-            roots.append(p)
+            roots.append(os.path.expanduser(p))
+    if scan_plugins:
+        roots += installed_plugins(skip=plugin_root)
     seen, out = set(), []
     for r in roots:
         r = os.path.abspath(r)
@@ -66,6 +91,68 @@ def search_roots(plugin_root=None, project_dir=None, extra=None):
             seen.add(r)
             out.append(r)
     return out
+
+
+def read_config(path, errors):
+    """-> (extra roots, scan installed plugins?). A missing file gives ([], True)."""
+    if not os.path.isfile(path):
+        return [], True
+    try:
+        with open(path, "rb") as f:
+            raw = tomllib.load(f)
+    except (OSError, tomllib.TOMLDecodeError) as e:
+        errors.append(f"{path}: {type(e).__name__}: {e}")
+        return [], True
+    unknown = set(raw) - {"paths", "plugins"}
+    paths, plugins = raw.get("paths", []), raw.get("plugins", True)
+    if unknown:
+        errors.append(f"{path}: unknown keys {sorted(unknown)}; use paths and plugins")
+    if not (isinstance(paths, list) and all(isinstance(p, str) for p in paths)):
+        errors.append(f"{path}: paths must be a list of strings")
+        paths = []
+    if not isinstance(plugins, bool):
+        errors.append(f"{path}: plugins must be true or false")
+        plugins = True
+    base = os.path.dirname(os.path.abspath(path))
+    return [os.path.join(base, os.path.expanduser(p)) for p in paths], plugins
+
+
+def installed_plugins(home=None, skip=None):
+    """Root folder of the newest copy of each installed plugin, except `skip` and its name.
+
+    Claude Code keeps old versions (cache/<marketplace>/<plugin>/<version>/) and old
+    generations (synced/<id>/<plugin>~gN/) on disk. Only the newest plugin.json counts.
+    """
+    home = home or os.path.join(claude_dir(), "plugins")
+    skip_name = _plugin_name(skip) if skip else None
+    best = {}
+    for store in PLUGIN_STORES:
+        top = os.path.join(home, store)
+        base = top.rstrip(os.sep).count(os.sep)
+        for folder, dirs, _ in os.walk(top):
+            if os.path.isfile(os.path.join(folder, PLUGIN_JSON)):
+                dirs[:] = []
+                name = _plugin_name(folder)
+                if not name or name == skip_name:
+                    continue
+                group = os.path.relpath(folder, top).split(os.sep)[0]  # marketplace or sync id
+                key = (store, group, name)
+                mtime = os.path.getmtime(os.path.join(folder, PLUGIN_JSON))
+                if key not in best or mtime > best[key][0]:
+                    best[key] = (mtime, folder)
+                continue
+            depth = folder.count(os.sep) - base
+            dirs[:] = sorted(d for d in dirs if not d.startswith(".") and depth < PLUGIN_DEPTH)
+    return [folder for _, folder in sorted(best.values(), key=lambda v: v[1])]
+
+
+def _plugin_name(root):
+    try:
+        with open(os.path.join(root, PLUGIN_JSON), encoding="utf-8") as f:
+            name = json.load(f).get("name")
+    except (OSError, ValueError, AttributeError):
+        return None
+    return name if isinstance(name, str) and name else None
 
 
 def excluded_dirs():

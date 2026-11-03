@@ -23,7 +23,8 @@ def main(argv=None):
     p.add_argument("--root", action="append", default=[],
                    help="extra search root (folder that holds <tool>/tool.toml); repeatable")
     p.add_argument("--plugin-root", default=PLUGIN_ROOT,
-                   help="plugin folder; its tools/ folder is searched first (default: this plugin)")
+                   help="plugin folder; its tools/ folder is searched first, and other plugins "
+                        "with its name are not scanned (default: this plugin)")
     p.add_argument("--project", help="project folder (default: $CLAUDE_PROJECT_DIR or the current folder)")
     p.add_argument("--allow-write", action="store_true",
                    default=os.environ.get("AGENT_TOOLS_ALLOW_WRITE") == "1",
@@ -38,15 +39,20 @@ def main(argv=None):
     c.add_argument("arguments", nargs="?", default="{}", help="JSON object")
     a = p.parse_args(argv)
 
-    roots = mf.search_roots(a.plugin_root, a.project)
-    roots += [os.path.abspath(r) for r in a.root if os.path.abspath(r) not in roots]
+    def find_roots():
+        errors = []
+        roots = mf.search_roots(a.plugin_root, a.project, errors=errors)
+        roots += [os.path.abspath(r) for r in a.root if os.path.abspath(r) not in roots]
+        return roots, errors
 
     if a.cmd == "serve":
-        Server(roots, a.allow_write).serve()
+        Server(find_roots, a.allow_write).serve()
         return 0
+    roots, errors = find_roots()
     if a.cmd == "catalog":
-        return _catalog(roots, a.allow_write)
-    tools, errors = mf.load_all(roots, a.allow_write)
+        return _catalog(roots, errors, a.allow_write)
+    tools, load_errors = mf.load_all(roots, a.allow_write)
+    errors += load_errors
     if a.cmd == "list":
         for t in tools.values():
             print(f"{t.name}\t{t.effect}\t{t.description}")
@@ -74,10 +80,11 @@ def main(argv=None):
     return 2
 
 
-def _catalog(roots, allow_write):
+def _catalog(roots, errors, allow_write):
     """Print nothing if there are no tools. Never fail: this runs at session start."""
     try:
-        tools, errors = mf.load_all(roots, allow_write)
+        tools, load_errors = mf.load_all(roots, allow_write)
+        errors = errors + load_errors
     except Exception as e:  # noqa: BLE001
         print(f"agent-tools: catalog failed: {e}", file=sys.stderr)
         return 0
@@ -88,7 +95,7 @@ def _catalog(roots, allow_write):
     for t in tools.values():
         print(f"- {t.name}: {_first_sentence(t.description)}")
     if errors:
-        print(f"- {len(errors)} manifest(s) have errors. Run the check command of agent-tools.")
+        print(f"- {len(errors)} problem(s) in tool.toml or agent-tools.toml files. Run the check command of agent-tools.")
     return 0
 
 
