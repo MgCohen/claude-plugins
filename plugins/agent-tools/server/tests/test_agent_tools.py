@@ -1,6 +1,7 @@
 import json
 import os
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -21,6 +22,17 @@ NO_PLUGIN = os.path.join(FIXTURES, "no-plugin")  # has no tools/ folder: the rea
 # An empty Claude config folder: the installed plugins and ~/.claude/agent-tools.toml of this
 # machine stay out of the tests. The server subprocesses inherit it.
 os.environ["CLAUDE_CONFIG_DIR"] = tempfile.mkdtemp(prefix="agent-tools-claude-")
+
+
+def rmtree(path):
+    """shutil.rmtree that also deletes read-only files (git objects on Windows)."""
+    def retry(func, p, _):
+        os.chmod(p, stat.S_IWRITE)
+        func(p)
+    if sys.version_info >= (3, 12):
+        shutil.rmtree(path, onexc=retry)
+    else:
+        shutil.rmtree(path, onerror=retry)
 
 
 def write_file(path, text):
@@ -54,7 +66,7 @@ GOOD = """
 class ManifestTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.mkdtemp()
-        self.addCleanup(shutil.rmtree, self.tmp)
+        self.addCleanup(rmtree, self.tmp)
 
     def test_fixture_loads_and_hides_write_tools(self):
         tools, errors = mf.load_all([FIXTURES])
@@ -110,6 +122,22 @@ class ManifestTests(unittest.TestCase):
         found = mf.installed_plugins(home, skip=me)
         self.assertEqual(found, [os.path.join(home, "cache", "mkt", "notes", "2.0"),
                                  os.path.join(home, "synced", "acct", "notes~g2")])
+
+    def test_installed_plugins_next_to_this_plugin(self):
+        # The desktop app keeps the account plugins in its own folder, one folder per plugin id.
+        home, store = os.path.join(self.tmp, "plugins"), os.path.join(self.tmp, "rpm", "acct")
+        me = os.path.join(store, "plugin_01")
+        write_plugin(me, "agent-tools")
+        write_plugin(os.path.join(store, "plugin_02"), "notes")
+        write_plugin(os.path.join(store, "plugin_03"), "todo", mtime=100)
+        write_plugin(os.path.join(store, "plugin_04"), "todo", mtime=200)
+        write_plugin(os.path.join(store, ".tmp_05"), "staged")
+        os.makedirs(os.path.join(store, "not-a-plugin"))
+        write_plugin(os.path.join(home, "synced", "acct", "notes"), "notes")  # also in the store
+        write_plugin(os.path.join(home, "synced", "acct", "other"), "other")
+        found = mf.installed_plugins(home, skip=me)
+        self.assertEqual(found, [os.path.join(home, "synced", "acct", "other"),
+                                 os.path.join(store, "plugin_02"), os.path.join(store, "plugin_04")])
 
     def test_config_errors_and_plugins_false(self):
         claude, proj = os.path.join(self.tmp, "claude"), os.path.join(self.tmp, "proj")
@@ -250,7 +278,7 @@ class ServerTests(unittest.TestCase):
 
     def start(self, *extra):
         self.tmp = tempfile.mkdtemp()
-        self.addCleanup(shutil.rmtree, self.tmp)
+        self.addCleanup(rmtree, self.tmp)
         self.p = subprocess.Popen(
             [sys.executable, MAIN, "--plugin-root", NO_PLUGIN, "--project", self.tmp, "--root", FIXTURES, "serve", *extra],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
@@ -284,7 +312,7 @@ class ServerTests(unittest.TestCase):
     def test_refresh_reads_project_config_again(self):
         self.start()
         shared = tempfile.mkdtemp()  # outside the project: only the config can add it
-        self.addCleanup(shutil.rmtree, shared)
+        self.addCleanup(rmtree, shared)
         write_tool(shared, "t", GOOD.format(name="shared_tool"))
         self.rpc("tools/call", {"name": "agent_tools_refresh"})
         self.assertNotIn("shared_tool", self.names())
@@ -332,7 +360,7 @@ class CatalogTests(unittest.TestCase):
 
     def test_lists_first_sentences(self):
         tmp = tempfile.mkdtemp()
-        self.addCleanup(shutil.rmtree, tmp)
+        self.addCleanup(rmtree, tmp)
         write_tool(tmp, "t", GOOD.format(name="cat_tool"))
         r = self.catalog(tmp)
         self.assertEqual(r.returncode, 0)
@@ -341,7 +369,7 @@ class CatalogTests(unittest.TestCase):
 
     def test_silent_when_no_tools(self):
         tmp = tempfile.mkdtemp()
-        self.addCleanup(shutil.rmtree, tmp)
+        self.addCleanup(rmtree, tmp)
         self.assertEqual(self.catalog(tmp).stdout, "")
 
 

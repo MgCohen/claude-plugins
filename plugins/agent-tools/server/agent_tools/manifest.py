@@ -122,10 +122,25 @@ def installed_plugins(home=None, skip=None):
 
     Claude Code keeps old versions (cache/<marketplace>/<plugin>/<version>/) and old
     generations (synced/<id>/<plugin>~gN/) on disk. Only the newest plugin.json counts.
+    The folders next to `skip` come first: a host can keep its plugins outside
+    <claude config>/plugins/ (the desktop app does). A name found there is not looked
+    up again in the stores.
     """
     home = home or os.path.join(claude_dir(), "plugins")
     skip_name = _plugin_name(skip) if skip else None
     best = {}
+    if skip_name:
+        parent = os.path.dirname(os.path.abspath(skip))
+        for d in sorted(os.listdir(parent)):
+            folder = os.path.join(parent, d)
+            name = None if d.startswith(".") else _plugin_name(folder)
+            if not name or name == skip_name:
+                continue
+            mtime = os.path.getmtime(os.path.join(folder, PLUGIN_JSON))
+            key = ("siblings", "", name)
+            if key not in best or mtime > best[key][0]:
+                best[key] = (mtime, folder)
+    near = {name for _, _, name in best}
     for store in PLUGIN_STORES:
         top = os.path.join(home, store)
         base = top.rstrip(os.sep).count(os.sep)
@@ -133,7 +148,7 @@ def installed_plugins(home=None, skip=None):
             if os.path.isfile(os.path.join(folder, PLUGIN_JSON)):
                 dirs[:] = []
                 name = _plugin_name(folder)
-                if not name or name == skip_name:
+                if not name or name == skip_name or name in near:
                     continue
                 group = os.path.relpath(folder, top).split(os.sep)[0]  # marketplace or sync id
                 key = (store, group, name)
