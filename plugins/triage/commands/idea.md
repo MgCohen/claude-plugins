@@ -1,5 +1,5 @@
 ---
-description: Capture a new request or idea in the Linear Triage project.
+description: Capture a new request or idea in the Notion Asks database.
 argument-hint: "<the idea in your own words>"
 ---
 

@@ -10,7 +10,7 @@ Personal Claude Code plugin marketplace (`mgcohen`). Add it once on claude.ai an
 | `writing` | Writes all output in ASD-STE100 Simplified Technical English, with content rules for each kind of text (documents, commits, PRs, code comments). |
 | `agent-tools` | One MCP server that exposes local scripts as tools, from `tool.toml` manifests. To add a tool, see `plugins/agent-tools/ADD-A-TOOL.md`. |
 | `notion-context` | Reads a Notion page and its related pages as one document. Needs `agent-tools`, which exposes `notion_get` and `notion_query`. |
-| `triage` | Runs the Linear Triage intake: `/idea` captures a request, `/triage` moves the stalest one a step. See [its README](plugins/triage/README.md). |
+| `triage` | Runs the triage of the Notion Asks database: `/idea` captures a request, `/triage` moves the stalest one a step. See [its README](plugins/triage/README.md). |
 
 ## Layout
 

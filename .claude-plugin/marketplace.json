@@ -35,7 +35,7 @@
     {
       "name": "triage",
       "source": "./plugins/triage",
-      "description": "Runs the Linear Triage intake: capture requests, fill a template for each kind of work in small steps, and route each request."
+      "description": "Runs the triage of the Notion Asks database: capture requests, fill a template for each kind of work in small steps, and convert each ask."
     }
   ]
 }
