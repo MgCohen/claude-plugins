@@ -1,20 +1,14 @@
-import argparse
 import collections
 import hashlib
-import json
 import os
 import re
 import subprocess
-import sys
-import time
-import urllib.error
 import urllib.parse
-import urllib.request
 
-from snippet_range import snippet_range
+from .client import NotionError
+from .props import rich_text
+from .snippet_range import snippet_range
 
-API = "https://api.notion.com/v1"
-VERSION = "2022-06-28"
 LANGUAGES = {"cs": "c#", "js": "javascript", "jsx": "javascript", "mjs": "javascript", "ts": "typescript", "tsx": "typescript", "py": "python", "sql": "sql", "json": "json"}
 FILE = re.compile(r"https://github\.com/([^/]+/[^/]+)/blob/([^/]+)/([^?#]+)")
 COMMIT = re.compile(r"[0-9a-f]{7,40}")
@@ -30,47 +24,9 @@ def git(*args):
     return run.stdout
 
 
-class Notion:
-    def __init__(self, token):
-        self.token = token
-        self.calls = 0
-
-    def __call__(self, method, path, body=None):
-        for attempt in range(4):
-            self.calls += 1
-            request = urllib.request.Request(
-                API + path,
-                method=method,
-                data=None if body is None else json.dumps(body).encode(),
-                headers={"Authorization": f"Bearer {self.token}", "Notion-Version": VERSION, "Content-Type": "application/json"},
-            )
-            try:
-                with urllib.request.urlopen(request, timeout=30) as response:
-                    return json.load(response)
-            except urllib.error.HTTPError as e:
-                if (e.code == 429 or e.code >= 500) and attempt < 3:
-                    wait = e.headers.get("Retry-After") or ""
-                    time.sleep(float(wait) if wait.isdigit() else attempt + 1)
-                    continue
-                try:
-                    error = json.load(e)
-                except ValueError:
-                    error = {}
-                raise RuntimeError(f"{method} {path} -> {e.code} {error.get('code')}: {error.get('message')}") from None
-            except (urllib.error.URLError, TimeoutError) as e:
-                if attempt < 3:
-                    time.sleep(attempt + 1)
-                    continue
-                raise RuntimeError(f"{method} {path} -> {getattr(e, 'reason', e)}") from None
-
-
 def texts(prop):
     prop = prop or {}
     return prop.get("rich_text") or prop.get("title") or []
-
-
-def plain(prop):
-    return "".join(t["plain_text"] for t in texts(prop))
 
 
 def number(prop):
@@ -82,37 +38,33 @@ def rich(content, url=None):
     return {"rich_text": [{"type": "text", "text": {"content": content, "link": {"url": url} if url else None}}] if content else []}
 
 
-def read_rows(notion, database):
-    rows, cursor = [], None
-    while True:
-        page = notion("POST", f"/databases/{database}/query", {"page_size": 100, **({"start_cursor": cursor} if cursor else {})})
-        for p in page["results"]:
-            pr = p["properties"]
-            file = (pr.get("File") or {}).get("url") or ""
-            link = FILE.match(file)
-            region = texts(pr.get("Region"))
-            since = FILE.match(region[0].get("href") or "") if region else None
-            rows.append({
-                "id": p["id"],
-                "name": plain(pr.get("Name")),
-                "file": file,
-                "repo": link and link[1],
-                "ref": link and link[2],
-                "path": link and urllib.parse.unquote(link[3]),
-                "method": plain(pr.get("Method")).strip(),
-                "overload": number(pr.get("Overload")) or 1,
-                "start": number(pr.get("Start line")),
-                "end": number(pr.get("End line")),
-                "before": number(pr.get("Lines before")) or 0,
-                "after": number(pr.get("Lines after")) or 0,
-                "since": since[2] if since and COMMIT.fullmatch(since[2]) else None,
-                "hash": plain(pr.get("Hash")),
-                "status": ((pr.get("Status") or {}).get("select") or {}).get("name"),
-                "message": plain(pr.get("Message")),
-            })
-        if not page["has_more"]:
-            return rows
-        cursor = page["next_cursor"]
+def read_rows(client, database):
+    rows = []
+    for p in client.query(database):
+        pr = p["properties"]
+        file = (pr.get("File") or {}).get("url") or ""
+        link = FILE.match(file)
+        region = texts(pr.get("Region"))
+        since = FILE.match(region[0].get("href") or "") if region else None
+        rows.append({
+            "id": p["id"],
+            "name": rich_text(texts(pr.get("Name"))),
+            "file": file,
+            "repo": link and link[1],
+            "ref": link and link[2],
+            "path": link and urllib.parse.unquote(link[3]),
+            "method": rich_text(texts(pr.get("Method"))).strip(),
+            "overload": number(pr.get("Overload")) or 1,
+            "start": number(pr.get("Start line")),
+            "end": number(pr.get("End line")),
+            "before": number(pr.get("Lines before")) or 0,
+            "after": number(pr.get("Lines after")) or 0,
+            "since": since[2] if since and COMMIT.fullmatch(since[2]) else None,
+            "hash": rich_text(texts(pr.get("Hash"))),
+            "status": ((pr.get("Status") or {}).get("select") or {}).get("name"),
+            "message": rich_text(texts(pr.get("Message"))),
+        })
+    return rows
 
 
 def follow_range(diff, start, end):
@@ -181,30 +133,25 @@ def resolve(row, head):
     }
 
 
-def find_code_block(notion, block_id, depth=0):
-    cursor = None
-    while True:
-        page = notion("GET", f"/blocks/{block_id}/children?page_size=100" + (f"&start_cursor={cursor}" if cursor else ""))
-        for b in page["results"]:
-            if b["type"] == "code":
-                return b["id"]
-            if b["has_children"] and depth < 2 and b["type"] not in ("child_page", "child_database"):
-                inner = find_code_block(notion, b["id"], depth + 1)
-                if inner:
-                    return inner
-        if not page["has_more"]:
-            return None
-        cursor = page["next_cursor"]
+def find_code_block(client, block_id, depth=0):
+    for b in client._paginate("GET", f"/blocks/{block_id}/children"):
+        if b["type"] == "code":
+            return b["id"]
+        if b["has_children"] and depth < 2 and b["type"] not in ("child_page", "child_database"):
+            inner = find_code_block(client, b["id"], depth + 1)
+            if inner:
+                return inner
+    return None
 
 
-def write(notion, row, snippet):
-    block = find_code_block(notion, row["id"])
+def write(client, row, snippet):
+    block = find_code_block(client, row["id"])
     if not block:
         raise ValueError("No code block on the row page.")
     code = snippet["code"]
     parts = [{"type": "text", "text": {"content": code[i : i + CHUNK]}} for i in range(0, max(len(code), 1), CHUNK)]
     caption = rich(snippet["anchor"], snippet["permalink"])["rich_text"] + rich(f" @ {snippet['commit'][:7]}")["rich_text"]
-    notion("PATCH", f"/blocks/{block}", {"code": {"rich_text": parts, "language": snippet["language"], "caption": caption}})
+    client.request("PATCH", f"/blocks/{block}", {"code": {"rich_text": parts, "language": snippet["language"], "caption": caption}})
     properties = {
         "Region": rich(snippet["region"], snippet["permalink"]),
         "Hash": rich(snippet["hash"]),
@@ -213,10 +160,10 @@ def write(notion, row, snippet):
     }
     if snippet["moved"]:
         properties.update({"Start line": {"number": snippet["start"]}, "End line": {"number": snippet["end"]}})
-    notion("PATCH", f"/pages/{row['id']}", {"properties": properties})
+    client.request("PATCH", f"/pages/{row['id']}", {"properties": properties})
 
 
-def sync(notion, rows, repo, head, mode):
+def sync(client, rows, repo, head, mode):
     results = []
     for row in rows:
         target = row["method"] or (f"L{row['start']}-L{row['end'] or 'end'}" if row["start"] else "file")
@@ -235,15 +182,15 @@ def sync(notion, rows, repo, head, mode):
             elif mode == "plan":
                 report("will update" if row["hash"] else "new", note)
             else:
-                write(notion, row, snippet)
+                write(client, row, snippet)
                 report("updated" if row["hash"] else "new", note)
-        except (ValueError, RuntimeError) as e:
+        except (ValueError, NotionError) as e:
             error = str(e)[:2000]
             known = row["status"] == "Error" and row["message"] == error
             if mode != "plan" and not known:
                 try:
-                    notion("PATCH", f"/pages/{row['id']}", {"properties": {"Status": {"select": {"name": "Error"}}, "Message": rich(error)}})
-                except RuntimeError as status_error:
+                    client.request("PATCH", f"/pages/{row['id']}", {"properties": {"Status": {"select": {"name": "Error"}}, "Message": rich(error)}})
+                except NotionError as status_error:
                     error += f" Status not written: {status_error}"
             report("error (known)" if known else "error", error)
     return results
@@ -253,33 +200,21 @@ def current_repo():
     return os.environ.get("GITHUB_REPOSITORY") or re.search(r"github\.com[:/](.+?)(?:\.git)?$", git("remote", "get-url", "origin").strip())[1]
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Write code from this repo into the Notion code blocks of a Snippets database.")
-    parser.add_argument("mode", nargs="?", choices=["plan", "apply", "force"], default="plan")
-    parser.add_argument("--database", default=os.environ.get("NOTION_SNIPPETS_DATABASE"))
-    args = parser.parse_args()
-    token = os.environ.get("NOTION_TOKEN")
-    if not token or not args.database:
-        sys.exit("Set NOTION_TOKEN, and NOTION_SNIPPETS_DATABASE or --database.")
-    notion = Notion(token)
+def run(client, database, mode):
     head = os.environ.get("GITHUB_SHA") or git("rev-parse", "HEAD").strip()
-    results = sync(notion, read_rows(notion, args.database), current_repo(), head, args.mode)
+    results = sync(client, read_rows(client, database), current_repo(), head, mode)
     counts = collections.Counter(result for _, _, result, _ in results)
+    rows = [f"| {name} | `{target}` | {result} | {note.replace('|', chr(92) + '|')} |" for name, target, result, note in results]
     summary = "\n".join([
-        f"### Notion snippets: {args.mode} at `{head[:7]}`",
+        f"### Notion snippets: {mode} at `{head[:7]}`",
         "",
-        ", ".join(f"{v} {k}" for k, v in counts.items()) + f", {notion.calls} Notion API calls",
+        ", ".join(f"{v} {k}" for k, v in counts.items()) + f", {client.calls} Notion API calls",
         "",
         "| Snippet | Target | Result | Region or error |",
         "|---|---|---|---|",
-        *(f"| {name} | `{target}` | {result} | {note.replace('|', '\\|')} |" for name, target, result, note in results),
+        *rows,
     ])
-    print(summary)
     if os.environ.get("GITHUB_STEP_SUMMARY"):
         with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
             f.write(summary + "\n")
-    return 1 if counts["error"] else 0
-
-
-if __name__ == "__main__":
-    sys.exit(main())
+    return summary + "\n", 1 if counts["error"] else 0

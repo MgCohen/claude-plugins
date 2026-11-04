@@ -1,7 +1,7 @@
 import unittest
 
-from snippet_range import snippet_range
-from sync_snippets import follow_range
+from notion_context.snippet_range import snippet_range
+from notion_context.snippets import follow_range
 
 CS = """public class Billing
 {

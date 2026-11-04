@@ -1,6 +1,11 @@
 # notion-context
 
-`notion-context` reads Notion pages and their related pages, and writes one Markdown or JSON document for an agent. A TOML config defines the databases and the document types, so a new page type needs no code change. The tool uses only the Python standard library (Python 3.11 or later).
+`notion-context` is the structured Notion tool set for agents and CI. It has two parts:
+
+- **Context:** reads Notion pages and their related pages, and writes one Markdown or JSON document for an agent. A TOML config defines the databases and the document types, so a new page type needs no code change.
+- **Snippets:** keeps native Notion code blocks equal to code in a GitHub repo. See [Snippets](#snippets).
+
+The tool uses only the Python standard library (Python 3.11 or later).
 
 ## Why a script and not the MCP
 
@@ -64,6 +69,7 @@ Run the tool from this folder. If you run it from a different folder, add this f
 | `query issues --where Status=!Done --columns Key,Title` | Negated filter, selected columns |
 | `schema issues` | Property names, types and options |
 | `check` | Compares the config with the live schemas |
+| `snippets plan` | Lists the Snippets rows that change. See [Snippets](#snippets) |
 
 Global options: `--config PATH` (or `NOTION_CONTEXT_CONFIG`) and `--stats` (API call count on stderr).
 
@@ -148,7 +154,74 @@ The tool reads nested blocks recursively, to 8 levels. Mentions show as their pl
 
 - The Notion API allows about 3 requests a second. On HTTP 429 or 5xx, the client waits (`Retry-After`, or 1, 2, 4… seconds) and tries again, 5 times maximum.
 - Each `full` item and each nested block costs more requests. For large specs, use `table` or `list` sections.
-- The API version is `2022-06-28`. The tool reads data only. It does not write to Notion.
+- The API version is `2022-06-28`. Only the `snippets` command writes to Notion.
+
+## Snippets
+
+A row in a Notion Snippets database selects a method or a line range in a GitHub file. A GitHub Action in the code repo writes that code into the code block of the row page. Notion search, Notion AI and the Notion API read the code as text. The skill [`skills/notion-snippets/SKILL.md`](skills/notion-snippets/SKILL.md) tells an agent how to add a snippet.
+
+```mermaid
+flowchart LR
+    A[Push to main] --> B[snippets apply]
+    C[Snippets rows] --> B
+    B --> D[snippet_range.py]
+    D --> E[Code block on row page]
+    E --> F[Synced block on doc pages]
+```
+
+| File | Purpose |
+|---|---|
+| `notion_context/snippet_range.py` | Finds the lines of a method or a line range |
+| `notion_context/snippets.py` | Reads the rows, writes the code blocks and the row status |
+| `workflow/notion-snippets.yml` | Workflow for the code repo |
+
+### Prepare a code repo
+
+1. Make an internal Notion integration with "read content" and "update content". Connect it to the page of the Snippets database.
+2. Copy `workflow/notion-snippets.yml` to `.github/workflows/` in the code repo. The workflow checks out this plugin from MgCohen/claude-plugins, so the code repo has no copy of the tools.
+3. Set the secrets and variables:
+
+```bash
+gh secret set NOTION_TOKEN -R owner/repo
+gh secret set AUTOMATION_APP_KEY -R owner/repo < private-key.pem
+gh variable set AUTOMATION_APP_ID -R owner/repo -b <app-id>
+gh variable set NOTION_SNIPPETS_DATABASE -R owner/repo -b <database-id>
+```
+
+`AUTOMATION_APP_ID` and `AUTOMATION_APP_KEY` belong to the `mgcohen-automation` GitHub App. The App token can read MgCohen/claude-plugins. The optional variable `NOTION_TOOLS_REF` selects a branch or tag of the plugin repo. The default is `main`.
+
+### Snippets database
+
+| Property | Type | Written by |
+|---|---|---|
+| Name | Title | Person or agent |
+| File | URL | Person or agent |
+| Method | Text | Person or agent |
+| Overload, Lines before, Lines after | Number | Person or agent |
+| Start line, End line | Number | Person or agent, and the Action when the range moves |
+| Status, Message, Hash, Region | Select, text | Action |
+
+### Workflow triggers
+
+| Trigger | Mode | Result |
+|---|---|---|
+| Push to `main` | apply | Writes the blocks that changed |
+| Pull request | plan | Lists the blocks that the merge changes |
+| Nightly | apply | Gives code to rows added in Notion |
+| Manual | plan, apply or force | `force` writes all blocks |
+
+Pull requests from forks and from Dependabot do not run the job, because they get no secrets.
+
+A new error fails the run. The Action writes Status Error and the reason on the row. Later runs show the same error as "error (known)" and do not fail.
+
+### Snippet limits
+
+- The method search reads C-like code with a small parser. It does not read JavaScript regex literals with braces, tuple return types, TypeScript class fields without a modifier, or arrow functions without a semicolon.
+- A method range starts at the declaration line. Use Lines before for attributes and doc comments on the lines above.
+- An overload is selected by its position in the file, not by its signature.
+- A File link with a branch reads the commit that the Action runs on. Only a commit in the link selects other code.
+- A line range follows the code only if Start line and End line both have a value. It does not follow a file rename.
+- The code of one snippet can have a maximum of 100,000 characters.
 
 ## Agent tool (MCP)
 
