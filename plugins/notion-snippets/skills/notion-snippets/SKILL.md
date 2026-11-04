@@ -5,15 +5,15 @@ description: Adds or changes a live code snippet in Notion. A row in the Notion 
 
 # Notion snippets
 
-A Snippets row selects code in a GitHub file. The Action of that repo writes the code into the first code block on the row page. Doc pages show that code block with a synced block reference.
+A Snippets row selects code in a GitHub file. The Action of that repo writes the code into the first code block on the row page. Doc pages show that code block with a reference to its synced block.
 
 ## Add a snippet
 
 1. Make a row in the Snippets database. Write the properties from the table below.
-2. Put one empty code block on the row page.
+2. On the row page, put one empty code block inside a synced block. A doc page can show only a synced block.
 3. Run the plan: `python .github/notion-snippets/sync_snippets.py plan` in a checkout of the repo, with `NOTION_TOKEN` and `NOTION_SNIPPETS_DATABASE` set. If you cannot run it, run the workflow: `gh workflow run notion-snippets.yml -f mode=plan`.
 4. If the plan shows the correct range, run the workflow with `-f mode=apply`, or wait for the next push to `main`.
-5. On the doc page, add a synced block reference to the code block of the row page.
+5. On the doc page, add a reference to the synced block of the row page.
 
 | Property | Value | Example |
 |---|---|---|

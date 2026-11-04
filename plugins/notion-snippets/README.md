@@ -58,7 +58,7 @@ gh variable set NOTION_SNIPPETS_DATABASE -R owner/repo -b <database-id>
 | Nightly | apply | Gives code to rows added in Notion |
 | Manual | plan, apply or force | `force` writes all blocks |
 
-Pull requests from forks do not run the job, because they get no secrets.
+Pull requests from forks and from Dependabot do not run the job, because they get no secrets.
 
 A new error fails the run. The Action writes Status Error and the reason on the row. Later runs show the same error as "error (known)" and do not fail.
 
