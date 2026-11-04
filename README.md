@@ -6,7 +6,7 @@ Personal Claude Code plugin marketplace (`mgcohen`). Add it once on claude.ai an
 
 | Plugin | What it does |
 |---|---|
-| `core` | Personal skills, agents and hooks that follow me everywhere. Skill `spawn` starts a background session with Remote Control on. |
+| `core` | Personal skills, agents and hooks that follow me everywhere. Skill `spawn` starts a background session with Remote Control on. Skill `secrets` gives commands their secrets from the 1Password vault `agent` with `op run`. |
 | `writing` | Writes all output in ASD-STE100 Simplified Technical English, with content rules for each kind of text (documents, commits, PRs, code comments). |
 | `agent-tools` | One MCP server that exposes local scripts as tools, from `tool.toml` manifests. To add a tool, see `plugins/agent-tools/ADD-A-TOOL.md`. |
 | `notion-context` | Reads a Notion page and its related pages as one document. Needs `agent-tools`, which exposes `notion_get` and `notion_query`. |
