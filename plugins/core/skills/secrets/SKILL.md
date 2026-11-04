@@ -47,7 +47,7 @@ Reference format: `op://agent/<ITEM>/credential`. Use the item type "API Credent
 | Error | Cause | Action |
 |---|---|---|
 | `OP_SERVICE_ACCOUNT_TOKEN is not set` | No token on this machine | Ask the user to set it as a user environment variable (Windows) or in the cloud environment settings |
-| `op is not installed` | No CLI | Windows: `winget install --id AgileBits.1Password.CLI --exact`. Linux or cloud: `scripts/install-op-linux.sh` |
+| `op is not installed` | No CLI | Windows: `winget install --id AgileBits.1Password.CLI --exact`. Linux and cloud: `with-secrets.sh` installs it. If that fails, read its output. |
 | `isn't an item` or `could not find item` | The item does not exist | Ask the user to create it in vault `agent` |
 | `rate limit` | The daily limit is reached | Stop. Tell the user. The limit resets after 24 hours. |
 
@@ -63,10 +63,8 @@ The wrappers do these steps:
 
 ## Cloud sessions
 
-Put this in the setup script of the cloud environment:
+Cloud environments are settings of the Claude account, not of a repository. One environment serves all projects.
 
-```bash
-bash <path to this skill>/scripts/install-op-linux.sh
-```
-
-Set `OP_SERVICE_ACCOUNT_TOKEN` in the environment variables of the cloud environment.
+1. Set `OP_SERVICE_ACCOUNT_TOKEN` in the environment variables of the cloud environment. This is the only setting.
+2. `with-secrets.sh` installs `op` the first time that it does not find it on Linux (`scripts/install-op-linux.sh`, a few seconds).
+3. Optional: to install `op` before the first use, put `curl -fsSL <raw URL of install-op-linux.sh> | sh` in the setup script of the environment.
