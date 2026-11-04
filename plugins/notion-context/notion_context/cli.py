@@ -1,8 +1,10 @@
-"""Command line: get, query, check, schema."""
+"""Command line: get, query, check, schema, snippets."""
 import argparse
+import os
 import sys
 
 from . import config as cfgmod
+from . import snippets
 from .builder import Builder, _sort_key
 from .client import Client, NotionError
 from .props import flatten, title_of
@@ -38,10 +40,16 @@ def build_parser():
 
     s = sub.add_parser("schema", help="list the properties of a database")
     s.add_argument("database", help="database alias or id")
+
+    n = sub.add_parser("snippets", help="write code from this git repo into the Snippets database code blocks")
+    n.add_argument("mode", nargs="?", choices=("plan", "apply", "force"), default="plan")
+    n.add_argument("--database", default=os.environ.get("NOTION_SNIPPETS_DATABASE"), help="Snippets database id (default: $NOTION_SNIPPETS_DATABASE)")
     return p
 
 
 def _run(a):
+    if a.cmd == "snippets":
+        return _snippets(a)
     try:
         cfg = cfgmod.load(cfgmod.find_path(a.config))
         client = Client()
@@ -54,6 +62,20 @@ def _run(a):
     if a.stats:
         print(f"api_calls={client.calls}", file=sys.stderr)
     return 0 if not (a.cmd == "check" and out and "ERROR" in out) else 1
+
+
+def _snippets(a):
+    if not a.database:
+        print("error: set NOTION_SNIPPETS_DATABASE or --database", file=sys.stderr)
+        return 2
+    client = Client()
+    try:
+        summary, code = snippets.run(client, a.database, a.mode)
+    except (ValueError, NotionError) as e:
+        print(f"error: {e}", file=sys.stderr)
+        return 2
+    sys.stdout.write(summary)
+    return code
 
 
 def _output_args(sp):

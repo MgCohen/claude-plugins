@@ -30,7 +30,7 @@
     {
       "name": "notion-context",
       "source": "./plugins/notion-context",
-      "description": "Reads a Notion page and its related pages as one document. Needs the agent-tools plugin, which exposes notion_get and notion_query."
+      "description": "Structured Notion tools: reads a page and its related pages as one document (notion_get, notion_query through agent-tools), and keeps Notion code blocks equal to GitHub code with a Snippets database."
     },
     {
       "name": "triage",
