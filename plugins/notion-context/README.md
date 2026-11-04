@@ -52,7 +52,7 @@ The config is a stack of TOML layers. Each layer overrides the keys of the layer
 | Order | Layer | Use |
 |---|---|---|
 | 1 (lowest) | `notion-context.default.toml` in this folder | Shared ids, databases and documents |
-| 2 | `~/.claude/notion-context.toml`, or `$NOTION_CONTEXT_USER_CONFIG` | One user |
+| 2 | `$NOTION_CONTEXT_USER_CONFIG`, else `notion-context.toml` in `$CLAUDE_CONFIG_DIR` or `~/.claude` | One user |
 | 3 | `$CLAUDE_PROJECT_DIR/notion-context.toml` | One project |
 | 4 | `./notion-context.toml` | The current folder |
 | 5 | `$NOTION_CONTEXT_CONFIG` | One run, or CI |

@@ -3,7 +3,7 @@
 
 [defaults]
 command = ["python3", "-m", "notion_context"]
-env = ["NOTION_TOKEN", "NOTION_CONTEXT_CONFIG?"]
+env = ["NOTION_TOKEN", "NOTION_CONTEXT_CONFIG?", "NOTION_CONTEXT_USER_CONFIG?", "CLAUDE_CONFIG_DIR?"]
 timeout = 120
 
 [[tool]]

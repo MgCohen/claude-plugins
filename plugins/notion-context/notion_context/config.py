@@ -109,7 +109,8 @@ class Config:
 def layer_paths(explicit=None, defaults=True):
     """Existing config files, lowest layer first."""
     project = os.environ.get("CLAUDE_PROJECT_DIR")
-    user = os.environ.get("NOTION_CONTEXT_USER_CONFIG") or os.path.join(os.path.expanduser("~"), ".claude", FILE_NAME)
+    claude_dir = os.environ.get("CLAUDE_CONFIG_DIR") or os.path.join(os.path.expanduser("~"), ".claude")
+    user = os.environ.get("NOTION_CONTEXT_USER_CONFIG") or os.path.join(claude_dir, FILE_NAME)
     candidates = [DEFAULT_PATH if defaults else None, user if defaults else None,
                   os.path.join(project, FILE_NAME) if project else None, FILE_NAME,
                   os.environ.get("NOTION_CONTEXT_CONFIG"), explicit]
