@@ -1,7 +1,7 @@
 {
   "name": "notion-context",
   "displayName": "Notion context",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Structured Notion tools. Reads a Notion page and its related pages as one document, through notion_get and notion_query of the agent-tools plugin. Keeps Notion code blocks equal to GitHub code with a Snippets database and a GitHub Action.",
   "author": {
     "name": "MgCohen"

@@ -42,19 +42,23 @@ flowchart LR
 1. Make an internal integration in Notion: **Settings → Connections → Develop or manage integrations**.
 2. Share each database with the integration: **••• → Connections → Add connection**.
 3. Set the token in the environment: `export NOTION_TOKEN=ntn_...`. Do not commit the token.
-4. Copy `notion-context.example.toml` to `notion-context.toml` in the root of your project. Change the database ids. Do not commit this file if the ids are private.
-5. Run `python3 -m notion_context check` from this folder, with `CLAUDE_PROJECT_DIR` set to your project.
+4. The plugin default layer, `notion-context.default.toml`, points at the Workflow workspace. To use other ids, make an override layer: copy `notion-context.example.toml` and keep only the keys that you change.
+5. Run `python3 -m notion_context check` from this folder.
 
-The tool finds its config in this order:
+## Layers
 
-| Order | Path |
-|---|---|
-| 1 | `--config PATH` |
-| 2 | `$NOTION_CONTEXT_CONFIG` |
-| 3 | `./notion-context.toml` |
-| 4 | `$CLAUDE_PROJECT_DIR/notion-context.toml` |
+The config is a stack of TOML layers. Each layer overrides the keys of the layers before it. Tables merge key by key, so a layer can change one id and keep the rest. Other values, arrays too, replace.
 
-The plugin keeps the code. Each project keeps its own config. agent-tools sets `CLAUDE_PROJECT_DIR` for each call, so path 4 is the usual path.
+| Order | Layer | Use |
+|---|---|---|
+| 1 (lowest) | `notion-context.default.toml` in this folder | Shared ids, databases and documents |
+| 2 | `$NOTION_CONTEXT_USER_CONFIG`, else `notion-context.toml` in `$CLAUDE_CONFIG_DIR` or `~/.claude` | One user |
+| 3 | `$CLAUDE_PROJECT_DIR/notion-context.toml` | One project |
+| 4 | `./notion-context.toml` | The current folder |
+| 5 | `$NOTION_CONTEXT_CONFIG` | One run, or CI |
+| 6 (highest) | `--config PATH` | One run |
+
+`--no-defaults` skips layers 1 and 2. `pointers` and `check` show the file of each layer. git ignores `notion-context.toml`, so local layers stay out of commits.
 
 Run the tool from this folder. If you run it from a different folder, add this folder to `PYTHONPATH`.
 
@@ -68,20 +72,35 @@ Run the tool from this folder. If you run it from a different folder, add this f
 | `query issues --where Status=Ready --where Area=rules` | Rows that match all filters |
 | `query issues --where Status=!Done --columns Key,Title` | Negated filter, selected columns |
 | `schema issues` | Property names, types and options |
-| `check` | Compares the config with the live schemas |
+| `pointers` | Lists each name, its Notion id and its layer |
+| `pointers asks.source triage-rules --format json` | Resolves the given names |
+| `check` | Lists the layers, then compares the pointers and the config with the live workspace |
 | `snippets plan` | Lists the Snippets rows that change. See [Snippets](#snippets) |
 
-Global options: `--config PATH` (or `NOTION_CONTEXT_CONFIG`) and `--stats` (API call count on stderr).
+Global options: `--config PATH`, `--no-defaults` and `--stats` (API call count on stderr).
 
 `check` returns exit code 1 if it finds an error. Other errors return exit code 2.
 
 ## Config
 
+### Pointers
+
+A pointer is a name for a Notion id. Skills and tools use the name, so a layer can change the id.
+
+```toml
+[pointers]
+workflow = "40e91e24578681b5a046c0d425a39b66"
+triage-rules = "40e91e24578681d0b819cdec82c8613c"
+```
+
+Each database alias is a pointer too: `asks` gives the database id and `asks.source` gives the data source id. Names use lowercase letters, digits, `-`, `_` and `.`.
+
 ### Databases
 
 ```toml
 [databases.issues]
-id = "070982194a904e4a8ea9de8c3b303b34"
+id = "d3ffbe9f27fb4c6d85a1ead30e719858"
+source = "collection://a0f49636-7d4e-4b63-9831-eb4db5ac57c2"   # data source, for the Notion MCP
 key = "Key"          # unique_id property; gives keys such as ISS-12
 document = "issue"   # default document for `get ISS-12`
 # prefix = "ISS"     # optional; read from the schema if not set
@@ -188,7 +207,7 @@ gh variable set AUTOMATION_APP_ID -R owner/repo -b <app-id>
 gh variable set NOTION_SNIPPETS_DATABASE -R owner/repo -b <database-id>
 ```
 
-`AUTOMATION_APP_ID` and `AUTOMATION_APP_KEY` belong to the `mgcohen-automation` GitHub App. The App token can read MgCohen/claude-plugins. The optional variable `NOTION_TOOLS_REF` selects a branch or tag of the plugin repo. The default is `main`.
+`AUTOMATION_APP_ID` and `AUTOMATION_APP_KEY` belong to the `mgcohen-automation` GitHub App. The App token can read MgCohen/claude-plugins. The optional variable `NOTION_TOOLS_REF` selects a branch or tag of the plugin repo. The default is `main`. `NOTION_SNIPPETS_DATABASE` is optional: if it is not set, the tool uses the pointer `snippets` of the config layers.
 
 ### Snippets database
 
@@ -225,7 +244,9 @@ A new error fails the run. The Action writes Status Error and the reason on the 
 
 ## Agent tool (MCP)
 
-`tool.toml` declares two MCP tools, `notion_get` and `notion_query`. This folder is a plugin of its own. agent-tools scans the installed plugins, so the tools are available in every project where both plugins are installed. Set `NOTION_TOKEN` in the client environment, and put `notion-context.toml` in the project root.
+`tool.toml` declares three MCP tools: `notion_get`, `notion_query` and `notion_pointers`. This folder is a plugin of its own. agent-tools scans the installed plugins, so the tools are available in every project where both plugins are installed. Set `NOTION_TOKEN` in the client environment. The default layer needs no other file.
+
+`notion_pointers` needs no token. Use it to get an id by name before a Notion MCP call.
 
 `tests/test_tool_manifest.py` builds the argv of each tool from the manifest and parses it with the real CLI parser. If a flag changes in one place only, the test fails.
 

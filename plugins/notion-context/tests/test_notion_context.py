@@ -77,21 +77,54 @@ class ConfigTests(unittest.TestCase):
         with self.assertRaisesRegex(cfgmod.ConfigError, "unknown database"):
             cfgmod.parse({"databases": {}, "documents": {"d": {"database": "missing"}}})
 
-    def test_find_path_falls_back_to_project_dir(self):
-        with tempfile.TemporaryDirectory() as proj, tempfile.TemporaryDirectory() as here:
-            cfg = os.path.join(proj, "notion-context.toml")
-            open(cfg, "w").close()
+    def test_layers_merge_in_order(self):
+        with tempfile.TemporaryDirectory() as home, tempfile.TemporaryDirectory() as proj, \
+                tempfile.TemporaryDirectory() as here:
+            user = os.path.join(home, "notion-context.toml")
+            with open(user, "w") as f:
+                f.write('[pointers]\nworkflow = "user-page"\nextra = "x1"\n[databases.asks]\nid = "user-asks"\n')
+            with open(os.path.join(proj, "notion-context.toml"), "w") as f:
+                f.write('[pointers]\nextra = "p1"\n')
             old = os.getcwd()
             os.chdir(here)
             try:
-                with mock.patch.dict(os.environ, {"CLAUDE_PROJECT_DIR": proj}):
-                    os.environ.pop("NOTION_CONTEXT_CONFIG", None)
-                    self.assertEqual(cfgmod.find_path(), cfg)
-                with mock.patch.dict(os.environ, {}, clear=True):
-                    with self.assertRaisesRegex(cfgmod.ConfigError, "CLAUDE_PROJECT_DIR"):
-                        cfgmod.find_path()
+                env = {"CLAUDE_PROJECT_DIR": proj, "NOTION_CONTEXT_USER_CONFIG": user}
+                with mock.patch.dict(os.environ, env, clear=True):
+                    cfg = cfgmod.load()
             finally:
                 os.chdir(old)
+        self.assertEqual(cfg.layers[0], cfgmod.DEFAULT_PATH)
+        self.assertEqual(len(cfg.layers), 3)
+        self.assertEqual(cfg.pointer("workflow"), "user-page")      # user overrides default
+        self.assertEqual(cfg.pointer("extra"), "p1")                # project overrides user
+        self.assertEqual(cfg.pointer("asks"), "user-asks")          # one key of a table
+        self.assertEqual(cfg.databases["asks"].key, "Key")          # other keys stay from default
+        self.assertTrue(cfg.pointer("asks.source").startswith("collection://"))
+        self.assertTrue(cfg.pointer_layer("extra").startswith(proj))
+
+    def test_no_defaults_and_missing_config(self):
+        with tempfile.TemporaryDirectory() as here:
+            old = os.getcwd()
+            os.chdir(here)
+            try:
+                with mock.patch.dict(os.environ, {}, clear=True):
+                    with self.assertRaisesRegex(cfgmod.ConfigError, "No config"):
+                        cfgmod.load(defaults=False)
+                    with self.assertRaisesRegex(cfgmod.ConfigError, "No config file"):
+                        cfgmod.load("missing.toml")
+            finally:
+                os.chdir(old)
+
+    def test_default_layer_is_valid(self):
+        cfg = cfgmod.load(cfgmod.DEFAULT_PATH, defaults=False)
+        self.assertIn("triage-rules", cfg.pointer_names())
+        self.assertIn("snippets.source", cfg.pointer_names())
+        with self.assertRaisesRegex(cfgmod.ConfigError, "Unknown pointer"):
+            cfg.pointer("nope")
+
+    def test_bad_pointer_name_fails(self):
+        with self.assertRaisesRegex(cfgmod.ConfigError, "pointers.Bad"):
+            cfgmod.parse({"pointers": {"Bad": "x"}})
 
     def test_db_lookup_by_alias_or_id(self):
         cfg = cfgmod.parse(CONFIG)

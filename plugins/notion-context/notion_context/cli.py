@@ -1,5 +1,6 @@
-"""Command line: get, query, check, schema, snippets."""
+"""Command line: get, query, pointers, check, schema, snippets."""
 import argparse
+import json
 import os
 import sys
 
@@ -19,7 +20,8 @@ def main(argv=None):
 
 def build_parser():
     p = argparse.ArgumentParser(prog="notion-context", description="Deterministic Notion context for agents.")
-    p.add_argument("--config", help="TOML config (default: $NOTION_CONTEXT_CONFIG, ./notion-context.toml, then $CLAUDE_PROJECT_DIR/notion-context.toml)")
+    p.add_argument("--config", help="top config layer; it overrides the plugin default, ~/.claude, project, ./ and $NOTION_CONTEXT_CONFIG layers")
+    p.add_argument("--no-defaults", action="store_true", help="do not load the plugin default and the ~/.claude layers")
     p.add_argument("--stats", action="store_true", help="print the API call count to stderr")
     sub = p.add_subparsers(dest="cmd", required=True)
 
@@ -36,6 +38,10 @@ def build_parser():
     q.add_argument("--columns", help="comma-separated properties")
     _output_args(q)
 
+    o = sub.add_parser("pointers", help="resolve names to Notion ids (all names if none are given)")
+    o.add_argument("names", nargs="*")
+    o.add_argument("--format", choices=("md", "json"), default="md")
+
     sub.add_parser("check", help="compare the config with the live schemas")
 
     s = sub.add_parser("schema", help="list the properties of a database")
@@ -43,7 +49,8 @@ def build_parser():
 
     n = sub.add_parser("snippets", help="write code from this git repo into the Snippets database code blocks")
     n.add_argument("mode", nargs="?", choices=("plan", "apply", "force"), default="plan")
-    n.add_argument("--database", default=os.environ.get("NOTION_SNIPPETS_DATABASE"), help="Snippets database id (default: $NOTION_SNIPPETS_DATABASE)")
+    n.add_argument("--database", default=os.environ.get("NOTION_SNIPPETS_DATABASE"),
+                   help="Snippets database id (default: $NOTION_SNIPPETS_DATABASE, then the config pointer 'snippets')")
     return p
 
 
@@ -51,7 +58,10 @@ def _run(a):
     if a.cmd == "snippets":
         return _snippets(a)
     try:
-        cfg = cfgmod.load(cfgmod.find_path(a.config))
+        cfg = cfgmod.load(a.config, defaults=not a.no_defaults)
+        if a.cmd == "pointers":
+            _write(_pointers(a, cfg), None)
+            return 0
         client = Client()
         out = {"get": _get, "query": _query, "check": _check, "schema": _schema}[a.cmd](a, cfg, client)
     except (cfgmod.ConfigError, LookupError, ValueError, NotionError) as e:
@@ -66,7 +76,12 @@ def _run(a):
 
 def _snippets(a):
     if not a.database:
-        print("error: set NOTION_SNIPPETS_DATABASE or --database", file=sys.stderr)
+        try:
+            a.database = cfgmod.load(a.config, defaults=not a.no_defaults).pointer("snippets")
+        except cfgmod.ConfigError:
+            pass
+    if not a.database:
+        print("error: set NOTION_SNIPPETS_DATABASE, --database or the config pointer 'snippets'", file=sys.stderr)
         return 2
     client = Client()
     try:
@@ -94,6 +109,17 @@ def _write(text, path):
 def _get(a, cfg, client):
     node = Builder(client, cfg).get(a.key, a.doc, a.database)
     return to_json(node) if a.format == "json" else to_markdown(node)
+
+
+def _pointers(a, cfg):
+    names = a.names or cfg.pointer_names()
+    rows = {n: {"id": cfg.pointer(n), "layer": cfg.pointer_layer(n)}
+            for n in names}
+    if a.format == "json":
+        return json.dumps({n: r["id"] for n, r in rows.items()}, indent=2) + "\n"
+    lines = ["| Name | Id | Layer |", "|---|---|---|"]
+    lines += [f"| {n} | {r['id']} | {r['layer']} |" for n, r in rows.items()]
+    return "\n".join(lines) + "\n"
 
 
 def _query(a, cfg, client):
@@ -135,7 +161,17 @@ def _schema_extra(p):
 
 def _check(a, cfg, client):
     """Report each problem as ERROR; return the report."""
-    out, schemas = [], {}
+    out, schemas = [f"layer {p}" for p in cfg.layers], {}
+    for name, pid in sorted(cfg.pointers.items()):
+        try:
+            client.page(pid)
+            out.append(f"ok    pointer {name}")
+        except NotionError:
+            try:
+                client.database(pid)
+                out.append(f"ok    pointer {name}")
+            except NotionError as e:
+                out.append(f"ERROR pointer {name}: {e} (is the page shared with the integration?)")
     for db in cfg.databases.values():
         try:
             schemas[db.alias] = client.database(db.id)["properties"]

@@ -1,107 +1,22 @@
-# notion-context config. Copy to notion-context.toml and change the ids.
-# Run `notion-context schema <alias>` to see property names and types.
-# Run `notion-context check` after each change in Notion or in this file.
+# Example override layer. Copy it to ~/.claude/notion-context.toml (for one user)
+# or to <project>/notion-context.toml (for one project). Keep only the keys you change:
+# each key here overrides the same key of the plugin default, notion-context.default.toml.
 
-[settings]
-child_databases = "link"   # inline databases in a page body: skip | link | rows
-max_depth = 3              # how deep "full" sections can nest
+# Point a name at a different page.
+[pointers]
+workflow = "00000000000000000000000000000000"
 
-# ---------------------------------------------------------------- databases
-# alias = Notion database id, plus the unique_id property for keys (ISS-12).
+# Point a database alias at a copy in a different workspace.
+[databases.asks]
+id = "00000000000000000000000000000000"
+source = "collection://00000000-0000-0000-0000-000000000000"
 
-[databases.specs]
-id = "9627d05466f1430cb3ca16370962a49b"
-key = "Key"
-document = "spec"
-
-[databases.issues]
-id = "070982194a904e4a8ea9de8c3b303b34"
-key = "Key"
-document = "issue"
-
-[databases.features]
-id = "8f842b29472a403d925a37b05c05233f"
-key = "Key"
-document = "feature"
-
-[databases.decisions]
-id = "c92021a64d0a40a4a85260305ffbbddc"
-key = "Key"
-document = "decision"
-
-[databases.tasks]
-id = "a3d69be7a6ec4ff0858a880545ab1d03"
-
-# ---------------------------------------------------------------- documents
-# A document is one output type: fields, page body, and related sections.
-# Section source: backlink = relation on the section database that points to the
-# root page (1 query), or relation = relation on the root page (1 call per item).
-# style: table | list | full (full renders each item with `document`).
-
-[documents.spec]
-database = "specs"
-fields = ["Status", "Goal"]
-
-[[documents.spec.sections]]
-title = "Features"
-database = "features"
-backlink = "Spec"
-columns = ["Key", "Name", "Status", "Summary"]
-
-[[documents.spec.sections]]
-title = "Decisions"
-database = "decisions"
-backlink = "Spec"
-columns = ["Key", "Name", "Status", "Decision", "Consequences"]
-
-[[documents.spec.sections]]
-title = "Issues"
-database = "issues"
-backlink = "Spec"
-document = "issue"          # each issue in full, with its tasks
-
-[documents.issue]
-database = "issues"
-fields = ["Status", "Type", "Priority", "Area", "Summary", "Acceptance", "Repo path"]
-
-[[documents.issue.sections]]
-title = "Tasks"
-database = "tasks"
-backlink = "Issue"
-style = "list"
-columns = ["Kind", "Done"]
-
-[documents.feature]
-database = "features"
-fields = ["Status", "Summary"]
-
-[[documents.feature.sections]]
-title = "Specs"
-database = "specs"
-backlink = "Features"
-style = "list"
-columns = ["Status"]
-
-[documents.decision]
-database = "decisions"
-fields = ["Status", "Decision", "Consequences"]
-
-[[documents.decision.sections]]
-title = "Specs"
-database = "specs"
-backlink = "Decisions"
-style = "list"
-columns = ["Status"]
-
-# A short issue list for planning, without bodies.
-[documents.spec-brief]
-database = "specs"
-fields = ["Status", "Goal"]
-body = false
-
-[[documents.spec-brief.sections]]
-title = "Open issues"
-database = "issues"
-backlink = "Spec"
-filter = ["Status=!Done"]
-columns = ["Key", "Title", "Status", "Priority"]
+# Add a database and a document that only this user or project uses.
+# [databases.notes]
+# id = "00000000000000000000000000000000"
+# key = "Key"
+# document = "note"
+#
+# [documents.note]
+# database = "notes"
+# fields = ["Status"]
