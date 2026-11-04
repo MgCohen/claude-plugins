@@ -60,8 +60,8 @@ To add a kind of work, follow "To add a kind" in `Triage · Kinds`.
 ```
 .claude-plugin/plugin.json
 commands/idea.md, triage.md
-skills/triage/SKILL.md         # Rule 0, Notion IDs and mode router
+skills/triage/SKILL.md         # Rule 0, pointer names and mode router
 skills/triage/references/      # one file for each mode
 ```
 
-Needs the Notion MCP server, with access to the Workflow page.
+Needs the Notion MCP server, with access to the Workflow page. The notion-context plugin gives the `notion_pointers` tool, which resolves the page and database names to ids.

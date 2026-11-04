@@ -1,0 +1,196 @@
+# notion-context default layer: the Workflow workspace of MgCohen.
+# Each later layer overrides keys of this file. Layers, lowest first:
+#   this file, ~/.claude/notion-context.toml, $CLAUDE_PROJECT_DIR/notion-context.toml,
+#   ./notion-context.toml, $NOTION_CONTEXT_CONFIG, --config.
+# To use a different workspace, override the ids in your own layer. See notion-context.example.toml.
+# Run `notion-context pointers` to see each name, its id and its layer.
+# Run `notion-context check` after each change in Notion or in a layer.
+
+[settings]
+child_databases = "link"   # inline databases in a page body: skip | link | rows
+max_depth = 3              # how deep "full" sections can nest
+
+# ----------------------------------------------------------------- pointers
+# name = Notion page id. Skills and tools use the name, not the id.
+
+[pointers]
+workflow = "40e91e24578681b5a046c0d425a39b66"         # root page; give integration access here
+spikes = "40e91e24578681189b23cd623f183589"
+workflow-guide = "40e91e24578681579203cf60739c0c3f"   # DOC: flow, templates, improvement loop
+triage-rules = "40e91e24578681d0b819cdec82c8613c"     # DOC: stages, queue, exit steps
+triage-kinds = "40e91e24578681c88c47ffb3523742f1"     # DOC: kinds, sections, exits, review
+
+# ---------------------------------------------------------------- databases
+# alias = database id, data source id (for the Notion MCP), unique_id property.
+# A database alias is also a pointer: `asks` gives the id, `asks.source` the data source.
+
+[databases.asks]
+id = "8e1610390d364811a150fc4053e50d79"
+source = "collection://fb8adbbb-9cc8-4c79-a2b1-ff0bc9cb71b0"
+key = "Key"
+document = "ask"
+
+[databases.projects]
+id = "213c7549d06d41ba903a11b63e088eee"
+source = "collection://896c3740-7536-443e-99cd-689603e45c14"
+key = "Key"
+document = "project"
+
+[databases.features]
+id = "8f25bb0280d64fb084934640cbf96468"
+source = "collection://a178afa7-8fc6-4b77-ab5e-d759bbee671d"
+key = "Key"
+document = "feature"
+
+[databases.issues]
+id = "d3ffbe9f27fb4c6d85a1ead30e719858"
+source = "collection://a0f49636-7d4e-4b63-9831-eb4db5ac57c2"
+key = "Key"
+document = "issue"
+
+[databases.fixes]
+id = "7954efcbc77a4cf4b734033b768d517a"
+source = "collection://178395fe-c56d-4a6b-927f-ec0442afa388"
+key = "Key"
+document = "fix"
+
+[databases.docs]
+id = "b234e1a18acb4664a43f1a97f102fe5f"
+source = "collection://98f373fc-6257-485c-a447-3421a085988a"
+key = "Key"
+document = "doc"
+
+[databases.sessions]
+id = "522fe69bec564ef6b1c51d316a83ccab"
+source = "collection://b4ddc336-a171-4618-8086-cd14edc73aee"
+key = "Key"
+document = "session"
+
+[databases.templates]
+id = "d6d1633286164d45982f58479c6aaf95"
+source = "collection://4a5c3982-9099-4e16-98ef-52864a494652"
+key = "Key"
+document = "template"
+
+[databases.snippets]
+id = "c0cf6d2ea20446d4a4cb7f1133b44535"
+source = "collection://2023b45c-4ce8-4db4-b0d7-8e92d8f0c03e"
+key = "Key"
+document = "snippet"
+
+# ---------------------------------------------------------------- documents
+# A document is one output type: fields, page body, and related sections.
+# backlink = relation on the section database that points to the root page.
+
+[documents.ask]
+database = "asks"
+fields = ["Status", "Kind", "Priority", "Source", "Summary", "AI review", "Owner approved", "Skips"]
+
+[[documents.ask.sections]]
+title = "Sub-asks"
+database = "asks"
+backlink = "Parent"
+style = "list"
+columns = ["Status"]
+
+[documents.project]
+database = "projects"
+fields = ["Status", "Goal", "Repo"]
+
+[[documents.project.sections]]
+title = "Features"
+database = "features"
+backlink = "Project"
+filter = ["Status=!Done"]
+columns = ["Key", "Name", "Status", "Kind", "Priority"]
+
+[[documents.project.sections]]
+title = "Issues"
+database = "issues"
+backlink = "Project"
+filter = ["Status=!Resolved"]
+columns = ["Key", "Name", "Status", "Type", "Severity"]
+
+[[documents.project.sections]]
+title = "Docs"
+database = "docs"
+backlink = "Project"
+columns = ["Key", "Name", "Type", "Status"]
+
+[documents.feature]
+database = "features"
+fields = ["Status", "Kind", "Priority", "Summary", "Acceptance", "PR"]
+
+[[documents.feature.sections]]
+title = "Issues"
+database = "issues"
+backlink = "Feature"
+columns = ["Key", "Name", "Status", "Type"]
+
+[[documents.feature.sections]]
+title = "Docs"
+database = "docs"
+backlink = "Features"
+columns = ["Key", "Name", "Type", "Status"]
+
+[[documents.feature.sections]]
+title = "Snippets"
+database = "snippets"
+backlink = "Features"
+style = "list"
+columns = ["Status"]
+
+[documents.issue]
+database = "issues"
+fields = ["Status", "Type", "Severity", "Summary", "Evidence"]
+
+[[documents.issue.sections]]
+title = "Fixes"
+database = "fixes"
+backlink = "Issues"
+columns = ["Key", "Name", "Status", "PR"]
+
+[documents.fix]
+database = "fixes"
+fields = ["Status", "Summary", "Verify", "PR"]
+
+[[documents.fix.sections]]
+title = "Issues"
+database = "issues"
+backlink = "Fixes"
+columns = ["Key", "Name", "Status"]
+
+[documents.doc]
+database = "docs"
+fields = ["Status", "Type", "Summary"]
+
+[[documents.doc.sections]]
+title = "Snippets"
+database = "snippets"
+backlink = "Docs"
+style = "list"
+columns = ["Status"]
+
+[documents.session]
+database = "sessions"
+fields = ["Status", "Agent", "Date", "Link", "Outcome"]
+
+[[documents.session.sections]]
+title = "Issues found"
+database = "issues"
+backlink = "Found in"
+columns = ["Key", "Name", "Status"]
+
+[documents.template]
+database = "templates"
+fields = ["Status", "Target", "Version", "Summary", "Check"]
+
+[[documents.template.sections]]
+title = "Issues"
+database = "issues"
+backlink = "About template"
+columns = ["Key", "Name", "Status"]
+
+[documents.snippet]
+database = "snippets"
+fields = ["Status", "File", "Method", "Start line", "End line", "Region", "Message"]

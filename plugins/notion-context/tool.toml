@@ -28,3 +28,13 @@ output = "json"
 database = { type = "string", required = true, description = "Database alias from notion-context.toml, for example issues" }
 where    = { type = "array", items = "string", description = "Filters PROP=VALUE; all must match; a value that starts with ! negates" }
 columns  = { type = "string", description = "Comma-separated property names to return" }
+
+[[tool]]
+name = "notion_pointers"
+description = """Resolve names to Notion ids from the notion-context layers, as JSON. Use it before a \
+Notion call that needs a page, database or data source id, for example asks.source or triage-rules. \
+With no names, returns all names."""
+args = ["pointers", "{names*}", "--format=json"]
+output = "json"
+[tool.input]
+names = { type = "array", items = "string", description = "Pointer names or database aliases, for example workflow, asks.source" }

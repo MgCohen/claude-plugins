@@ -17,14 +17,19 @@ Do not use rules from memory or from this plugin when Notion has them. Read thes
 | Docs row `Triage · Kinds` | Kinds, signals, base sections, kind sections, exits, section mapping, review checklist |
 | Templates row `Ask · <Kind>` | Form of one kind: the page body that triage adds at Classify |
 
-| Item | Notion ID |
-|---|---|
-| Workflow page | `40e91e24578681b5a046c0d425a39b66` |
-| Asks data source | `collection://fb8adbbb-9cc8-4c79-a2b1-ff0bc9cb71b0` |
-| Templates data source | `collection://4a5c3982-9099-4e16-98ef-52864a494652` |
-| `Triage · Rules` | `40e91e24578681d0b819cdec82c8613c` |
-| `Triage · Kinds` | `40e91e24578681c88c47ffb3523742f1` |
+Find each id by its pointer name. Do not use ids from memory.
 
+| Pointer | Item |
+|---|---|
+| `workflow` | Workflow root page |
+| `asks.source` | Asks data source |
+| `templates.source` | Templates data source |
+| `triage-rules` | Docs row `Triage · Rules` |
+| `triage-kinds` | Docs row `Triage · Kinds` |
+| `projects.source`, `features.source`, `issues.source`, `docs.source` | Exit targets |
+
+- Resolve the names with the `notion_pointers` tool of the notion-context plugin. Its layers let a user or a project override an id.
+- If `notion_pointers` is not available, search Notion for the page or database by its title.
 - Use the Notion MCP tools: fetch, query data sources, create pages, update page, create comment.
 - Fetch a data source before you write a row, to get the exact property names.
 - Read a template row only when you need that kind.
