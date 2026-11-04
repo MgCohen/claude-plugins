@@ -11,7 +11,7 @@ A Snippets row selects code in a GitHub file. The Action of that repo writes the
 
 1. Make a row in the Snippets database. Write the properties from the table below.
 2. Put one empty code block on the row page.
-3. Run the plan: `python <plugin>/tools/sync_snippets.py plan` in a checkout of the repo, with `NOTION_TOKEN` and `NOTION_SNIPPETS_DATABASE` set. If you cannot run it, run the workflow: `gh workflow run notion-snippets.yml -f mode=plan`.
+3. Run the plan: `python .github/notion-snippets/sync_snippets.py plan` in a checkout of the repo, with `NOTION_TOKEN` and `NOTION_SNIPPETS_DATABASE` set. If you cannot run it, run the workflow: `gh workflow run notion-snippets.yml -f mode=plan`.
 4. If the plan shows the correct range, run the workflow with `-f mode=apply`, or wait for the next push to `main`.
 5. On the doc page, add a synced block reference to the code block of the row page.
 
@@ -25,9 +25,9 @@ A Snippets row selects code in a GitHub file. The Action of that repo writes the
 
 ## Select the code
 
-- Use a method when you can. A method range follows the code when lines move.
-- A line range also follows the code: the Action moves it with the git diff and writes the new Start line and End line.
-- A commit in the File link (`blob/<sha>/...`) pins the code. The snippet never changes.
+- Use a method when you can. The Action finds the method again after each change. A line range moves only with the git diff, and only if Start line and End line both have a value.
+- A method range starts at the declaration line. Use Lines before for attributes and doc comments.
+- A commit in the File link (`blob/<sha>/...`) pins the code. The snippet never changes. A branch in the link has no effect: the Action reads the commit that it runs on.
 - If Method, Start line and End line are all empty, the snippet is the whole file.
 - `Outer.Inner` searches `Inner` inside `Outer`. A declaration is a method, constructor, property, field or type in C#, TypeScript or JavaScript.
 

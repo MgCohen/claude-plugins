@@ -17,7 +17,7 @@ flowchart LR
 |---|---|
 | `tools/snippet_range.py` | Finds the lines of a method or a line range |
 | `tools/sync_snippets.py` | Reads the rows, writes the code blocks and the row status |
-| `tools/test_snippet_range.py` | Tests: `python -m unittest test_snippet_range` in `tools/` |
+| `tools/test_tools.py` | Tests: `python -m unittest test_tools` in `tools/` |
 | `workflow/notion-snippets.yml` | Workflow for the code repo |
 | `skills/notion-snippets/SKILL.md` | Tells an agent how to add a snippet |
 
@@ -58,12 +58,15 @@ gh variable set NOTION_SNIPPETS_DATABASE -R owner/repo -b <database-id>
 | Nightly | apply | Gives code to rows added in Notion |
 | Manual | plan, apply or force | `force` writes all blocks |
 
+Pull requests from forks do not run the job, because they get no secrets.
+
+A new error fails the run. The Action writes Status Error and the reason on the row. Later runs show the same error as "error (known)" and do not fail.
+
 ## Limits
 
-- The method search reads C-like code with a small parser. It does not read JavaScript regex literals with braces, tuple return types, or arrow functions without a semicolon.
+- The method search reads C-like code with a small parser. It does not read JavaScript regex literals with braces, tuple return types, TypeScript class fields without a modifier, or arrow functions without a semicolon.
+- A method range starts at the declaration line. Use Lines before for attributes and doc comments on the lines above.
 - An overload is selected by its position in the file, not by its signature.
-- A line range does not follow a file rename.
-
-## Open questions
-
-- Copy the tools into each code repo, or call a reusable workflow from this repo?
+- A File link with a branch reads the commit that the Action runs on. Only a commit in the link selects other code.
+- A line range follows the code only if Start line and End line both have a value. It does not follow a file rename.
+- The code of one snippet can have a maximum of 100,000 characters.
