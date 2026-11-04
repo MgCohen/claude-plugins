@@ -1,10 +1,10 @@
 ---
-description: Work the Linear Triage queue. Takes the stalest issue and moves it one step.
-argument-hint: "[issue id, for example MAT-49]"
+description: Work the Notion Asks queue. Takes the stalest ask and moves it one step.
+argument-hint: "[ask key, for example ASK-3]"
 ---
 
 Use the `triage` skill in Queue mode.
 
-If the owner gives an issue id, work on that issue: $ARGUMENTS
+If the owner gives an ask key, work on that ask: $ARGUMENTS
 
-Otherwise, take the first issue of the queue. Do one step, then stop.
+Otherwise, take the first ask of the queue. Do one step, then stop.
