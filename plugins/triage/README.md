@@ -1,6 +1,6 @@
 # Triage
 
-Each new request or idea goes to the Asks database in the Notion page Workflow first. This plugin moves each ask, one small step at a time, from a raw idea to a project, feature, issue or doc at the correct place.
+Each new request or idea goes to the Asks database in the Notion teamspace Studio first. This plugin moves each ask, one small step at a time, from a raw idea to a project, feature, plan, bug, task, decision or doc at the correct place. A blocking question from an agent session does not go through triage: it goes to the Questions database.
 
 ## How an ask moves
 
@@ -17,7 +17,7 @@ Any status ─► Dropped
 | Classify | Proposes a kind (Bug, Feature, Chore …) | Accept or change the kind |
 | Fill | Does research and proposes one section at a time | Accept, edit or skip |
 | Review | Runs the review checklist | Approve |
-| Converted | Makes the row in Projects, Features, Issues or Docs | Nothing |
+| Converted | Makes the row in Projects, Features, Plans, Bugs, Tasks, Decisions or Docs | Nothing |
 
 ## Install
 

@@ -20,7 +20,7 @@ Do the exit only when both check boxes are ticked.
 5. Fetch each made or changed page to verify it.
 6. Reply with the links.
 
-If an exit rule does not fit the ask, do not guess. Tell the owner and propose a rule change as an Issues row with Type Workflow and About doc set.
+If an exit rule does not fit the ask, do not guess. Tell the owner and propose a rule change as a Bugs row with Area Workflow and About doc set.
 
 ## Close
 

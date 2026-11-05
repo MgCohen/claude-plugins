@@ -1,4 +1,4 @@
-# notion-context default layer: the Workflow workspace of MgCohen.
+# notion-context default layer: the Studio teamspace of MgCohen.
 # Each later layer overrides keys of this file. Layers, lowest first:
 #   this file, ~/.claude/notion-context.toml, $CLAUDE_PROJECT_DIR/notion-context.toml,
 #   ./notion-context.toml, $NOTION_CONTEXT_CONFIG, --config.
@@ -14,8 +14,11 @@ max_depth = 3              # how deep "full" sections can nest
 # name = Notion page id. Skills and tools use the name, not the id.
 
 [pointers]
-workflow = "40e91e24578681b5a046c0d425a39b66"         # root page; give integration access here
-spikes = "40e91e24578681189b23cd623f183589"
+studio-map = "40e91e245786816297ddfe0bd4592d2c"       # map of all areas and databases
+workflow = "40e91e24578681b5a046c0d425a39b66"         # area: Asks, Questions, Templates, Sessions
+work = "40e91e245786817b8b54d808fc5c7f57"             # area: Projects, Features, Plans, Tasks, Bugs
+wiki = "40e91e2457868103b647ce63f806c34f"             # area: Docs, Decisions, Snippets
+lab = "40e91e24578681189b23cd623f183589"              # area: spikes, tests, experiments
 workflow-guide = "40e91e24578681579203cf60739c0c3f"   # DOC: flow, templates, improvement loop
 triage-rules = "40e91e24578681d0b819cdec82c8613c"     # DOC: stages, queue, exit steps
 triage-kinds = "40e91e24578681c88c47ffb3523742f1"     # DOC: kinds, sections, exits, review
@@ -30,6 +33,12 @@ source = "collection://fb8adbbb-9cc8-4c79-a2b1-ff0bc9cb71b0"
 key = "Key"
 document = "ask"
 
+[databases.questions]
+id = "c96f26bd602147c4aa30e46afc0616ab"
+source = "collection://92bfb731-ceef-41eb-a0fa-fde31c7d8138"
+key = "Key"
+document = "question"
+
 [databases.projects]
 id = "213c7549d06d41ba903a11b63e088eee"
 source = "collection://896c3740-7536-443e-99cd-689603e45c14"
@@ -42,23 +51,35 @@ source = "collection://a178afa7-8fc6-4b77-ab5e-d759bbee671d"
 key = "Key"
 document = "feature"
 
-[databases.issues]
+[databases.plans]
+id = "64192cd70ca445efbe69217f2d6df42a"
+source = "collection://64a1bfa1-8922-4607-895e-3a9dc0b19d63"
+key = "Key"
+document = "plan"
+
+[databases.tasks]
+id = "ef380af73c0848dea5f0f7a74691ec15"
+source = "collection://f0db2108-3a1e-4e80-8f74-f081643e0a29"
+key = "Task ID"
+document = "task"
+
+[databases.bugs]
 id = "d3ffbe9f27fb4c6d85a1ead30e719858"
 source = "collection://a0f49636-7d4e-4b63-9831-eb4db5ac57c2"
 key = "Key"
-document = "issue"
-
-[databases.fixes]
-id = "7954efcbc77a4cf4b734033b768d517a"
-source = "collection://178395fe-c56d-4a6b-927f-ec0442afa388"
-key = "Key"
-document = "fix"
+document = "bug"
 
 [databases.docs]
 id = "b234e1a18acb4664a43f1a97f102fe5f"
 source = "collection://98f373fc-6257-485c-a447-3421a085988a"
 key = "Key"
 document = "doc"
+
+[databases.decisions]
+id = "2d0d29f26fc3444a8702fee2399839ef"
+source = "collection://8cb5872b-b6d2-4454-8a50-60c8ebf8ebd7"
+key = "Key"
+document = "decision"
 
 [databases.sessions]
 id = "522fe69bec564ef6b1c51d316a83ccab"
@@ -93,6 +114,16 @@ backlink = "Parent"
 style = "list"
 columns = ["Status"]
 
+[documents.question]
+database = "questions"
+fields = ["Status", "Context", "Answer", "Asked by", "Blocks"]
+
+[[documents.question.sections]]
+title = "Decision"
+database = "decisions"
+backlink = "Questions"
+columns = ["Key", "Name", "Status", "Decision"]
+
 [documents.project]
 database = "projects"
 fields = ["Status", "Goal", "Repo"]
@@ -105,11 +136,17 @@ filter = ["Status=!Done"]
 columns = ["Key", "Name", "Status", "Kind", "Priority"]
 
 [[documents.project.sections]]
-title = "Issues"
-database = "issues"
+title = "Bugs"
+database = "bugs"
 backlink = "Project"
 filter = ["Status=!Resolved"]
-columns = ["Key", "Name", "Status", "Type", "Severity"]
+columns = ["Key", "Name", "Status", "Area", "Severity"]
+
+[[documents.project.sections]]
+title = "Decisions"
+database = "decisions"
+backlink = "Project"
+columns = ["Key", "Name", "Status", "Decision"]
 
 [[documents.project.sections]]
 title = "Docs"
@@ -122,16 +159,48 @@ database = "features"
 fields = ["Status", "Kind", "Priority", "Summary", "Acceptance", "PR"]
 
 [[documents.feature.sections]]
-title = "Issues"
-database = "issues"
+title = "Plans"
+database = "plans"
 backlink = "Feature"
-columns = ["Key", "Name", "Status", "Type"]
+columns = ["Key", "Name", "Status", "Summary"]
 
 [[documents.feature.sections]]
-title = "Docs"
+title = "Tasks"
+database = "tasks"
+backlink = "Feature"
+columns = ["Task ID", "Name", "Status"]
+
+[[documents.feature.sections]]
+title = "Specs and docs"
 database = "docs"
 backlink = "Features"
 columns = ["Key", "Name", "Type", "Status"]
+
+[[documents.feature.sections]]
+title = "Decisions"
+database = "decisions"
+backlink = "Feature"
+columns = ["Key", "Name", "Status", "Decision"]
+
+[[documents.feature.sections]]
+title = "Open decisions"
+database = "asks"
+backlink = "Feature"
+filter = ["Kind=Decision", "Status=!Converted", "Status=!Dropped"]
+columns = ["Key", "Name", "Status"]
+
+[[documents.feature.sections]]
+title = "Blocking questions"
+database = "questions"
+backlink = "Feature"
+filter = ["Status=Open"]
+columns = ["Key", "Name", "Status"]
+
+[[documents.feature.sections]]
+title = "Bugs"
+database = "bugs"
+backlink = "Feature"
+columns = ["Key", "Name", "Status", "Area"]
 
 [[documents.feature.sections]]
 title = "Snippets"
@@ -140,24 +209,59 @@ backlink = "Features"
 style = "list"
 columns = ["Status"]
 
-[documents.issue]
-database = "issues"
-fields = ["Status", "Type", "Severity", "Summary", "Evidence"]
+[documents.plan]
+database = "plans"
+fields = ["Status", "Summary"]
 
-[[documents.issue.sections]]
-title = "Fixes"
-database = "fixes"
-backlink = "Issues"
-columns = ["Key", "Name", "Status", "PR"]
+[[documents.plan.sections]]
+title = "Tasks"
+database = "tasks"
+backlink = "Plan"
+columns = ["Task ID", "Name", "Status"]
 
-[documents.fix]
-database = "fixes"
-fields = ["Status", "Summary", "Verify", "PR"]
+[[documents.plan.sections]]
+title = "Open decisions"
+database = "asks"
+backlink = "Plan"
+filter = ["Kind=Decision", "Status=!Converted", "Status=!Dropped"]
+columns = ["Key", "Name", "Status"]
 
-[[documents.fix.sections]]
-title = "Issues"
-database = "issues"
-backlink = "Fixes"
+[[documents.plan.sections]]
+title = "Decisions"
+database = "decisions"
+backlink = "Plans"
+columns = ["Key", "Name", "Status", "Decision"]
+
+[documents.task]
+database = "tasks"
+fields = ["Status", "Summary", "Verify", "PR", "Folder", "Result", "Open questions"]
+
+[[documents.task.sections]]
+title = "Bugs"
+database = "bugs"
+backlink = "Tasks"
+columns = ["Key", "Name", "Status"]
+
+[[documents.task.sections]]
+title = "Blocking questions"
+database = "questions"
+backlink = "Blocks"
+columns = ["Key", "Name", "Status"]
+
+[documents.bug]
+database = "bugs"
+fields = ["Status", "Area", "Severity", "Summary", "Evidence", "Signature"]
+
+[[documents.bug.sections]]
+title = "Tasks"
+database = "tasks"
+backlink = "Bugs"
+columns = ["Task ID", "Name", "Status", "PR"]
+
+[[documents.bug.sections]]
+title = "Plans"
+database = "plans"
+backlink = "Bugs"
 columns = ["Key", "Name", "Status"]
 
 [documents.doc]
@@ -171,14 +275,42 @@ backlink = "Docs"
 style = "list"
 columns = ["Status"]
 
+[documents.decision]
+database = "decisions"
+fields = ["Status", "Decision", "Reason", "Date"]
+
+[[documents.decision.sections]]
+title = "Specs and docs"
+database = "docs"
+backlink = "Decisions"
+columns = ["Key", "Name", "Type", "Status"]
+
+[[documents.decision.sections]]
+title = "Superseded by"
+database = "decisions"
+backlink = "Supersedes"
+columns = ["Key", "Name", "Status"]
+
 [documents.session]
 database = "sessions"
 fields = ["Status", "Agent", "Date", "Link", "Outcome"]
 
 [[documents.session.sections]]
-title = "Issues found"
-database = "issues"
+title = "Tasks"
+database = "tasks"
+backlink = "Sessions"
+columns = ["Task ID", "Name", "Status"]
+
+[[documents.session.sections]]
+title = "Bugs found"
+database = "bugs"
 backlink = "Found in"
+columns = ["Key", "Name", "Status"]
+
+[[documents.session.sections]]
+title = "Questions"
+database = "questions"
+backlink = "Asked by"
 columns = ["Key", "Name", "Status"]
 
 [documents.template]
@@ -186,8 +318,8 @@ database = "templates"
 fields = ["Status", "Target", "Version", "Summary", "Check"]
 
 [[documents.template.sections]]
-title = "Issues"
-database = "issues"
+title = "Bugs"
+database = "bugs"
 backlink = "About template"
 columns = ["Key", "Name", "Status"]
 

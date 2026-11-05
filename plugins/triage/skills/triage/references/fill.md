@@ -18,7 +18,7 @@ Fill the sections in Form order: first the base sections, then the kind sections
 
 Each question follows these rules:
 
-1. Do research first: the target repo, the Docs rows, and related rows in Projects, Features and Issues. In the repo, read the open branches and worktrees too (`git branch -a`, `git worktree list`), not only the default branch. Much work is not merged yet.
+1. Do research first: the target repo, the Docs rows, and related rows in Projects, Features, Plans, Bugs and Decisions. In the repo, read the open branches and worktrees too (`git branch -a`, `git worktree list`), not only the default branch. Much work is not merged yet.
 2. Propose an answer. Do not ask an open question if a proposal is possible.
 3. Use a yes/no question, or a choice of 2 to 3 options.
 4. Ask one question at a time.
