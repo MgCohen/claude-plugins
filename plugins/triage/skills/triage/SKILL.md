@@ -1,6 +1,6 @@
 ---
 name: triage
-description: Runs the triage of the Asks database in Notion for MgCohen's projects. Use when the user writes "idea:", "new request", "add to triage", "triage", "next in triage", "work the queue", or skips, answers or approves an ask. It captures new asks, selects the next ask from a stalest-first queue, classifies it into a kind and template, fills one section at a time with small proposal questions, splits hard sections into sub-asks, reviews, and converts the ask to a Notion project, feature, issue or doc.
+description: Runs the triage of the Asks database in Notion for MgCohen's projects. Use when the user writes "idea:", "new request", "add to triage", "triage", "next in triage", "work the queue", or skips, answers or approves an ask. It captures new asks, selects the next ask from a stalest-first queue, classifies it into a kind and template, fills one section at a time with small proposal questions, splits hard sections into sub-asks, reviews, and converts the ask to a Notion project, feature, plan, bug, task, decision or doc.
 ---
 
 # Triage
@@ -26,7 +26,7 @@ Find each id by its pointer name. Do not use ids from memory.
 | `templates.source` | Templates data source |
 | `triage-rules` | Docs row `Triage · Rules` |
 | `triage-kinds` | Docs row `Triage · Kinds` |
-| `projects.source`, `features.source`, `issues.source`, `docs.source` | Exit targets |
+| `projects.source`, `features.source`, `plans.source`, `bugs.source`, `tasks.source`, `decisions.source`, `docs.source` | Exit targets |
 
 - Resolve the names with the `notion_pointers` tool of the notion-context plugin. Its layers let a user or a project override an id.
 - If `notion_pointers` is not available, search Notion for the page or database by its title.
@@ -63,5 +63,6 @@ A queue step often continues into a fill step. If so, read both files.
 
 - Each turn must move the ask one step: one section passes, or one sub-ask closes.
 - Do not fill more than one section in one turn unless the owner gives all answers at once.
-- Do not make rows in Projects, Features, Issues or Docs before an approved exit.
+- Do not make rows in Projects, Features, Plans, Bugs, Tasks, Decisions or Docs before an approved exit.
+- Do not triage the Questions database. It holds blocking questions from agent sessions. A design or plan choice that does not block work is an ask of Kind Decision.
 - Add one comment to the ask page for each turn: `Triage turn · <status>: <what changed>`.

@@ -1,8 +1,8 @@
 {
   "name": "triage",
   "displayName": "Triage",
-  "version": "0.3.0",
-  "description": "Runs the triage of the Notion Asks database: capture requests, work a stalest-first queue, fill a template for each kind of work in small steps, review, and convert each ask to a project, feature, issue or doc.",
+  "version": "0.4.0",
+  "description": "Runs the triage of the Notion Asks database: capture requests, work a stalest-first queue, fill a template for each kind of work in small steps, review, and convert each ask to a project, feature, plan, bug, task, decision or doc.",
   "author": {
     "name": "MgCohen"
   },
