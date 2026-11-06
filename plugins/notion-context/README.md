@@ -244,7 +244,7 @@ A new error fails the run. The Action writes Status Error and the reason on the 
 
 ## Agent tool (MCP)
 
-`tool.toml` declares three MCP tools: `notion_get`, `notion_query` and `notion_pointers`. This folder is a plugin of its own. agent-tools scans the installed plugins, so the tools are available in every project where both plugins are installed. Set `NOTION_TOKEN` in the client environment. The default layer needs no other file.
+`tool.toml` declares three MCP tools: `notion_get`, `notion_query` and `notion_pointers`. This folder is a plugin of its own. agent-tools scans the installed plugins, so the tools are available in every project where both plugins are installed. Set `NOTION_TOKEN` in the client environment, or keep it in 1Password with the `core` plugin (agent-tools reads it from there). The default layer needs no other file.
 
 `notion_pointers` needs no token. Use it to get an id by name before a Notion MCP call.
 
