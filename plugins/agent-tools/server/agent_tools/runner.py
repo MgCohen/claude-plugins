@@ -5,6 +5,7 @@ import subprocess
 import sys
 
 from . import argv as argvmod
+from . import secrets
 from .manifest import validate
 
 BASE_ENV = ("PATH", "HOME", "USERPROFILE", "SYSTEMROOT", "SYSTEMDRIVE", "WINDIR", "COMSPEC",
@@ -54,9 +55,16 @@ def run(tool, arguments):
     except ValueError as e:
         return Result(f"Invalid arguments for {tool.name}: {e}", is_error=True)
     env, missing = environment(tool)
+    problem = None
+    if missing:
+        found, problem = secrets.resolve(missing)
+        env.update(found)
+        missing = [m for m in missing if m not in found]
     if missing:
         return Result(f"{tool.name} needs these environment variables: {', '.join(missing)}. "
-                      "Set them in the environment of the MCP client.", is_error=True)
+                      "Set them in the environment of the MCP client, or add them to the "
+                      "1Password vault (core:secrets)." + (f"\n{problem}" if problem else ""),
+                      is_error=True)
     try:
         p = subprocess.run(argv, cwd=tool.cwd, env=env, capture_output=True,
                            timeout=tool.timeout, stdin=subprocess.DEVNULL)

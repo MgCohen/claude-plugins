@@ -1,6 +1,6 @@
 {
   "name": "core",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Personal skills, agents and hooks that follow me everywhere",
   "author": { "name": "MgCohen" }
 }

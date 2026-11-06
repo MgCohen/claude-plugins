@@ -15,6 +15,7 @@ sys.path.insert(0, os.path.dirname(HERE))
 from agent_tools import argv as argvmod  # noqa: E402
 from agent_tools import manifest as mf  # noqa: E402
 from agent_tools import runner  # noqa: E402
+from agent_tools import secrets  # noqa: E402
 
 FIXTURES = os.path.join(HERE, "fixtures")
 MAIN = os.path.join(os.path.dirname(HERE), "main.py")
@@ -22,6 +23,8 @@ NO_PLUGIN = os.path.join(FIXTURES, "no-plugin")  # has no tools/ folder: the rea
 # An empty Claude config folder: the installed plugins and ~/.claude/agent-tools.toml of this
 # machine stay out of the tests. The server subprocesses inherit it.
 os.environ["CLAUDE_CONFIG_DIR"] = tempfile.mkdtemp(prefix="agent-tools-claude-")
+# No secrets.env: the tests never read 1Password. SecretsTests sets its own file.
+os.environ["AGENT_TOOLS_SECRETS_ENV"] = ""
 
 
 def rmtree(path):
@@ -271,6 +274,88 @@ class RunnerTests(unittest.TestCase):
 
     def test_cap(self):
         self.assertIn("[truncated 5 bytes]", runner._cap("x" * 15, 10))
+
+
+class SecretsTests(unittest.TestCase):
+    def setUp(self):
+        self.tools = mf.load_all([FIXTURES], allow_write=True)[0]
+        self.tmp = tempfile.mkdtemp(prefix="agent-tools-secrets-")
+        self.file = os.path.join(self.tmp, "secrets.env")
+        write_file(self.file, """
+            # comment
+            ECHO_SECRET=op://agent/ECHO_ITEM/credential
+            PLAIN=not-a-reference
+        """)
+        self.reads = []
+        secrets._cache.clear()
+        self.addCleanup(secrets._cache.clear)
+        self.addCleanup(rmtree, self.tmp)
+
+    def fake_read(self, op, ref, env):
+        self.reads.append((op, ref, env.get(secrets.TOKEN)))
+        return "from-1password", None
+
+    def start(self, token="tok", op="/bin/op", env=None):
+        values = {"AGENT_TOOLS_SECRETS_ENV": self.file, **(env or {})}
+        if token:
+            values[secrets.TOKEN] = token
+        patches = [mock.patch.dict(os.environ, values), mock.patch.object(secrets, "_read", self.fake_read),
+                   mock.patch.object(secrets, "op_binary", lambda f=None: op),
+                   mock.patch.object(secrets, "token", lambda source=None: token)]
+        for p in patches:
+            p.start()
+            self.addCleanup(p.stop)
+        if "ECHO_SECRET" not in values:
+            os.environ.pop("ECHO_SECRET", None)
+
+    def run_echo(self):
+        t = self.tools["echo_args"]
+        t.env = ["ECHO_SECRET"]
+        return runner.run(t, {"word": "x"})
+
+    def test_references(self):
+        self.assertEqual(secrets.references([self.file, os.path.join(self.tmp, "none.env")]),
+                         {"ECHO_SECRET": ("op://agent/ECHO_ITEM/credential", self.file)})
+
+    def test_missing_env_comes_from_1password_once(self):
+        self.start()
+        r = self.run_echo()
+        self.assertFalse(r.is_error, r.text)
+        self.assertEqual(r.data["secret"], "from-1password")
+        self.run_echo()
+        self.assertEqual(self.reads, [("/bin/op", "op://agent/ECHO_ITEM/credential", "tok")])  # cached
+
+    def test_set_env_wins(self):
+        self.start(env={"ECHO_SECRET": "local"})
+        r = self.run_echo()
+        self.assertEqual(r.data["secret"], "local")
+        self.assertEqual(self.reads, [])
+
+    def test_no_token_says_why(self):
+        self.start(token=None)
+        r = self.run_echo()
+        self.assertTrue(r.is_error)
+        self.assertIn("OP_SERVICE_ACCOUNT_TOKEN is not set", r.text)
+        self.assertEqual(self.reads, [])
+
+    def test_no_op_says_why(self):
+        self.start(op=None)
+        r = self.run_echo()
+        self.assertTrue(r.is_error)
+        self.assertIn("op (the 1Password CLI) is not installed", r.text)
+
+    def test_name_without_reference_is_not_read(self):
+        self.start()
+        self.assertEqual(secrets.resolve(["OTHER", "PLAIN"]), ({}, None))
+        self.assertEqual(self.reads, [])
+
+    def test_core_plugin_file_is_the_default(self):
+        root = os.path.join(self.tmp, "plugins", "core")
+        write_plugin(root, "core")
+        write_file(os.path.join(root, secrets.SECRETS_FILE), "A=op://agent/A/credential\n")
+        with mock.patch.object(mf, "installed_plugins", lambda skip=None: [root]):
+            self.assertEqual(secrets.env_files({}), [os.path.join(root, secrets.SECRETS_FILE)])
+            self.assertEqual(secrets.env_files({"AGENT_TOOLS_SECRETS_ENV": ""}), [])
 
 
 class ServerTests(unittest.TestCase):
