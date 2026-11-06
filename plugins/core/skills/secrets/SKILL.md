@@ -1,6 +1,6 @@
 ---
 name: secrets
-description: Get API keys, tokens and passwords for scripts and tools from 1Password, without the values in the chat. Use when a command, script, CLI, build or service needs a secret (for example INBOX_TOKEN, NOTION_API_TOKEN, a Cloudflare or GitHub token), when a secret is missing, or when the user asks to store, find or use a secret.
+description: Get API keys, tokens and passwords for scripts and tools from 1Password, without the values in the chat. Use when a command, script, CLI, build or service needs a secret (for example INBOX_TOKEN, NOTION_TOKEN, a Cloudflare or GitHub token), when a secret is missing, or when the user asks to store, find or use a secret.
 ---
 
 # Secrets from 1Password
@@ -34,6 +34,8 @@ The user adds and changes secrets in the 1Password desktop or web app. The CLI r
 |---|---|---|
 | Title = the variable name, for example `INBOX_TOKEN` | `credential` | Same as the title |
 
+Exception: `NOTION_TOKEN` uses the item `NOTION_API_TOKEN`.
+
 Reference format: `op://agent/<ITEM>/credential`. Use the item type "API Credential" for new items.
 
 ## Steps
@@ -60,6 +62,10 @@ The wrappers do these steps:
 3. They run `op run --env-file secrets.env -- <command>`.
 
 `op run` masks secret values in the command output.
+
+## Agent tools
+
+The agent-tools MCP server reads this `secrets.env` by itself. If a tool declares a required `env` variable that is not set, the server gets it with `op read` and keeps it in memory until the session stops. The tools need no wrapper. See `plugins/agent-tools/README.md`.
 
 ## Cloud sessions
 

@@ -146,6 +146,7 @@ The modifier must agree with the input type: `*` only for `array`, `|` only for 
 1. Validates the arguments against the input schema. If they are not valid, it returns `isError` with the reason.
 2. Builds argv as a list and runs it with no shell.
 3. Passes only a base environment (`PATH`, `HOME`, proxy and certificate variables) and the `env` names of the tool. It also sets `CLAUDE_PROJECT_DIR` to the project folder, because the tool runs in its manifest folder.
+   If a required `env` name is not set, the server gets it from 1Password (see [Secrets](#secrets)).
 4. Stops the process after `timeout`.
 5. Cuts stdout to 100 KB and stderr to 8 KB.
 6. If the exit code is not 0, returns `isError` with stderr.
@@ -172,7 +173,30 @@ The plugin starts the server automatically. Each start needs Python 3.11 or late
 - `python` must be on `PATH`. On Windows, `python3` is often the Microsoft Store stub, so the server does not use it.
 - `run.sh` uses the first Python 3.11+ on `PATH` (`python3`, `python`, `py`).
 
-Plugins cannot ship environment values. Set each variable that a tool declares, for example `NOTION_TOKEN`, in `~/.claude/settings.json` (`env`) or in the cloud environment settings.
+Plugins cannot ship environment values. Give each variable that a tool declares, for example `NOTION_TOKEN`, in one of two ways:
+
+- Set it in `~/.claude/settings.json` (`env`) or in the cloud environment settings.
+- Put it in 1Password (see [Secrets](#secrets)). Then the only variable to set is `OP_SERVICE_ACCOUNT_TOKEN`.
+
+## Secrets
+
+If a required `env` name of a tool is not set, the server reads it from 1Password:
+
+```
+tool call ──► env name missing ──► secrets.env: NAME=op://vault/item/field ──► op read ──► tool env
+                                                                    (one read for each name and session)
+```
+
+| Part | Source |
+|---|---|
+| Reference file | `skills/secrets/secrets.env` of the installed `core` plugin. `AGENT_TOOLS_SECRETS_ENV` (a path list) replaces it. An empty value turns the lookup off |
+| Service account token | `OP_SERVICE_ACCOUNT_TOKEN`. On Windows, also the user environment in the registry |
+| `op` | `PATH`, `~/.local/bin/op`, or the winget folder. On Linux, the server installs it with `scripts/install-op-linux.sh` of `core` |
+
+- A variable that is set in the environment wins. The server does not read 1Password for it.
+- The server does not look up optional names (`NAME?`).
+- The values stay in the memory of the server. They never go to the output, the log or a file.
+- If the lookup fails, the error of the tool call gives the reason, for example `OP_SERVICE_ACCOUNT_TOKEN is not set`.
 
 ## Commands
 
