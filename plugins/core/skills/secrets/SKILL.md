@@ -5,7 +5,7 @@ description: Get API keys, tokens and passwords for scripts and tools from 1Pass
 
 # Secrets from 1Password
 
-All secrets for agents are in the 1Password vault `agent`. A read-only service account opens that vault. Its token is the environment variable `OP_SERVICE_ACCOUNT_TOKEN`, the only secret on each machine.
+All secrets for agents are in the 1Password vault `agent`. A service account opens that vault, and only that vault, with read and write access. Its token is the environment variable `OP_SERVICE_ACCOUNT_TOKEN`, the only secret on each machine.
 
 ```
 1Password vault "agent" ──► op run --env-file secrets.env -- <command>
@@ -19,12 +19,13 @@ All secrets for agents are in the 1Password vault `agent`. A read-only service a
 - If you must pipe a value (for example into `wrangler secret put`), use `op read "<reference>" | <command>` in Bash. Do not pipe in Windows PowerShell 5.1: it adds characters.
 - Never type a secret into a web form or a browser field. Ask the user to do that.
 - Never put a secret in a URL or a query string.
-- The service account can only read. To add or change a secret, ask the user to do it in the 1Password app.
+- To add a secret, pipe a JSON item into `op item create --vault agent` (see "Add a secret"). Never put a value in a command argument.
+- Do not change or delete an item, unless the user asks.
 - Each read counts against a limit of 1,000 reads a day for the account. Do not call `op` in a loop.
 
 ## Desktop app and CLI
 
-The user adds and changes secrets in the 1Password desktop or web app. The CLI reads the same vault in the cloud, so a secret that the user adds is available immediately. The app and the CLI do not conflict. The app does not include `op`.
+The user and the agent both change the same vault. A secret that one of them adds is available immediately, on each machine and in the cloud. The app and the CLI do not conflict. The app does not include `op`.
 
 ## Names
 
@@ -40,7 +41,7 @@ Reference format: `op://agent/<ITEM>/credential`. Use the item type "API Credent
 
 ## Steps
 
-1. Find the variable in `secrets.env`. If it is not there, tell the user the item name to create in vault `agent`, then add the line to `secrets.env` in `MgCohen/claude-plugins`.
+1. Find the variable in `secrets.env`. If it is not there, make the item (see "Add a secret"). If you do not have the value, ask the user for the item. Then add the line to `secrets.env` in `MgCohen/claude-plugins`.
 2. Run the command with the wrapper:
    - Windows (PowerShell): `& "<skill folder>/scripts/with-secrets.ps1" <command> <args>`
    - Bash (Windows Git Bash, Linux, cloud): `"<skill folder>/scripts/with-secrets.sh" <command> <args>`
@@ -52,6 +53,16 @@ Reference format: `op://agent/<ITEM>/credential`. Use the item type "API Credent
 | `op is not installed` | No CLI | Windows: `winget install --id AgileBits.1Password.CLI --exact`. Linux and cloud: `with-secrets.sh` installs it. If that fails, read its output. |
 | `isn't an item` or `could not find item` | The item does not exist | Ask the user to create it in vault `agent` |
 | `rate limit` | The daily limit is reached | Stop. Tell the user. The limit resets after 24 hours. |
+
+## Add a secret
+
+Make the JSON in a pipe, so the value is never in a command argument or in the output. Bash example, for a token from `gh`:
+
+```bash
+gh auth token | python -c "import json,sys;print(json.dumps({'title':'NAME','category':'API_CREDENTIAL','fields':[{'id':'credential','type':'CONCEALED','label':'credential','value':sys.stdin.read().strip()}]}))" | with-secrets.sh op item create --vault agent --format json > /dev/null
+```
+
+Then add the line `NAME=op://agent/NAME/credential` to `secrets.env`.
 
 ## Wrappers
 
