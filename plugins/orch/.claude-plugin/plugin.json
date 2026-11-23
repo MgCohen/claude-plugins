@@ -1,1 +1,1 @@
-{ "name": "orch", "version": "0.3.0", "description": "Orchestrator plugin: session inbox, mirror, heartbeat, lease, the tools ask_user, report, update and spawn_child, and the orch skills and agents" }
+{ "name": "orch", "version": "0.3.1", "description": "Orchestrator plugin: session inbox, mirror, heartbeat, lease, the tools ask_user, report, update and spawn_child, and the orch skills and agents", "author": { "name": "MgCohen" } }
