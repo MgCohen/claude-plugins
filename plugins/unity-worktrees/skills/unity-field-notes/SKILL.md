@@ -1,6 +1,6 @@
 ---
 name: unity-field-notes
-description: Tested rules and results for Unity Editor automation with the unity CLI and com.unity.pipeline on Windows - start, compile check, Safe Mode, dialogs, stop, focus, command queue, freezes, crashes, Play Mode input, logs, captures and players. Use with the unity-cli skill when you start, stop or drive a Unity Editor or player from automation, or when a command fails with exit 6, 14, 17 or 18. These results come before the docs where they differ.
+description: Tested rules and results for Unity Editor automation with the unity CLI and com.unity.pipeline on Windows - start, compile check, Safe Mode, dialogs, stop, focus, command queue, freezes, crashes, Play Mode input, logs, captures, players, and Android and Linux builds. Use with the unity-cli skill when you start, stop or drive a Unity Editor or player from automation, or when a command fails with exit 6, 14, 17 or 18. These results come before the docs where they differ.
 ---
 
 # Unity field notes
@@ -33,11 +33,16 @@ If your versions are newer, test a note again before you trust it.
 13. Check that the descriptor `pid` and `projectPath` match your Editor before you trust it.
 14. Never use `capture editor_window`: it hung and crashed the Editor 2 times out of 2. Always pass `--output-path` to a capture.
 15. In Editor Play Mode, a key event must reach the game through the player loop: queue it, and do not call `InputSystem.Update()`. `runtime simulate_key` does not work there.
+16. Find your own Editor by a unique log path: start it with `--args "-automated -logFile <unique path>"`, then take the one `Unity.exe` whose command line has that path, and open a process handle at once (it gives the exit code). Before the start, stop if another `Unity.exe` has the same `-projectPath`.
+17. After a start, check the log line `IsHumanControllingUs: 0`. If it is `1`, the Editor is not in automated mode: stop the run.
+18. In an escalation, give each step 15 s to end the process before the next step. Never count CPU time as progress.
+19. For an Android build on this computer, start the build process with `TEMP` and `TMP` set to another folder, and do not set `JDK_JAVA_OPTIONS`.
 
 ## Start and compile
 
 - `-automated` starts the normal Editor with its window (not batch mode, `Application.isBatchMode` false). The log line is `BatchMode: 0, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0`. The descriptor `info` field is empty.
 - In `-automated`, `EditorUtility.DisplayDialog` returns at once (2 ms) with `false` (the cancel button), and no dialog shows.
+- In `-automated`, `EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo` returns `false`. That is the cause of the hidden save prompt in rule 8: with a dirty scene, `test run --timeout 90` ran no test and failed with exit 14 after 90 s. After the scene was cleaned by API, the same test passed in about 6 s.
 - Batch compile check: good code exits 0 in 13 to 17 s. Broken code exits 1 in about 8.5 s, with "Scripts have compiler errors." No Safe Mode in batch mode, and no process stays. Unity can hold the log for a moment after the exit: read it with shared access. It also finds analyzer errors with severity error.
 - A package that cannot resolve (a bad `manifest.json` entry): with `-automated`, no dialog; the Editor logs "An error occurred while resolving packages" and exits with code 1 after about 5 s. The batch check gives the same lines.
 - Warm start with `unity open --until-ready`: `Unity.exe` appears after about 6 s, `ready` after 18 to 22 s. A worktree Editor with a cache seed was ready in 70 s.
@@ -188,6 +193,8 @@ Progress, readable from outside with Win32 (no focus):
 - After `Utils.ForceCrash`, the log has `Crash!!!` at once, but the process stays alive 24 to 31 s to write the dump, then exits with `0xC0000005`. No UnityBugReporter started. Use the log line, not the PID, to see a crash at once.
 - `Unity.dll` has the undocumented environment variable `UNITY_DONOTSTARTBUGREPORTER`.
 - A hang in a domain reload, escalated: a 120 s cap, `CloseMainWindow()` (no effect), a stop by PID, a new start: ready about 60 s later.
+- Escalation order: keep the evidence (the last log lines, the crash folder), `editor quit --discard` if the server answers, `CloseMainWindow()` by PID, a stop by PID. Start again only once, and never after Safe Mode or a failed start.
+- Exit codes of the Editor process: 0 quit, 1 failed start (a compile or package error), `0xC0000005` crash, -1 stopped by PID.
 
 ## Play Mode and input
 
@@ -252,6 +259,50 @@ The cause (from the source and the tests): `runtime simulate_key` calls `InputSy
 
 - `unity status --format json`: `data.items[]` with `pid` and `state`. It lists all Editors on the computer, so pick the row with your PID.
 - `unity pipeline editors --format json`: `data.items[]` with `pid`, `isRunning`, `pipelineServer.isReachable` and `safeMode` (null or an object). The docs give a `phase` field, but 1.0.1 has none.
+
+## Builds and platforms (tested 2026-11-20, Unity 6000.6.6f1)
+
+| Target | Modules | Build time | Note |
+|---|---|---|---|
+| Windows player, Mono | none | 42 s | |
+| Windows player, IL2CPP | none | 46 s | |
+| Windows dedicated server, IL2CPP | `windows-server` | 90 s | |
+| Android APK, IL2CPP ARM64 | `android`, OpenJDK 17, NDK r27c, SDK, CMake | 69 s warm, 139 s first | 23 MB |
+| Linux dedicated server, IL2CPP | `linux-server`, `linux-il2cpp` | 167 s | Ran with `-batchmode -nographics` on a Linux x86_64 host |
+
+- Install modules with `unity install-modules`. Each install needs a person to accept the UAC prompt within 2 minutes.
+- Gradle fails with `java.io.IOException: Unable to establish loopback connection` when the Java NIO pipe uses the default `%TEMP%` of this computer. Set `TEMP` and `TMP` of the build process to another folder. Unity does not pass `JAVA_TOOL_OPTIONS` to Gradle, and `JDK_JAVA_OPTIONS` makes the CMake step fail on its "Picked up" note on stderr.
+- Run the Android build with the command sandbox off.
+- The Android module adds icon entries to `ProjectSettings.asset` at each start. The Linux target adds `com.unity.toolchain.win-x86_64-linux` 1.1.1 to `manifest.json`. Revert them, or commit them one time.
+- Unity 6000.6 cannot build x86_64 for Android. ARM64 code runs on an x86_64 emulator through `libndk_translation`.
+
+Android emulator that works:
+
+| Item | Value |
+|---|---|
+| AVD | API 35, x86_64, in a folder of its own: set `ANDROID_SDK_ROOT` and `ANDROID_AVD_HOME` |
+| Acceleration | WHPX |
+| GPU | `-gpu host`, with a window (OpenGL ES 3.1). Headless (`-no-window`) gives only OpenGL ES 3.0, and the app did not start in 90 s. |
+| Focus | Before the run: `adb shell settings put secure immersive_mode_confirmations confirmed`. Otherwise the "Viewing full screen" dialog takes the focus and Unity pauses. |
+| Output | Read the player log with `adb logcat`, tag `Unity` |
+
+## Revalidate after an upgrade
+
+These results depend on a version or a timing. After a Unity, CLI or Pipeline upgrade, test them again:
+
+- `-automated`: Safe Mode with no dialog, exit 1 on a package error, no scene backup dialog, `StartBugReporterOnCrash: 0`.
+- The dialog API and the CLI dialog answer (rule 6).
+- Unity's busy window: class `#32770`, the "Skip Transcoding" button, the titles.
+- The Pipeline server does not try its bind again, and the internal `PipelineServerStartup` names.
+- The hidden save prompt before a test run.
+- The `delayCall` bug without `-automated` (the docs say that Pipeline 1.0.1 fixes it).
+- The cost of one `unity command` call.
+- The docs rule "`unreachable` after 60 s" (not seen on 6000.6.6f1 or 6000.7.0b9).
+- All time values in this file.
+
+## Related
+
+The "Editor Status Trust" page of the vsa-unity test suite has the design of a status checker on these results: 26 Editor states, their signals, caps and stall windows, and the replay tests. https://claude.ai/artifact/BwivCXvSh9GhPwkNXSkG6H
 
 ## Other facts from the docs
 
