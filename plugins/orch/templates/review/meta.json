@@ -1,0 +1,14 @@
+{
+  "type": "review",
+  "version": 1,
+  "purpose": "You approve, change or refuse a plan or a default.",
+  "from": [
+    "user"
+  ],
+  "to": [
+    "session"
+  ],
+  "needs": null,
+  "replies": [],
+  "card": null
+}

@@ -1,0 +1,32 @@
+{
+  "label": "Report",
+  "icon": "doc",
+  "tone": "done",
+  "toneBy": { "field": "state", "values": { "blocked": "failed", "working": "pending" }, "icons": { "blocked": "alert" } },
+  "actions": [
+    { "id": "ack", "label": "Acknowledge", "role": "main" },
+    { "id": "reply", "label": "Reply", "role": "other" }
+  ],
+  "document": {
+    "title": ["{{summary}}"],
+    "facts": [
+      { "field": "state", "label": "State", "as": "pill", "tones": { "done": "done", "working": "pending", "blocked": "failed" } }
+    ],
+    "blocks": [
+      { "field": "blockers", "label": "Blockers", "as": "list", "tone": "failed" },
+      { "field": "done", "label": "Done", "as": "list" },
+      { "field": "next", "label": "Next", "as": "list" },
+      { "field": "links", "label": "Links", "as": "links" },
+      { "field": "details", "label": "Details" }
+    ]
+  },
+  "preview": {
+    "title": ["{{summary}}"],
+    "well": [
+      { "field": "blockers", "label": "Blockers" },
+      { "field": "done", "label": "Done" },
+      { "field": "next", "label": "Next" }
+    ],
+    "pill": { "field": "state", "label": "State", "as": "pill", "tones": { "done": "done", "working": "pending", "blocked": "failed" } }
+  }
+}

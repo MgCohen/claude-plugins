@@ -1,0 +1,30 @@
+{
+  "label": "Brief",
+  "icon": "brief",
+  "tone": "muted",
+  "document": {
+    "title": ["{{title}}"],
+    "facts": [
+      { "field": "type", "label": "Type" },
+      { "field": "agent", "label": "Agent" },
+      { "field": "stream", "label": "Stream" },
+      { "field": "workflow", "label": "Workflow" },
+      { "field": "cwd", "label": "Folder", "as": "code" },
+      { "field": "worktree", "label": "Worktree" },
+      { "field": "background", "label": "Background" },
+      { "field": "where", "label": "Where" },
+      { "field": "allowDefaults", "label": "Allow defaults" }
+    ],
+    "blocks": [
+      { "field": "goal", "label": "Goal" },
+      { "field": "scope", "label": "Scope" },
+      { "field": "doneWhen", "label": "Done when", "as": "well" },
+      { "field": "skills", "label": "Skills", "as": "chips" }
+    ]
+  },
+  "preview": {
+    "title": ["{{title}}"],
+    "line": ["{{goal}}"],
+    "well": [{ "field": "doneWhen", "label": "Done when" }]
+  }
+}

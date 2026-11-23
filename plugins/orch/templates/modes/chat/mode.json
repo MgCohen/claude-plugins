@@ -1,0 +1,9 @@
+{
+  "name": "chat",
+  "version": 1,
+  "interaction": "conversation",
+  "autonomy": "ask",
+  "route": "user",
+  "visibility": "public",
+  "describe": "Talk with the user until the user or the parent says done."
+}

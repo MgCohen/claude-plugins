@@ -1,0 +1,23 @@
+{
+  "label": "Plan",
+  "icon": "review",
+  "tone": "new",
+  "actions": [
+    { "id": "approve", "label": "Approve", "role": "main" },
+    { "id": "change", "label": "Ask for a change", "role": "other" },
+    { "id": "refuse", "label": "Refuse", "role": "danger" }
+  ],
+  "document": {
+    "title": ["{{title}}"],
+    "facts": [],
+    "blocks": [
+      { "field": "context", "label": "Context" },
+      { "field": "steps", "label": "Steps", "as": "steps" }
+    ]
+  },
+  "preview": {
+    "title": ["{{title}}"],
+    "line": ["{{context}}"],
+    "list": { "field": "steps", "max": 4 }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "label": "Review",
+  "icon": "review",
+  "tone": "new",
+  "document": {
+    "title": ["{{question}}", "Review of {{decision}}"],
+    "facts": [
+      { "field": "verdict", "label": "Verdict", "as": "pill", "tones": { "approve": "done", "change": "pending", "refuse": "failed" } },
+      { "field": "target", "label": "About" }
+    ],
+    "blocks": [
+      { "field": "text", "label": "Direction", "as": "well" },
+      { "field": "branch", "label": "Branch", "as": "code" },
+      { "field": "base", "label": "Base", "as": "code" },
+      { "field": "nextBranch", "label": "Next branch", "as": "code" }
+    ]
+  },
+  "preview": {
+    "title": ["{{question}}", "Review of {{decision}}"],
+    "line": ["{{verdict}}{{#text}}: {{text}}{{/text}}"],
+    "well": [{ "field": "text", "label": "Direction" }],
+    "pill": { "field": "verdict", "label": "Verdict", "as": "pill", "tones": { "approve": "done", "change": "pending", "refuse": "failed" } }
+  }
+}

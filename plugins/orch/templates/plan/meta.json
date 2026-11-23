@@ -1,0 +1,27 @@
+{
+  "type": "plan",
+  "version": 1,
+  "purpose": "You propose steps before you do them.",
+  "from": [
+    "session"
+  ],
+  "to": [
+    "user",
+    "session"
+  ],
+  "needs": "review",
+  "replies": [
+    "review"
+  ],
+  "card": {
+    "accept": {
+      "post": "review",
+      "verdict": "approve"
+    },
+    "refuse": {
+      "post": "review",
+      "verdict": "refuse",
+      "needsText": true
+    }
+  }
+}

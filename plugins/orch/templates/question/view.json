@@ -1,0 +1,33 @@
+{
+  "label": "Question",
+  "icon": "q",
+  "tone": "new",
+  "actions": [
+    { "id": "accept", "label": "Accept", "role": "main" },
+    { "id": "other", "label": "Other answer", "role": "other" },
+    { "id": "skip", "label": "Skip", "role": "other" }
+  ],
+  "document": {
+    "title": ["{{question}}"],
+    "facts": [
+      { "field": "risk", "label": "Risk", "as": "pill", "tones": { "low": "done", "medium": "pending", "high": "failed" } },
+      { "field": "defaultOption", "label": "Default" }
+    ],
+    "blocks": [
+      { "field": "context", "label": "Context" },
+      { "field": "snippet", "label": "Snippet", "as": "code" },
+      { "field": "options", "label": "Options", "as": "chips", "mark": "defaultOption" },
+      { "field": "recommendation", "label": "Recommendation", "as": "well" }
+    ]
+  },
+  "preview": {
+    "title": ["{{question}}"],
+    "line": ["{{recommendation}}", "{{context}}"],
+    "well": [
+      { "field": "recommendation", "label": "Recommendation" },
+      { "field": "context", "label": "Context" }
+    ],
+    "chips": { "field": "options", "mark": "defaultOption" },
+    "pill": { "field": "risk", "label": "Risk", "as": "pill", "tones": { "low": "done", "medium": "pending", "high": "failed" } }
+  }
+}

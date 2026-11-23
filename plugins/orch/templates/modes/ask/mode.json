@@ -1,0 +1,9 @@
+{
+  "name": "ask",
+  "version": 1,
+  "interaction": "stepwise",
+  "autonomy": "ask",
+  "route": "parent",
+  "visibility": "public",
+  "describe": "Report after each step, and ask the parent each question that the policy does not answer."
+}

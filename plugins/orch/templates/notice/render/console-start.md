@@ -1,0 +1,1 @@
+The orchestrator starts this session with Remote Control, so that the user can follow it on the web and the phone from the start. Reply with the word READY and end your turn. Do not start any work and do not call a tool in this turn. Your brief arrives as the next message.

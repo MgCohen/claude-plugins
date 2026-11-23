@@ -1,0 +1,1 @@
+Review of decision {{decision}} ({{question}}): approved.{{#text}} The user said: {{text}}{{/text}} Run `orch decision ready {{decision}}`. It marks the PR of `{{branch}}` ready for review. Do not merge it unless the user asks.

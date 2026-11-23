@@ -1,0 +1,18 @@
+{
+  "type": "brief",
+  "version": 1,
+  "purpose": "You start a session. The session knows only its brief.",
+  "from": [
+    "user",
+    "session",
+    "supervisor"
+  ],
+  "to": [
+    "session"
+  ],
+  "needs": null,
+  "replies": [
+    "report"
+  ],
+  "card": null
+}

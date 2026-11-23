@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "message",
+  "description": "Free text from one party to another, when no other type fits.",
+  "type": "object",
+  "required": [
+    "text"
+  ],
+  "properties": {
+    "text": {
+      "type": "string",
+      "description": "The message in free text.",
+      "minLength": 1
+    }
+  },
+  "additionalProperties": false
+}

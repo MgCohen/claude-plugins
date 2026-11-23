@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "notice",
+  "description": "A fixed fact of the supervisor to a session. Each kind has its own file in render/.",
+  "type": "object",
+  "required": [
+    "kind"
+  ],
+  "properties": {
+    "kind": {
+      "enum": [
+        "question-reminder",
+        "question-closed",
+        "archive-self",
+        "restart",
+        "child-not-responding",
+        "child-responding",
+        "report-missing",
+        "child-forgotten",
+        "child-stopped",
+        "child-resumed",
+        "child-archived",
+        "child-archived-in-app",
+        "archive-reminder",
+        "remote-control-self",
+        "remote-control-child",
+        "archive-child",
+        "state-inferred",
+        "open-in-app",
+        "console-start",
+        "cloud-worker"
+      ]
+    },
+    "decision": {
+      "type": "string"
+    },
+    "question": {
+      "type": "string"
+    },
+    "text": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "child": {
+      "type": "string"
+    },
+    "by": {
+      "type": "string"
+    },
+    "waited": {
+      "type": "string"
+    },
+    "count": {
+      "type": "number"
+    },
+    "error": {
+      "type": "string"
+    },
+    "fault": {
+      "type": "string"
+    },
+    "appId": {
+      "type": "string"
+    },
+    "remoteControlTool": {
+      "description": "The app tool that turns Remote Control on or off. The provider gives it.",
+      "type": "string"
+    },
+    "archiveTool": {
+      "description": "The app tool that archives a session. The provider gives it.",
+      "type": "string"
+    },
+    "groupTool": {
+      "description": "The app tool that moves a session into a sidebar group. The provider gives it.",
+      "type": "string"
+    },
+    "groupCreateTool": {
+      "description": "The app tool that makes a sidebar group. The provider gives it.",
+      "type": "string"
+    },
+    "group": {
+      "description": "The sidebar group of child sessions, for example Workers. The provider gives it.",
+      "type": "string"
+    },
+    "state": {
+      "type": "string"
+    },
+    "session": {
+      "description": "The full id of the session that gets the notice.",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

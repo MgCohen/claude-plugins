@@ -1,0 +1,14 @@
+{
+  "description": "The catalog of looks: the components that a view.json can name with \"as\". Each look has one Razor component in src/Orchestrator.Web/Components/Ui/Looks/<Name>Look.razor and one function in the LOOKS object of docs/render-design/page.html. A test checks both.",
+  "looks": [
+    { "name": "text", "places": ["fact", "block"], "values": "any", "description": "Plain text. Line breaks stay." },
+    { "name": "code", "places": ["fact", "block"], "values": "text", "description": "Monospace text: a path, a branch, a code snippet." },
+    { "name": "well", "places": ["block"], "values": "text", "description": "Text in a colored box: the main point of the document." },
+    { "name": "list", "places": ["block"], "values": "list", "description": "A bulleted list. \"tone\" colors the block." },
+    { "name": "steps", "places": ["block"], "values": "list", "description": "A numbered list." },
+    { "name": "chips", "places": ["block"], "values": "list", "description": "One chip for each item. \"mark\" names a field whose value gets the default mark." },
+    { "name": "links", "places": ["block"], "values": "list", "description": "A list of links. A value that is not an http URL shows as code." },
+    { "name": "pill", "places": ["fact"], "values": "text", "description": "A small colored label. \"tones\" gives the color of each value." },
+    { "name": "progress", "places": ["fact"], "values": "number", "description": "A percent from 0 to 100." }
+  ]
+}

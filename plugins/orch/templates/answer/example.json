@@ -1,0 +1,9 @@
+{
+  "decision": "toolu_01RAQ",
+  "text": "GREEN",
+  "by": "policy",
+  "question": "Which color do we use in color.txt?",
+  "reason": "level low, no answer in 1800 s",
+  "source": "AGENTS.md, section Colors",
+  "onDefault": "stacked-pr"
+}

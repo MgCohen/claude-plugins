@@ -1,0 +1,1 @@
+This is a default decision ({{reason}}). The user did not answer yet and will review it later. Commit your current work first. Then make the work of this decision in its own commit, with "decision {{decision}}" in the commit message.

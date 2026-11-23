@@ -1,0 +1,96 @@
+{
+  "name": "planning",
+  "version": 1,
+  "purpose": "Turn a goal into an approved spec and a list of next tasks, one question at a time.",
+  "entry": "read",
+  "done": "The user approved the spec, and the owner has the list of next tasks.",
+  "steps": [
+    {
+      "id": "read",
+      "title": "Read the goal and the docs",
+      "executor": "agent",
+      "instructions": "Read the brief and the project docs. List the open questions that the docs do not answer.",
+      "session": "owner",
+      "input": ["brief", "project docs"],
+      "output": ["open questions"],
+      "next": [
+        { "step": "ask", "when": "questions are open" },
+        { "step": "spec", "when": "no questions are open" }
+      ]
+    },
+    {
+      "id": "ask",
+      "title": "Ask one question",
+      "executor": "agent",
+      "instructions": "Ask one open question in the full format: the question, the context, the options and your recommendation.",
+      "session": "owner",
+      "input": ["one open question"],
+      "output": ["question"],
+      "templates": ["question"],
+      "messages": [{ "kind": "question", "to": "user" }],
+      "next": [{ "step": "answer" }]
+    },
+    {
+      "id": "answer",
+      "title": "Answer",
+      "executor": "ask",
+      "instructions": "The user or the orchestrator answers the question.",
+      "input": ["question"],
+      "output": ["answer"],
+      "templates": ["answer"],
+      "exit": "the answer is recorded in the store",
+      "next": [{ "step": "record" }]
+    },
+    {
+      "id": "record",
+      "title": "Record the answer",
+      "executor": "agent",
+      "instructions": "Write the answer as one decision row in docs/decisions.md. Update the list of open questions.",
+      "session": "owner",
+      "input": ["answer"],
+      "output": ["decision row"],
+      "next": [
+        { "step": "ask", "when": "questions are open" },
+        { "step": "spec", "when": "no questions are open" }
+      ]
+    },
+    {
+      "id": "spec",
+      "title": "Write the spec",
+      "executor": "agent",
+      "instructions": "Write the spec from the answers. Send a report that the spec is ready for review.",
+      "session": "owner",
+      "input": ["answers", "decision rows"],
+      "output": ["spec"],
+      "templates": ["report"],
+      "messages": [{ "kind": "report", "to": "orchestrator", "when": "the spec is ready for review" }],
+      "next": [{ "step": "approve" }]
+    },
+    {
+      "id": "approve",
+      "title": "Approve the spec",
+      "executor": "ask",
+      "instructions": "The user reviews the spec: approve, change or refuse.",
+      "input": ["spec"],
+      "output": ["verdict"],
+      "templates": ["review"],
+      "approval": { "by": "user", "strategy": "required" },
+      "next": [
+        { "step": "ask", "when": "the verdict is change" },
+        { "step": "propose", "when": "the verdict is approve" }
+      ]
+    },
+    {
+      "id": "propose",
+      "title": "Propose the next tasks",
+      "executor": "agent",
+      "instructions": "Split the approved spec into tasks. Send the list in a done report to the owner.",
+      "session": "owner",
+      "input": ["approved spec"],
+      "output": ["task list"],
+      "templates": ["report"],
+      "messages": [{ "kind": "report", "to": "orchestrator", "when": "done" }],
+      "done": true
+    }
+  ]
+}

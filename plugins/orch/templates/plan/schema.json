@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "plan",
+  "description": "A session proposes its steps before it does them. The user approves, changes or refuses the plan.",
+  "type": "object",
+  "required": [
+    "title",
+    "steps"
+  ],
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "What the plan makes, in a few words.",
+      "minLength": 1
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "description": "The steps, in order."
+    },
+    "context": {
+      "type": "string",
+      "description": "Why this plan, and what you know."
+    }
+  },
+  "additionalProperties": false
+}

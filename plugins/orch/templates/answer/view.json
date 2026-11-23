@@ -1,0 +1,95 @@
+{
+  "label": "Answer",
+  "icon": "pen",
+  "tone": "accent",
+  "actions": [
+    {
+      "id": "approve",
+      "label": "Approve",
+      "role": "main"
+    },
+    {
+      "id": "change",
+      "label": "Request a change",
+      "role": "other"
+    },
+    {
+      "id": "diff",
+      "label": "Open the diff",
+      "role": "other"
+    },
+    {
+      "id": "refuse",
+      "label": "Refuse",
+      "role": "danger"
+    }
+  ],
+  "document": {
+    "title": [
+      "{{question}}",
+      "{{text}}"
+    ],
+    "subtitle": [
+      "{{text}}"
+    ],
+    "facts": [
+      {
+        "field": "by",
+        "label": "By",
+        "as": "pill",
+        "tones": {
+          "user": "accent",
+          "docs": "new",
+          "policy": "pending",
+          "supervisor": "muted"
+        }
+      },
+      {
+        "field": "onDefault",
+        "label": "Then",
+        "as": "code"
+      }
+    ],
+    "blocks": [
+      {
+        "field": "reason",
+        "label": "Reason"
+      },
+      {
+        "field": "source",
+        "label": "Source",
+        "as": "well"
+      }
+    ]
+  },
+  "preview": {
+    "title": [
+      "{{question}}",
+      "{{text}}"
+    ],
+    "line": [
+      "{{text}}"
+    ],
+    "well": [
+      {
+        "field": "reason",
+        "label": "Reason"
+      },
+      {
+        "field": "source",
+        "label": "Source"
+      }
+    ],
+    "pill": {
+      "field": "by",
+      "label": "By",
+      "as": "pill",
+      "tones": {
+        "user": "accent",
+        "docs": "new",
+        "policy": "pending",
+        "supervisor": "muted"
+      }
+    }
+  }
+}

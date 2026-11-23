@@ -1,0 +1,14 @@
+{
+  "type": "notice",
+  "version": 1,
+  "purpose": "The supervisor tells a session a fixed fact.",
+  "from": [
+    "supervisor"
+  ],
+  "to": [
+    "session"
+  ],
+  "needs": null,
+  "replies": [],
+  "card": null
+}

@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "answer",
+  "description": "The answer to one question, from the user, the docs or the policy.",
+  "type": "object",
+  "required": [
+    "decision",
+    "text",
+    "by"
+  ],
+  "properties": {
+    "decision": {
+      "type": "string",
+      "description": "The id of the question: the thread of the answer.",
+      "minLength": 1
+    },
+    "text": {
+      "type": "string",
+      "description": "The answer in free text."
+    },
+    "by": {
+      "enum": [
+        "user",
+        "docs",
+        "policy",
+        "supervisor"
+      ]
+    },
+    "question": {
+      "type": "string",
+      "description": "The text of the question, for the render."
+    },
+    "source": {
+      "type": "string",
+      "description": "For a docs answer: the file and the section."
+    },
+    "reason": {
+      "type": "string",
+      "description": "Why a default or a docs answer applies."
+    },
+    "onDefault": {
+      "enum": [
+        "stacked-pr",
+        "commit",
+        "none"
+      ],
+      "description": "For a policy answer: what the session must do with the default."
+    }
+  },
+  "additionalProperties": false
+}

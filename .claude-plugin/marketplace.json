@@ -36,6 +36,11 @@
       "name": "triage",
       "source": "./plugins/triage",
       "description": "Runs the triage of the Notion Asks database: capture requests, fill a template for each kind of work in small steps, and convert each ask."
+    },
+    {
+      "name": "orch",
+      "source": "./plugins/orch",
+      "description": "Orchestrator plugin: session inbox, mirror, heartbeat, lease, the tools ask_user, report, update and spawn_child, and the orch skills and agents"
     }
   ]
 }

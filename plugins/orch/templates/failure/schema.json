@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "failure",
+  "description": "A failure that the supervisor saw: one thread for each session and reason. A new try posts a new failure in the thread; a recovery posts the state recovered.",
+  "type": "object",
+  "required": [
+    "text",
+    "session",
+    "reason",
+    "state"
+  ],
+  "properties": {
+    "text": { "type": "string", "minLength": 1, "description": "One line for people: what failed." },
+    "session": { "type": "string", "minLength": 1, "description": "The session that failed." },
+    "reason": { "enum": ["failed-turns", "no-ack"], "description": "failed-turns: the supervisor turns of the session fail. no-ack: the live session takes no input." },
+    "state": { "enum": ["open", "recovered"], "description": "open: the failure continues. recovered: the session works again." },
+    "error": { "type": "string", "description": "The last error text." },
+    "tries": { "type": "integer", "minimum": 0, "description": "The count of failed tries in this failure." },
+    "first": { "type": "string", "description": "The time of the first failed try (ISO)." },
+    "last": { "type": "string", "description": "The time of the last failed try (ISO)." },
+    "next": { "type": "string", "description": "The time of the next try (ISO), if the supervisor waits." },
+    "envelopes": { "type": "array", "items": { "type": "string" }, "description": "The envelopes that wait for the session." }
+  },
+  "additionalProperties": false
+}

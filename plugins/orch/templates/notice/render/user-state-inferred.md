@@ -1,0 +1,1 @@
+The supervisor could not calculate the state of session "{{title}}" ({{child}}). An agent inferred the state "{{state}}": {{text}} The supervisor starts no action for an inferred state. Look at the session (orch status {{child}}).

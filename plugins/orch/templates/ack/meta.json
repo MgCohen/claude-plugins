@@ -1,0 +1,16 @@
+{
+  "type": "ack",
+  "version": 1,
+  "purpose": "You got an envelope, or you read a card. Automatic.",
+  "from": [
+    "session",
+    "user",
+    "supervisor"
+  ],
+  "to": [
+    "*"
+  ],
+  "needs": null,
+  "replies": [],
+  "card": null
+}
