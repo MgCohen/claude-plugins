@@ -1,0 +1,16 @@
+{
+  "label": "Ack",
+  "icon": "check",
+  "tone": "muted",
+  "document": {
+    "title": ["{{state}} · {{by}}"],
+    "facts": [
+      { "field": "state", "label": "State", "as": "pill", "tones": { "delivered": "done", "read": "done" } },
+      { "field": "by", "label": "By" }
+    ],
+    "blocks": []
+  },
+  "preview": {
+    "title": ["{{state}} · {{by}}"]
+  }
+}

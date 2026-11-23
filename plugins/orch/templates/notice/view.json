@@ -1,0 +1,20 @@
+{
+  "label": "Notice",
+  "icon": "dot",
+  "tone": "muted",
+  "document": {
+    "title": ["{{render:kind}}"],
+    "facts": [
+      { "field": "kind", "label": "Kind", "as": "code" },
+      { "field": "title", "label": "Session" },
+      { "field": "child", "label": "Child", "as": "code" }
+    ],
+    "blocks": [
+      { "render": "kind", "label": "Text" }
+    ]
+  },
+  "preview": {
+    "title": ["{{render:kind}}"],
+    "pill": { "field": "kind", "label": "Kind", "as": "pill" }
+  }
+}

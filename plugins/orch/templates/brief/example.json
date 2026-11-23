@@ -1,0 +1,7 @@
+{
+  "title": "Color child",
+  "goal": "Ask the user which color goes in color.txt, then write it.",
+  "doneWhen": "color.txt has the color, and a done report names it.",
+  "skills": ["orch-ask", "orch-report"],
+  "agent": "worker"
+}

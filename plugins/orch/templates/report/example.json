@@ -1,0 +1,6 @@
+{
+  "state": "done",
+  "summary": "I wrote GREEN into color.txt, because the user chose GREEN.",
+  "done": ["color.txt"],
+  "links": ["orch/decision-toolu_01RAQ"]
+}

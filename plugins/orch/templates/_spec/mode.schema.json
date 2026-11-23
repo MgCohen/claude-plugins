@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "mode.json",
+  "description": "A session mode (S1): a named preset of the four axes. One folder for each mode in templates/modes/. A spec can set one axis to change one value of a preset.",
+  "type": "object",
+  "required": ["name", "version", "interaction", "autonomy", "route", "visibility", "describe"],
+  "properties": {
+    "name": { "type": "string", "description": "The mode. It must be the same as the folder name." },
+    "version": { "type": "integer", "minimum": 1 },
+    "interaction": { "enum": ["task", "stepwise", "conversation"], "description": "task: one report when the check passes. stepwise: a report after each step, with no confirmation. conversation: ends when the user or the parent says done." },
+    "autonomy": { "enum": ["auto", "ask", "approve"], "description": "auto: asks only a high-risk question. ask: asks each question that the policy does not answer. approve: waits for an approval before each step and before done." },
+    "route": { "enum": ["parent", "user"], "description": "Where the questions go: to the parent, or to the session chat." },
+    "visibility": { "enum": ["public", "private"], "description": "public: import into the app and Remote Control on, at the earliest point. private: neither." },
+    "describe": { "type": "string", "minLength": 1, "description": "One sentence: when to use the mode." }
+  },
+  "additionalProperties": false
+}

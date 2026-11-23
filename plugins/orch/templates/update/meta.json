@@ -1,0 +1,15 @@
+{
+  "type": "update",
+  "version": 1,
+  "purpose": "A step starts or ends. Nobody must act: the UI shows it in the session tree.",
+  "from": [
+    "session"
+  ],
+  "to": [
+    "user",
+    "session"
+  ],
+  "needs": null,
+  "replies": [],
+  "card": null
+}

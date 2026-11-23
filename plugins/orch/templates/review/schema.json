@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "review",
+  "description": "The verdict of the user on a default decision or a plan.",
+  "type": "object",
+  "required": [
+    "decision",
+    "verdict"
+  ],
+  "properties": {
+    "decision": {
+      "type": "string",
+      "description": "The id of the decision or the plan: the thread of the review.",
+      "minLength": 1
+    },
+    "verdict": {
+      "enum": [
+        "approve",
+        "change",
+        "refuse"
+      ]
+    },
+    "text": {
+      "type": "string",
+      "description": "The direction of the user, in free text."
+    },
+    "question": {
+      "type": "string",
+      "description": "The question of the decision, or the title of the plan."
+    },
+    "version": {
+      "type": "string",
+      "description": "The version id of the decision on the stack."
+    },
+    "branch": {
+      "type": "string"
+    },
+    "base": {
+      "type": "string"
+    },
+    "nextBranch": {
+      "type": "string"
+    },
+    "target": {
+      "enum": [
+        "decision",
+        "plan"
+      ],
+      "description": "What the review is about. Default: decision."
+    }
+  },
+  "additionalProperties": false
+}

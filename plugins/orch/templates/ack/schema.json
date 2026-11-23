@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ack",
+  "description": "A receiver got an envelope (delivered), or the user read a card (read). refs.of names the envelope.",
+  "type": "object",
+  "required": [
+    "state",
+    "by"
+  ],
+  "properties": {
+    "state": {
+      "enum": [
+        "delivered",
+        "read"
+      ]
+    },
+    "by": {
+      "type": "string",
+      "description": "How it arrived: live, supervisor, tool-result, chat, user."
+    }
+  },
+  "additionalProperties": false
+}

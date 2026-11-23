@@ -1,0 +1,10 @@
+{
+  "decision": "toolu_01RAQ",
+  "verdict": "change",
+  "text": "Use SMALL.",
+  "question": "Which size do we use in size.txt?",
+  "version": "toolu_01RAQ",
+  "branch": "orch/decision-toolu_01RAQ",
+  "base": "main",
+  "nextBranch": "orch/decision-toolu_01RAQ-v2"
+}

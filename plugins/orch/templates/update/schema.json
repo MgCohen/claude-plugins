@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "update",
+  "description": "The progress of a session. The reader does not need to act: the UI shows it in the session tree, not in the queue.",
+  "type": "object",
+  "required": ["summary"],
+  "properties": {
+    "step": { "type": "string", "description": "The name of the current step." },
+    "progress": { "type": "number", "minimum": 0, "maximum": 100, "description": "Percent done." },
+    "summary": { "type": "string", "minLength": 1 }
+  },
+  "additionalProperties": false
+}

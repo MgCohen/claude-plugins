@@ -1,0 +1,25 @@
+{
+  "type": "failure",
+  "version": 1,
+  "purpose": "The supervisor saw that a session fails, or that it works again.",
+  "from": [
+    "supervisor"
+  ],
+  "to": [
+    "user"
+  ],
+  "needs": null,
+  "replies": [
+    "ack",
+    "message"
+  ],
+  "card": {
+    "accept": {
+      "post": "ack"
+    },
+    "refuse": {
+      "post": "message",
+      "needsText": true
+    }
+  }
+}

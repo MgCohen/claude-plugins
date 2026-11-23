@@ -1,0 +1,26 @@
+{
+  "type": "report",
+  "version": 1,
+  "purpose": "Your work is done, blocked, or ready for review.",
+  "from": [
+    "session"
+  ],
+  "to": [
+    "user",
+    "session"
+  ],
+  "needs": "ack",
+  "replies": [
+    "ack",
+    "message"
+  ],
+  "card": {
+    "accept": {
+      "post": "ack"
+    },
+    "refuse": {
+      "post": "message",
+      "needsText": true
+    }
+  }
+}

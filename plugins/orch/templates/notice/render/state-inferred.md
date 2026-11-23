@@ -1,0 +1,1 @@
+The supervisor could not calculate the state of child "{{title}}" ({{child}}). An agent inferred the state "{{state}}": {{text}} The supervisor starts no action for an inferred state. Look at the child (orch status {{child}}) and tell the user if it needs help.

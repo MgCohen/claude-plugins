@@ -1,0 +1,29 @@
+{
+  "type": "answer",
+  "version": 1,
+  "purpose": "You reply to a question.",
+  "from": [
+    "user",
+    "docs",
+    "policy",
+    "supervisor"
+  ],
+  "to": [
+    "session",
+    "user"
+  ],
+  "needs": "review",
+  "replies": [
+    "review"
+  ],
+  "card": {
+    "accept": {
+      "post": "review",
+      "verdict": "approve"
+    },
+    "refuse": {
+      "post": "review",
+      "verdict": "refuse"
+    }
+  }
+}

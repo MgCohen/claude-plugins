@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "report",
+  "description": "A session tells its parent or the user that the work is done or blocked. The reader must act.",
+  "type": "object",
+  "required": [
+    "state",
+    "summary"
+  ],
+  "properties": {
+    "state": {
+      "enum": [
+        "working",
+        "blocked",
+        "done"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300,
+      "description": "One or two short sentences, 300 characters maximum: the result first. No URL: put each URL in links. Name a decision by its question, not by its id."
+    },
+    "done": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200
+      },
+      "description": "The finished items: one fact for each item, 200 characters maximum, no paragraph. Name a decision by its question, not by its id."
+    },
+    "next": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200
+      },
+      "description": "The next steps: one step for each item, 200 characters maximum."
+    },
+    "blockers": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200
+      },
+      "description": "The problems that stop the work: one for each item, 200 characters maximum."
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Branches, PRs and files."
+    },
+    "details": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,9 @@
+{
+  "title": "Split the store module",
+  "steps": [
+    "Move the event code to Stream.cs",
+    "Change the callers",
+    "Run the tests"
+  ],
+  "context": "FileStore.cs has 400 lines."
+}

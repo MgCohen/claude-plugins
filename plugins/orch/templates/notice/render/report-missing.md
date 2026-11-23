@@ -1,0 +1,1 @@
+Your last turn ended with no final report. If your work is done, call mcp__orch__report with state done. If you cannot continue, call it with state blocked. Else continue the work. The end of a step is an update (mcp__orch__update), not a report.

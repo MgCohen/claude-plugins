@@ -1,0 +1,13 @@
+{
+  "label": "Message",
+  "icon": "chat",
+  "tone": "accent",
+  "document": {
+    "title": ["{{text}}"],
+    "facts": [],
+    "blocks": []
+  },
+  "preview": {
+    "title": ["{{text}}"]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "message",
+  "version": 1,
+  "purpose": "None of the other types fits. Free text to a session or to the user.",
+  "from": [
+    "user",
+    "session",
+    "supervisor"
+  ],
+  "to": [
+    "session",
+    "user"
+  ],
+  "needs": null,
+  "replies": [
+    "message"
+  ],
+  "card": null
+}

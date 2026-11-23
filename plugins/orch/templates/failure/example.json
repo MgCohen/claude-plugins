@@ -1,0 +1,12 @@
+{
+  "text": "Demo root: its supervisor turns fail (3 tries)",
+  "session": "3c341eec-e774-464f-bdda-7258cf1048d6",
+  "reason": "failed-turns",
+  "state": "open",
+  "error": "the fake provider: boom",
+  "tries": 3,
+  "first": "2026-11-18T14:30:29.848Z",
+  "last": "2026-11-18T14:30:31.459Z",
+  "next": "2026-11-18T14:35:31.459Z",
+  "envelopes": ["1795012225436-ccd6b93b-supervisor"]
+}

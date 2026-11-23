@@ -1,0 +1,9 @@
+{
+  "question": "Which color do we use in color.txt?",
+  "context": "Step 3 of the brief writes one color file.",
+  "options": ["RED", "BLUE"],
+  "recommendation": "BLUE: the other files use cool colors.",
+  "risk": "medium",
+  "defaultOption": "BLUE",
+  "waitSeconds": 0
+}

@@ -1,0 +1,9 @@
+{
+  "name": "approve",
+  "version": 1,
+  "interaction": "task",
+  "autonomy": "approve",
+  "route": "parent",
+  "visibility": "public",
+  "describe": "Work alone, but wait for an approval before each step and before done."
+}

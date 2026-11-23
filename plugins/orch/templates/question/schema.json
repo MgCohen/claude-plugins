@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "question",
+  "description": "A session asks one question. The target (to) gives the direction: the user, the parent or a child. The options are suggestions: the receiver answers in free text.",
+  "type": "object",
+  "required": ["question"],
+  "dependentRequired": {
+    "defaultOption": ["risk"]
+  },
+  "properties": {
+    "question": { "type": "string", "minLength": 1, "description": "One question, one sentence." },
+    "context": { "type": "string", "minLength": 1, "description": "Why the question comes up now, and what the receiver needs to know to answer." },
+    "snippet": { "type": "string", "description": "Code or text that shows the problem. Optional." },
+    "options": { "type": "array", "items": { "type": "string" }, "minItems": 2, "maxItems": 4, "description": "Two to four suggestions. Optional." },
+    "recommendation": { "type": "string", "minLength": 1, "description": "Your pick and its reason. Optional." },
+    "risk": { "type": "string", "description": "The policy level of this question. Required when defaultOption is present." },
+    "defaultOption": { "type": "string", "description": "The option that applies if nobody answers in time. Optional: with no default, the session waits for an answer." },
+    "waitSeconds": { "type": "number", "minimum": 0, "maximum": 580, "description": "0: return PENDING at once. More than 0: block up to this many seconds." }
+  },
+  "additionalProperties": false
+}

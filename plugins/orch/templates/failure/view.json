@@ -1,0 +1,31 @@
+{
+  "label": "Failure",
+  "icon": "alert",
+  "tone": "failed",
+  "toneBy": { "field": "state", "values": { "recovered": "done" } },
+  "actions": [
+    { "id": "ack", "label": "Seen", "role": "main" },
+    { "id": "reply", "label": "Send to session", "role": "other" }
+  ],
+  "document": {
+    "title": ["{{text}}"],
+    "facts": [
+      { "field": "state", "label": "State", "as": "pill", "tones": { "open": "failed", "recovered": "done" } },
+      { "field": "reason", "label": "Reason" },
+      { "field": "tries", "label": "Tries" },
+      { "field": "last", "label": "Last try" },
+      { "field": "next", "label": "Next try" }
+    ],
+    "blocks": [
+      { "field": "error", "label": "Error" },
+      { "field": "envelopes", "label": "Waiting envelopes", "as": "list" }
+    ]
+  },
+  "preview": {
+    "title": ["{{text}}"],
+    "well": [
+      { "field": "error", "label": "Error" }
+    ],
+    "pill": { "field": "state", "label": "State", "as": "pill", "tones": { "open": "failed", "recovered": "done" } }
+  }
+}

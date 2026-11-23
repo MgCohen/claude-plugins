@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "brief",
+  "description": "The start of a session. The session knows only its brief.",
+  "type": "object",
+  "required": ["title", "goal"],
+  "properties": {
+    "title": { "type": "string", "minLength": 1, "description": "A short title that names all of the scope." },
+    "goal": { "type": "string", "minLength": 1, "description": "What the session must make, and why. Steps go here too." },
+    "scope": { "type": "string", "description": "What is in scope and what is not." },
+    "doneWhen": { "type": "string", "description": "The check that shows that the work is done." },
+    "skills": { "type": "array", "items": { "type": "string" }, "description": "The plugin skills to load first." },
+    "agent": { "type": "string", "description": "Old name of type. It stays valid. If both are present, type applies." },
+    "type": { "type": "string", "description": "The custom agent of the session, for example decider. Default: the agent of the role (orchestrator or worker)." },
+    "stream": { "type": "string", "description": "The stream id, for example C. Default: the stream of the parent." },
+    "workflow": { "type": "string", "description": "The workflow that the session runs or works in, for example planning." },
+    "cwd": { "type": "string", "description": "The working folder. Default: the folder of the parent." },
+    "worktree": { "type": "boolean", "description": "true: the supervisor makes a git worktree for this session." },
+    "background": { "type": "boolean", "description": "true: a background session. Remote Control stays off. Default: Remote Control is on, so the user sees the session on the phone." },
+    "where": { "enum": ["local", "cloud"], "description": "Where the session runs. cloud: a cloud session of the engine, with the orch command in HTTP mode. Default: local." },
+    "parent": { "type": "string", "description": "The full id of the parent session." },
+    "allowDefaults": { "type": "boolean", "description": "true: a merge may carry default decisions that the user did not approve. Only the user sets it. Child sessions get it from their parent." }
+  },
+  "additionalProperties": false
+}

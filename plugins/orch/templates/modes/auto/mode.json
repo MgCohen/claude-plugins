@@ -1,0 +1,9 @@
+{
+  "name": "auto",
+  "version": 1,
+  "interaction": "task",
+  "autonomy": "auto",
+  "route": "parent",
+  "visibility": "public",
+  "describe": "Work alone to the goal, and report once when the check passes. Ask only a high-risk question."
+}

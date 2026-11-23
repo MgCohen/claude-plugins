@@ -1,0 +1,26 @@
+{
+  "type": "question",
+  "version": 1,
+  "purpose": "You need an answer: a choice with options and a default, or facts with no default.",
+  "from": [
+    "session"
+  ],
+  "to": [
+    "user",
+    "session"
+  ],
+  "needs": "answer",
+  "replies": [
+    "answer"
+  ],
+  "card": {
+    "accept": {
+      "post": "answer",
+      "text": "defaultOption"
+    },
+    "refuse": {
+      "post": "answer",
+      "needsText": true
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "label": "Update",
+  "icon": "stream",
+  "tone": "muted",
+  "document": {
+    "title": ["{{summary}}"],
+    "subtitle": ["{{step}}"],
+    "facts": [
+      { "field": "progress", "label": "Progress", "as": "progress" }
+    ],
+    "blocks": []
+  },
+  "preview": {
+    "title": ["{{summary}}"],
+    "line": ["{{step}}"],
+    "progress": "progress"
+  }
+}
