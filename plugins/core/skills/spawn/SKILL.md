@@ -39,8 +39,8 @@ Use `desktop` if you can. A `background` session is a CLI job. When its process 
    ```
 
 4. Call `get_session` with the full `desktop session` id from the output (`local_<uuid>`, never a short id). If it is not found, wait 5 seconds and try again, 6 times maximum. The import takes about 15 seconds.
-5. Call `set_remote_control` with that full id and `enabled: true`. If the result says "requires an active session", call it again at once. If it says "not found", wait 5 seconds and call it again. Try 3 times maximum, then tell the user.
-6. Send the brief with `SendMessage` (or `send_message`) to that id.
+5. Send the brief with `SendMessage` (or `send_message`) to that full id. The message starts a turn, so the session becomes active.
+6. Call `set_remote_control` with that full id and `enabled: true`. If the result says "requires an active session", the session has no turn yet: send it a short message, wait 5 seconds, and call it again. An immediate retry with no message fails. If it says "not found", wait 5 seconds and call it again. Try 3 times maximum, then tell the user.
 7. Give the user a link to the session: `[<name>](#local_<id>)`.
 
 ## Steps: background
