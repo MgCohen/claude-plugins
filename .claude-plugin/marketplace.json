@@ -20,7 +20,7 @@
     {
       "name": "unity-worktrees",
       "source": "./plugins/unity-worktrees",
-      "description": "Unity-ready worktrees for Claude Code sessions, with the Library seeded via the Unity CLI"
+      "description": "Unity-ready worktrees for Claude Code sessions, with the Library seeded via the Unity CLI, and tested rules for Unity Editor automation"
     },
     {
       "name": "agent-tools",
