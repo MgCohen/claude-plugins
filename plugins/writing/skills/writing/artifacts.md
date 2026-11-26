@@ -40,7 +40,9 @@ Decisions and values: `house-style-decisions.md`.
 | Recommendation card | `.card.rec` | The decision, at the top of the first tab |
 | Note banner | `.note`, `.ok`, `.warn`, `.bad` | A status, an example, a risk |
 | Table | `.tw` | Items with the same attributes |
-| Chip | `.chip`, `.ok`, `.warn`, `.bad`, `.info` | A state in one word |
+| Mark | `.mk` with a health class and a stage symbol | The state of an item |
+| Chip | `.chip`, `.ok`, `.warn`, `.bad`, `.info` | A reference or a category in one word |
+| Plan | `.tiles`, `.rm` | A roadmap with steps and items |
 | Stat tiles | `.stats`, `.stat` | 3 or 4 key figures |
 | Bar rows | `.bars`, `.bar` | 2 to 12 values to compare |
 | Foldable list | `.fl` | 3 or more items of one type |
@@ -74,11 +76,22 @@ Decisions and values: `house-style-decisions.md`.
   script shows one card for each row.
 - If a cell needs a sentence, the content is too much for a table. Use a foldable list.
 
+### Mark
+
+A mark gives the state of an item. It is the mark of the stream tracker.
+
+| Part | Values |
+|---|---|
+| Color: health | `done` green, `prog` blue (in progress), `you` amber (waits for you), `blocked` red, `plan` purple (planning), `none` grey (not started) |
+| Symbol: stage | ✓ merged or done, ? waits for an answer, ▶ running, ‖ stopped, × cancelled, no symbol |
+
+- Each page that uses marks shows the legend (`.marks`) once, near the top of the first tab that uses them.
+- Use marks, not chips, for each state: in tables, foldables, trees and plans.
+
 ### Chip
 
-- A chip gives a state ("decided", "open", "risk") or a reference to a decision or a phase ("K4", "P7").
-- One fixed word for each state on a page.
-- Green: done or good. Amber: open or partial. Red: failure. Blue: information or default.
+- A chip gives a reference to a decision or a phase ("K4", "P7"), or a category ("answer", "decision").
+- One fixed word for each category on a page.
 - Up to 3 chips on one row. No chips for decoration.
 
 ### Foldable list
@@ -91,7 +104,7 @@ One component for all lists of items: findings, decisions, proposals, questions 
 | Title | 6 words maximum, one line, cut with "…" when closed |
 | Key fact | Optional second line, 13px grey |
 | ID | Only when readers refer to items by ID: K1, Q1, P3 |
-| Chips | Only for a state or a reference. Up to 3, at the right |
+| State | One mark at the right. References as chips, up to 3 |
 | Open content | Full width, under a line |
 | Sizes | Title 15 bold, key fact 13, ID 12 code font, chip 11 code font |
 
@@ -106,7 +119,7 @@ One component for all lists of items: findings, decisions, proposals, questions 
 - **Rich content:** text, tables, code blocks and notes use the full width of the item.
 - **Length:** about 300 words in one item. If an item is longer, split it into child items, or
   give it its own tab.
-- **Question:** ID `Q1`, key fact "Default: …", chip `info` "default" or `ok` "answered".
+- **Question:** ID `Q1`, key fact "Default: …", mark `you ?` while open, mark `done ✓` when answered.
 - **Plan phase:** ID = phase number, key fact = decisions and issue, chip = PR number or "open".
   The open content gives the changes, then the tests to run.
 
@@ -127,6 +140,23 @@ A long list of items of one type, for example events, components or concepts.
 - Each item has `data-item` and one `data-<category>` attribute for each dropdown.
 - The bar stays one row while it fits. If not, the search box goes to its own row.
 - If the page needs only search or only one category, use the same bar with fewer controls.
+
+### Plan
+
+| Part | Rule |
+|---|---|
+| Tiles | `.tiles` on top: the status as a mark and a word, then counts ("Step 2 of 3", "3 of 6") |
+| Roadmap | `.rm`: one foldable for each step, with a step number, a strip of marks for its items and one mark for the step |
+| Current step | `class="cur"` on its foldable, open by default, with "Current step" under the name |
+| Items | Open, a step shows one row for each item: mark, ID, title |
+| Decision log | A table: date, kind (chip), text. Above about 20 entries: one foldable for each date |
+| Timeline | A branch graph, as in the stream tracker: branches, merges as diamonds, releases as squares, a "You are here" line, dashed lines for work not started |
+
+### Data-driven pages
+
+- A page that a session updates often keeps its content as data: in the page database, or in a data file next to the page.
+- One script draws the page from the data. The session changes the data, not the HTML.
+- Use it for trackers, inventories, logs and plans. Use plain HTML for a page that does not change.
 
 ### Tree
 

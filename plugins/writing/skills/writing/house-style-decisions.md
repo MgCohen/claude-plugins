@@ -93,6 +93,18 @@ Filter and search use one bar (U1 to U4). This replaces the filter buttons and t
 | C4 | Properties of one item | Two-column table |
 | C5 | Wide trees on a phone | Shrink down to 50%, then scroll. Lines never wrap |
 
+## Plans, progress and time
+
+| ID | Decision | Value |
+|---|---|---|
+| D1 | Plan overview | Tracker roadmap: numbered foldable steps with a strip of marks |
+| D2 | Progress | Marks, status tiles on top, the current step marked |
+| D3 | Decision log | Table: date, kind, text. One foldable for each date above about 20 entries |
+| D4 | Timeline | Branch graph, as in the stream tracker |
+| D5 | Marks | Tracker marks for each state on all pages. Chips stay for references and categories |
+| D6 | Tracker style | The stream tracker moves to the house style |
+| D7 | Data-driven pages | Content as data, one shared script draws the page |
+
 ## Code block
 
 | ID | Decision | Value |
@@ -111,6 +123,9 @@ Filter and search use one bar (U1 to U4). This replaces the filter buttons and t
 | R5 | Legend | Keep |
 
 ## Open questions
+
+- Shared scripts for the data-driven patterns (D7): the branch graph timeline, the roadmap, the inventory.
+- The stream tracker in the house style (D6).
 
 
 - Diagrams (R4, R6, R7): which types, when to use each, Mermaid or drawn, and the style. This needs

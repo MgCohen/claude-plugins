@@ -68,6 +68,39 @@ nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:va
 .tw.stacked td{display:block;text-align:right;border:0;padding:4px 12px;white-space:normal}
 .tw.stacked td::before{content:attr(data-l);float:left;margin-right:12px;font:600 14px var(--body);color:var(--muted);text-align:left}
 
+/* marks: color = health, symbol = stage (as in the stream tracker) */
+.mk{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;color:#fff;font:700 9px/1 var(--mono);font-style:normal;flex:none;vertical-align:-3px}
+.mk.done{background:var(--ok)}.mk.prog{background:var(--accent)}.mk.you{background:var(--warn)}.mk.blocked{background:var(--bad)}.mk.plan{background:#6b4fbb}.mk.none{background:#8a93a3}
+.mk.big{width:20px;height:20px;font-size:11px}
+.marks{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted)}
+.marks div{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}
+.marks em{font:600 10px var(--mono);font-style:normal;text-transform:uppercase;letter-spacing:.05em;width:100%}
+.marks span{display:inline-flex;gap:5px;align-items:center}
+.strip{display:flex;gap:3px;align-items:center;margin-left:auto;flex:none}
+.strip em{font:600 11px var(--mono);font-style:normal;color:var(--muted)}
+
+/* plan: tiles and roadmap */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;display:flex;flex-direction:column;gap:2px}
+.tile.key{border-left:3px solid var(--warn)}
+.tile span{font:600 10.5px var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.tile b{font-size:15px;display:flex;gap:6px;align-items:center}
+.rm{display:flex;flex-direction:column;gap:6px}
+.rm details{background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.rm summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 12px}
+.rm summary::-webkit-details-marker{display:none}
+.rm .rn{width:26px;height:26px;border-radius:6px;background:var(--accent-soft);color:var(--accent);font:600 13px var(--mono);display:flex;align-items:center;justify-content:center;flex:none}
+.rm .rt{display:flex;flex-direction:column;flex:1;min-width:0}
+.rm .rt b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rm .rt small{font-size:12px;color:var(--accent);font-weight:600}
+.rm details.cur{border-left:3px solid var(--accent)}
+.rm details.cur .rn{background:var(--accent);color:#fff}
+.rm .items{border-top:1px solid var(--line)}
+.rm .irow{display:flex;align-items:center;gap:10px;padding:7px 12px 7px 48px;border-bottom:1px solid var(--line);font-size:14px}
+.rm .irow:last-child{border-bottom:0}
+.rm .iid{font:500 12px var(--mono);min-width:40px}
+.rm .itt{flex:1;min-width:0}
+
 /* stat tiles */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:10px}
 .stat{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
@@ -171,6 +204,7 @@ nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:va
   <nav class="tabs" id="tabs" role="tablist">
     <button role="tab" data-t="summary">Summary</button>
     <button role="tab" data-t="details">Details</button>
+    <button role="tab" data-t="plan">Plan</button>
     <button role="tab" data-t="structure">Structure</button>
     <button role="tab" data-t="inventory">Inventory</button>
     <button role="tab" data-t="questions">Questions</button>
@@ -200,20 +234,22 @@ nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:va
   </section>
 
   <section class="tab" data-p="details" hidden>
+    <div class="marks"><div><em>Color: health</em><span><i class="mk done"></i>Done</span><span><i class="mk prog"></i>In progress</span><span><i class="mk you"></i>Waits for you</span><span><i class="mk blocked"></i>Blocked</span><span><i class="mk plan"></i>Planning</span><span><i class="mk none"></i>Not started</span></div>
+      <div><em>Symbol: stage</em><span><i class="mk none">✓</i>Merged</span><span><i class="mk none">?</i>Waits for an answer</span><span><i class="mk none">▶</i>Running</span><span><i class="mk none">‖</i>Stopped</span><span><i class="mk none">×</i>Cancelled</span></div></div>
     <div class="note warn"><b>Risk.</b> One sentence for the risk.</div>
     <div class="tw"><table>
       <thead><tr><th>Part</th><th>Reader</th><th>Time (s)</th><th>State</th></tr></thead>
       <tbody>
-        <tr><td>Fact reader</td><td><code>TypeFacts</code></td><td class="num">4.6</td><td><span class="chip ok">decided</span></td></tr>
-        <tr><td>Report format</td><td><code>--report</code></td><td class="num">0.4</td><td><span class="chip warn">open</span></td></tr>
+        <tr><td>Fact reader</td><td><code>TypeFacts</code></td><td class="num">4.6</td><td><i class="mk done">✓</i></td></tr>
+        <tr><td>Report format</td><td><code>--report</code></td><td class="num">0.4</td><td><i class="mk you">?</i></td></tr>
       </tbody>
     </table></div>
     <div class="fl">
-      <details><summary><span class="id">K1</span><span class="tt"><b>Item title, 6 words maximum</b><small>Optional key fact</small></span><span class="chip ok">decided</span></summary>
+      <details><summary><span class="id">K1</span><span class="tt"><b>Item title, 6 words maximum</b><small>Optional key fact</small></span><i class="mk done">✓</i></summary>
         <div class="body"><p>Content of the item: text, a table or a code block.</p></div></details>
       <details><summary><span class="tt"><b>Group: Gaps</b><small>2 items</small></span></summary>
         <div class="body"><div class="fl">
-          <details><summary><span class="id">G1</span><span class="tt"><b>Child item</b><small>Key fact</small></span><span class="chips"><span class="chip bad">gap</span><span class="chip info">P7</span></span></summary>
+          <details><summary><span class="id">G1</span><span class="tt"><b>Child item</b><small>Key fact</small></span><span class="chips"><i class="mk blocked">×</i><span class="chip info">P7</span></span></summary>
             <div class="body"><div><div class="lbl">Where</div><p>File and line.</p></div><div><div class="lbl">Fix</div><p>The change to make.</p></div></div></details>
           <details><summary><span class="id">G2</span><span class="tt"><b>Child item</b></span></summary>
             <div class="body"><p>Content of the item.</p></div></details>
@@ -223,6 +259,29 @@ nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:va
 public abstract record Block : Concept {
     public string Folder => "Kernel";
 }</pre></div></div>
+  </section>
+
+  <section class="tab" data-p="plan" hidden>
+    <div class="tiles">
+      <div class="tile key"><span>Status</span><b><i class="mk you">?</i>Waits for you</b></div>
+      <div class="tile"><span>Roadmap</span><b>Step 2 of 3</b></div>
+      <div class="tile"><span>Items</span><b>3 of 6</b></div>
+    </div>
+    <div class="rm">
+      <details><summary><span class="rn">1</span><span class="rt"><b>Base</b></span><span class="strip"><i class="mk done">✓</i><i class="mk done">✓</i></span><i class="mk big done">✓</i></summary>
+        <div class="items"><div class="irow"><i class="mk done">✓</i><span class="iid">A1</span><span class="itt">Design page</span></div><div class="irow"><i class="mk done">✓</i><span class="iid">B1</span><span class="itt">Lifecycle design</span></div></div></details>
+      <details class="cur" open><summary><span class="rn">2</span><span class="rt"><b>Foundations</b><small>Current step</small></span><span class="strip"><i class="mk prog">?</i><i class="mk done">✓</i><i class="mk none"></i></span><i class="mk big prog">▶</i></summary>
+        <div class="items"><div class="irow"><i class="mk prog">?</i><span class="iid">K1</span><span class="itt">Architecture review</span></div><div class="irow"><i class="mk done">✓</i><span class="iid">S9</span><span class="itt">Plugin in one place</span></div><div class="irow"><i class="mk none"></i><span class="iid">S10</span><span class="itt">Supervisor self-start</span></div></div></details>
+      <details><summary><span class="rn">3</span><span class="rt"><b>Features</b></span><span class="strip"><i class="mk plan">?</i></span><i class="mk big plan">?</i></summary>
+        <div class="items"><div class="irow"><i class="mk plan">?</i><span class="iid">M1</span><span class="itt">Voice dictation</span></div></div></details>
+    </div>
+    <div class="tw"><table>
+      <thead><tr><th>Date</th><th>Kind</th><th>Text</th></tr></thead>
+      <tbody>
+        <tr><td class="num">11-17</td><td><span class="chip info">answer</span></td><td>Tunnel and Access, as for the runner.</td></tr>
+        <tr><td class="num">11-17</td><td><span class="chip ok">decision</span></td><td>Plan only now. Code is a later task.</td></tr>
+      </tbody>
+    </table></div>
   </section>
 
   <section class="tab" data-p="structure" hidden>
@@ -304,7 +363,7 @@ public abstract record Block : Concept {
 
   <section class="tab" data-p="questions" hidden>
     <div class="fl">
-      <details><summary><span class="id">Q1</span><span class="tt"><b>The question in one sentence?</b><small>Default: the answer if you do not reply</small></span><span class="chip info">default</span></summary>
+      <details><summary><span class="id">Q1</span><span class="tt"><b>The question in one sentence?</b><small>Default: the answer if you do not reply</small></span><i class="mk you">?</i></summary>
         <div class="body"><p>Context and options.</p></div></details>
     </div>
   </section>
