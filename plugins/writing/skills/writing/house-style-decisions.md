@@ -58,15 +58,24 @@ One component for all lists: findings, decisions, questions and plan phases.
 
 Question lists (R2) and phase lists (R3) use the foldable.
 
+## Code block
+
+| ID | Decision | Value |
+|---|---|---|
+| CB1 | Background | Dark `#11141b`, in light and dark mode |
+| CB2 | Syntax colors | Keyword `#7fa2ff`, type `#5fcf95`, text `#f0b257`, number `#ff7b84`, comment `#9aa3b5` italic |
+| CB3 | Code on a phone | Shrink to fit, down to 50% of the normal size. Below that, scroll sideways |
+| CB4 | Top bar | File name and language, when the code comes from a file |
+| CB5 | Line numbers | Not used |
+| CB6 | Code in a sentence | Code font on a light grey tint, no syntax colors |
+
 ## Other components
 
 | ID | Component | Value |
 |---|---|---|
 | R5 | Legend | Keep |
-| R8 | Code block | To change: shrink to fit on a phone, syntax colors, dark background |
 
 ## Open questions
 
 - Diagrams (R4, R6, R7): which types, when to use each, Mermaid or drawn, and the style. This needs
   its own review.
-- Code block (R8): review the changed version.
