@@ -1,88 +1,633 @@
 {
-  "title": "House Style Gallery",
-  "areas": [
-    ["foundations", "Foundations"],
-    ["frame", "Page frame"],
-    ["data", "Data"],
-    ["lists", "Lists"],
-    ["structures", "Structures"],
-    ["plans", "Plans"],
-    ["code", "Code"]
+ "title": "House Style Components",
+ "areas": [
+  [
+   "foundations",
+   "Foundations"
   ],
-  "components": [
-    {"id": "colors", "area": "foundations", "name": "Colors", "what": "The color tokens of each page, in light and dark mode.",
-     "html": "<div class=\"swatches\"><div><i style=\"background:var(--bg)\"></i><span>--bg</span></div><div><i style=\"background:var(--surface)\"></i><span>--surface</span></div><div><i style=\"background:var(--fg)\"></i><span>--fg</span></div><div><i style=\"background:var(--muted)\"></i><span>--muted</span></div><div><i style=\"background:var(--line)\"></i><span>--line</span></div><div><i style=\"background:var(--accent)\"></i><span>--accent</span></div><div><i style=\"background:var(--ok)\"></i><span>--ok</span></div><div><i style=\"background:var(--warn)\"></i><span>--warn</span></div><div><i style=\"background:var(--bad)\"></i><span>--bad</span></div></div>",
-     "parts": [["Page", "--bg, light grey"], ["Cards and tables", "--surface, white"], ["Accent", "--accent, blue"], ["States", "--ok, --warn, --bad, each with a -soft tint"]],
-     "rule": null},
-    {"id": "type", "area": "foundations", "name": "Type", "what": "The three fonts and their sizes.",
-     "html": "<h1>Title 26</h1><h2>Heading 19</h2><p>Body text 15. The engine reads each DLL one time.</p><p><code>Code font 13</code> <span class=\"eyebrow\">Label 11</span></p>",
-     "parts": [["Headings", "Space Grotesk 600"], ["Body", "IBM Plex Sans 400 and 600"], ["Code, IDs, labels", "IBM Plex Mono"], ["Sizes", "26, 19, 15, 14, 13, 11"]],
-     "rule": null},
-
-    {"id": "header", "area": "frame", "name": "Page header", "what": "Label line, title and summary at the top of each page.",
-     "g": "header", "parts": [["Label line", ".eyebrow, project and topic"], ["Title", "h1, the page name"], ["Summary", ".lead, 1 to 3 sentences"]],
-     "rule": "Page header"},
-    {"id": "tabs", "area": "frame", "name": "Tabs", "what": "The tab bar of a long page.",
-     "g": "tabs", "parts": [["Open tab", "Blue underline"], ["Names", "2 words maximum, no numbers"], ["Count", "2 to 6"], ["Phone", "Shrink to 75%, then scroll"]],
-     "rule": "Page types"},
-    {"id": "note", "area": "frame", "name": "Note banner", "what": "A box with a colored left edge and bold first words.",
-     "g": "note",
-     "variants": [["Information", "<div class=\"note\"><b>Example.</b> The plan said: one interface for each call.</div>"], ["Done", "<div class=\"note ok\"><b>Done.</b> All phases are merged.</div>"], ["Failure", "<div class=\"note bad\"><b>Risk.</b> Each rule would exist two times.</div>"]],
-     "parts": [["Edge", "3px: blue, green, amber or red"], ["First words", "Bold, give the point"]],
-     "rule": "Note banner and recommendation card"},
-    {"id": "rec", "area": "frame", "name": "Recommendation card", "what": "The decision or the answer, at the top of the first tab.",
-     "g": "rec", "parts": [["Edge", "3px green"], ["Lines", "One for each decision, key in bold"], ["Last line", "Not recommended"]],
-     "rule": "Note banner and recommendation card"},
-
-    {"id": "table", "area": "data", "name": "Table", "what": "Items with the same attributes.",
-     "g": "table", "parts": [["Header", "Body font 13, bold"], ["Box", "White, outline, round corners"], ["Cells", "Never wrap"], ["Phone", "Shrink to fit, below 70%: one card for each row"]],
-     "rule": "Table"},
-    {"id": "marks", "area": "data", "name": "Marks", "what": "The state of an item: color for health, symbol for stage.",
-     "g": "marks",
-     "variants": [["In a row", "<p><i class=\"mk done\">✓</i> <i class=\"mk prog\">▶</i> <i class=\"mk you\">?</i> <i class=\"mk blocked\">×</i> <i class=\"mk plan\">?</i> <i class=\"mk none\"></i> <i class=\"mk done\">‖</i></p>"], ["Large, for a step", "<p><i class=\"mk big prog\">▶</i> <i class=\"mk big done\">✓</i></p>"]],
-     "parts": [["Size", "16px, 20px for a step"], ["Colors", "done, prog, you, blocked, plan, none"], ["Symbols", "✓ ? ▶ ‖ × or none"]],
-     "rule": "Mark"},
-    {"id": "chip", "area": "data", "name": "Chips", "what": "A reference or a category in one word.",
-     "html": "<p><span class=\"chip info\">K4</span> <span class=\"chip info\">P7</span> <span class=\"chip ok\">decision</span> <span class=\"chip info\">answer</span></p>",
-     "parts": [["Font", "Code font 11"], ["Use", "References and categories, not states"], ["Row", "Up to 3"]],
-     "rule": "Chip"},
-    {"id": "stats", "area": "data", "name": "Stat tiles", "what": "3 or 4 key figures.",
-     "g": "stats", "parts": [["Figure", "Space Grotesk 24"], ["Label", "13, grey, with the unit"]], "rule": null},
-    {"id": "bars", "area": "data", "name": "Bar rows", "what": "2 to 12 values to compare.",
-     "g": "bars", "parts": [["Heading", "States the finding"], ["Value", "Own column, code font"], ["Source", "Under the bars"]], "rule": null},
-
-    {"id": "foldable", "area": "lists", "name": "Foldable list", "what": "One box for each item of a list. Nested items show on a grey area.",
-     "g": "foldable",
-     "parts": [["Title", "15 bold, one line, cut with …"], ["Key fact", "13 grey, optional"], ["ID", "12 code font, optional"], ["State", "One mark at the right"], ["Nesting", "3 levels maximum"]],
-     "rule": "Foldable list"},
-    {"id": "questions", "area": "lists", "name": "Question form", "what": "Open questions as foldables, with the default answer.",
-     "g": "questions", "parts": [["ID", "Q1, Q2"], ["Key fact", "Default: the answer"], ["Mark", "you ? while open, done ✓ when answered"]],
-     "rule": "Foldable list"},
-    {"id": "inventory", "area": "lists", "name": "Inventory", "what": "A long list with a share bar, a filter bar, group rows and sort.",
-     "g": "inventory", "parts": [["Filter bar", "Search and one dropdown for each category"], ["Count", "9 items, or 2 of 9"], ["Groups", "Group rows; parent foldables above about 40 rows"], ["Sort", "Click a header; rows sort inside their group"]],
-     "rule": "Inventory"},
-
-    {"id": "tree", "area": "structures", "name": "Tree", "what": "Folders, projects or types. Each branch folds; a click on a name shows its note.",
-     "g": "tree", "parts": [["Lines", "Names only, ├─ └─"], ["Note", "Under the tree, holds the description"], ["Phone", "Shrink to 50%, then scroll"]],
-     "rule": "Tree"},
-    {"id": "tree-state", "area": "structures", "name": "Tree with states", "what": "A tree about states: a colored square before each name, and a legend.",
-     "g": "tree-state", "parts": [["Square", "ok, warn, bad"], ["Legend", "Above the tree"]], "rule": "Tree"},
-    {"id": "callstack", "area": "structures", "name": "Call stack", "what": "The calls of one code path, in the code style.",
-     "g": "callstack", "parts": [["Line", "Call, file and line, → effect"], ["Return", "← on its own line"]], "rule": "Call stack"},
-    {"id": "props", "area": "structures", "name": "Properties", "what": "The fields of one item.",
-     "g": "props", "parts": [["Columns", "Field and the item name"]], "rule": "Properties of one item"},
-
-    {"id": "tiles", "area": "plans", "name": "Status tiles", "what": "The status of a plan and its counts.",
-     "g": "tiles", "parts": [["First tile", "Status: mark and word, amber edge"], ["Other tiles", "Counts: Step 2 of 3"]], "rule": "Plan"},
-    {"id": "roadmap", "area": "plans", "name": "Roadmap", "what": "Numbered steps with a strip of marks; the current step is open.",
-     "g": "roadmap", "parts": [["Step", "Number, name, mark strip, step mark"], ["Current", "Blue edge, open, Current step"], ["Items", "Mark, ID, title"]], "rule": "Plan"},
-    {"id": "log", "area": "plans", "name": "Decision log", "what": "Dated answers and decisions.",
-     "g": "log", "parts": [["Columns", "Date, kind, text"], ["Long log", "One foldable for each date above about 20 entries"]], "rule": "Plan"},
-
-    {"id": "code", "area": "code", "name": "Code block", "what": "A short piece of code from a file.",
-     "g": "code", "parts": [["Background", "Dark in both modes"], ["Top bar", "File name and language"], ["Phone", "Shrink to 50%, then scroll"]], "rule": "Code block"},
-    {"id": "inline", "area": "code", "name": "Code in a sentence", "what": "A name in normal text.",
-     "html": "<p>The engine reads <code>TypeFacts</code> one time, then calls <code>Rules(RuleBook rules)</code>.</p>",
-     "parts": [["Look", "Code font on a light grey tint"]], "rule": "Code block"}
+  [
+   "frame",
+   "Page frame"
+  ],
+  [
+   "data",
+   "Data"
+  ],
+  [
+   "lists",
+   "Lists"
+  ],
+  [
+   "structures",
+   "Structures"
+  ],
+  [
+   "plans",
+   "Plans"
+  ],
+  [
+   "code",
+   "Code"
   ]
+ ],
+ "components": [
+  {
+   "id": "colors",
+   "area": "foundations",
+   "name": "Colors",
+   "what": "The color tokens of each page, in light and dark mode.",
+   "html": "<div class=\"swatches\"><div><i style=\"background:var(--bg)\"></i><span>--bg</span></div><div><i style=\"background:var(--surface)\"></i><span>--surface</span></div><div><i style=\"background:var(--fg)\"></i><span>--fg</span></div><div><i style=\"background:var(--muted)\"></i><span>--muted</span></div><div><i style=\"background:var(--line)\"></i><span>--line</span></div><div><i style=\"background:var(--accent)\"></i><span>--accent</span></div><div><i style=\"background:var(--ok)\"></i><span>--ok</span></div><div><i style=\"background:var(--warn)\"></i><span>--warn</span></div><div><i style=\"background:var(--bad)\"></i><span>--bad</span></div></div>",
+   "parts": [
+    [
+     "Page",
+     "--bg, light grey"
+    ],
+    [
+     "Cards and tables",
+     "--surface, white"
+    ],
+    [
+     "Accent",
+     "--accent, blue"
+    ],
+    [
+     "States",
+     "--ok, --warn, --bad, each with a -soft tint"
+    ]
+   ],
+   "rule": null
+  },
+  {
+   "id": "type",
+   "area": "foundations",
+   "name": "Type",
+   "what": "The three fonts and their sizes.",
+   "html": "<h1>Title 26</h1><h2>Heading 19</h2><p>Body text 15. The engine reads each DLL one time.</p><p><code>Code font 13</code> <span class=\"eyebrow\">Label 11</span></p>",
+   "parts": [
+    [
+     "Headings",
+     "Space Grotesk 600"
+    ],
+    [
+     "Body",
+     "IBM Plex Sans 400 and 600"
+    ],
+    [
+     "Code, IDs, labels",
+     "IBM Plex Mono"
+    ],
+    [
+     "Sizes",
+     "26, 19, 15, 14, 13, 11"
+    ]
+   ],
+   "rule": null
+  },
+  {
+   "id": "header",
+   "area": "frame",
+   "name": "Page header",
+   "what": "Label line, title and summary at the top of each page.",
+   "g": "header",
+   "parts": [
+    [
+     "Label line",
+     ".eyebrow, project and topic"
+    ],
+    [
+     "Title",
+     "h1, the page name"
+    ],
+    [
+     "Summary",
+     ".lead, 1 to 3 sentences"
+    ]
+   ],
+   "rule": "Page header"
+  },
+  {
+   "id": "tabs",
+   "area": "frame",
+   "name": "Tabs",
+   "what": "The tab bar of a long page.",
+   "g": "tabs",
+   "parts": [
+    [
+     "Open tab",
+     "Blue underline"
+    ],
+    [
+     "Names",
+     "2 words maximum, no numbers"
+    ],
+    [
+     "Count",
+     "2 to 6"
+    ],
+    [
+     "Phone",
+     "Shrink to 75%, then scroll"
+    ]
+   ],
+   "rule": "Page types"
+  },
+  {
+   "id": "note",
+   "area": "frame",
+   "name": "Note banner",
+   "what": "A box with a colored left edge and bold first words.",
+   "g": "note",
+   "variants": [
+    [
+     "Information",
+     "<div class=\"note\"><b>Example.</b> The plan said: one interface for each call.</div>"
+    ],
+    [
+     "Done",
+     "<div class=\"note ok\"><b>Done.</b> All phases are merged.</div>"
+    ],
+    [
+     "Failure",
+     "<div class=\"note bad\"><b>Risk.</b> Each rule would exist two times.</div>"
+    ]
+   ],
+   "parts": [
+    [
+     "Edge",
+     "3px: blue, green, amber or red"
+    ],
+    [
+     "First words",
+     "Bold, give the point"
+    ]
+   ],
+   "rule": "Note banner and recommendation card"
+  },
+  {
+   "id": "rec",
+   "area": "frame",
+   "name": "Recommendation card",
+   "what": "The decision or the answer, at the top of the first tab.",
+   "g": "rec",
+   "parts": [
+    [
+     "Edge",
+     "3px green"
+    ],
+    [
+     "Lines",
+     "One for each decision, key in bold"
+    ],
+    [
+     "Last line",
+     "Not recommended"
+    ]
+   ],
+   "rule": "Note banner and recommendation card"
+  },
+  {
+   "id": "table",
+   "area": "data",
+   "name": "Table",
+   "what": "Items with the same attributes.",
+   "g": "table",
+   "parts": [
+    [
+     "Header",
+     "Body font 13, bold"
+    ],
+    [
+     "Box",
+     "White, outline, round corners"
+    ],
+    [
+     "Cells",
+     "Never wrap"
+    ],
+    [
+     "Phone",
+     "Shrink to fit, below 70%: one card for each row"
+    ]
+   ],
+   "rule": "Table"
+  },
+  {
+   "id": "marks",
+   "area": "data",
+   "name": "Marks",
+   "what": "The state of an item: color for health, symbol for stage.",
+   "g": "marks",
+   "variants": [
+    [
+     "In a row",
+     "<p><i class=\"mk done\">✓</i> <i class=\"mk prog\">▶</i> <i class=\"mk you\">?</i> <i class=\"mk blocked\">×</i> <i class=\"mk plan\">?</i> <i class=\"mk none\"></i> <i class=\"mk done\">‖</i></p>"
+    ],
+    [
+     "Large, for a step",
+     "<p><i class=\"mk big prog\">▶</i> <i class=\"mk big done\">✓</i></p>"
+    ]
+   ],
+   "parts": [
+    [
+     "Size",
+     "16px, 20px for a step"
+    ],
+    [
+     "Colors",
+     "done, prog, you, blocked, plan, none"
+    ],
+    [
+     "Symbols",
+     "✓ ? ▶ ‖ × or none"
+    ]
+   ],
+   "rule": "Mark"
+  },
+  {
+   "id": "chip",
+   "area": "data",
+   "name": "Chips",
+   "what": "A reference or a category in one word.",
+   "html": "<p><span class=\"chip info\">K4</span> <span class=\"chip info\">P7</span> <span class=\"chip ok\">decision</span> <span class=\"chip info\">answer</span></p>",
+   "parts": [
+    [
+     "Font",
+     "Code font 11"
+    ],
+    [
+     "Use",
+     "References and categories, not states"
+    ],
+    [
+     "Row",
+     "Up to 3"
+    ]
+   ],
+   "rule": "Chip"
+  },
+  {
+   "id": "stats",
+   "area": "data",
+   "name": "Stat tiles",
+   "what": "3 or 4 key figures.",
+   "g": "stats",
+   "parts": [
+    [
+     "Figure",
+     "Space Grotesk 24"
+    ],
+    [
+     "Label",
+     "13, grey, with the unit"
+    ]
+   ],
+   "rule": null
+  },
+  {
+   "id": "bars",
+   "area": "data",
+   "name": "Bar rows",
+   "what": "2 to 12 values to compare.",
+   "g": "bars",
+   "parts": [
+    [
+     "Heading",
+     "States the finding"
+    ],
+    [
+     "Value",
+     "Own column, code font"
+    ],
+    [
+     "Source",
+     "Under the bars"
+    ]
+   ],
+   "rule": null
+  },
+  {
+   "id": "foldable",
+   "area": "lists",
+   "name": "Foldable list",
+   "what": "One box for each item of a list. Nested items show on a grey area.",
+   "g": "foldable",
+   "parts": [
+    [
+     "Title",
+     "15 bold, one line, cut with …"
+    ],
+    [
+     "Key fact",
+     "13 grey, optional"
+    ],
+    [
+     "ID",
+     "12 code font, optional"
+    ],
+    [
+     "State",
+     "One mark at the right"
+    ],
+    [
+     "Nesting",
+     "3 levels maximum"
+    ]
+   ],
+   "rule": "Foldable list"
+  },
+  {
+   "id": "questions",
+   "area": "lists",
+   "name": "Question form",
+   "what": "Open questions as foldables, with the default answer.",
+   "g": "questions",
+   "parts": [
+    [
+     "ID",
+     "Q1, Q2"
+    ],
+    [
+     "Key fact",
+     "Default: the answer"
+    ],
+    [
+     "Mark",
+     "you ? while open, done ✓ when answered"
+    ]
+   ],
+   "rule": "Foldable list"
+  },
+  {
+   "id": "inventory",
+   "area": "lists",
+   "name": "Inventory",
+   "what": "A long list with a share bar, a filter bar, group rows and sort.",
+   "g": "inventory",
+   "parts": [
+    [
+     "Filter bar",
+     "Search and one dropdown for each category"
+    ],
+    [
+     "Count",
+     "9 items, or 2 of 9"
+    ],
+    [
+     "Groups",
+     "Group rows; parent foldables above about 40 rows"
+    ],
+    [
+     "Sort",
+     "Click a header; rows sort inside their group"
+    ]
+   ],
+   "rule": "Inventory"
+  },
+  {
+   "id": "tree",
+   "area": "structures",
+   "name": "Tree",
+   "g": "tree",
+   "parts": [
+    [
+     "Box",
+     ".tree-box",
+     "White, outline"
+    ],
+    [
+     "Line",
+     "one node",
+     "Code font 13, names only"
+    ],
+    [
+     "Branch",
+     "▾ ▸",
+     "Folds on click"
+    ],
+    [
+     "Note",
+     "under the tree",
+     "Body font 14, the description"
+    ],
+    [
+     "Phone",
+     "",
+     "Shrink to 50%, then scroll"
+    ]
+   ],
+   "rule": "Tree",
+   "purpose": "A hierarchy of folders, projects or types. Each branch folds, and a click on a name shows its note.",
+   "status": "approved",
+   "variants": [
+    [
+     "Large tree with states: 24 nodes, 4 levels",
+     "<div class=\"tree-box\"><div class=\"legend\"><span><i style=\"--c:var(--ok)\"></i>decided</span><span><i style=\"--c:var(--warn)\"></i>open</span><span><i style=\"--c:var(--bad)\"></i>gap</span></div><ul class=\"tree\">\n<li data-note=\"The source root.\"><span>src/</span>\n  <ul>\n  <li data-note=\"Events, ports and projections. No feature code.\"><span>Orchestrator.Kernel/</span>\n    <ul>\n    <li data-state=\"ok\" data-note=\"Decided. Append with an expected version.\"><span>Events/</span></li>\n    <li data-state=\"ok\" data-note=\"Decided. One interface for each outside system.\"><span>Ports/</span></li>\n    <li data-state=\"warn\" data-note=\"Open. The rebuild runs on start only.\"><span>Projections/</span></li>\n    <li data-state=\"ok\" data-note=\"Decided. One clock port for tests.\"><span>Clock/</span></li>\n    </ul></li>\n  <li data-note=\"One folder for each slice.\"><span>Orchestrator.Features/</span>\n    <ul>\n    <li data-state=\"ok\" data-note=\"Decided. Registry, create, archive.\"><span>Sessions/</span>\n      <ul>\n      <li data-state=\"ok\" data-note=\"Decided.\"><span>Create/</span></li>\n      <li data-state=\"ok\" data-note=\"Decided.\"><span>Archive/</span></li>\n      <li data-state=\"warn\" data-note=\"Open. Version 3 of the store.\"><span>Registry/</span></li>\n      </ul></li>\n    <li data-state=\"bad\" data-note=\"Gap. The state machine and the state check live in two places.\"><span>Lifecycle/</span>\n      <ul>\n      <li data-state=\"bad\" data-note=\"Gap. Duplicate states.\"><span>StateMachine/</span></li>\n      <li data-state=\"warn\" data-note=\"Open. Moves into StateMachine.\"><span>StateCheck/</span></li>\n      </ul></li>\n    <li data-state=\"warn\" data-note=\"Open. Delivery waits for task K3.\"><span>Messages/</span>\n      <ul>\n      <li data-state=\"ok\" data-note=\"Decided.\"><span>Inbox/</span></li>\n      <li data-state=\"warn\" data-note=\"Open.\"><span>Delivery/</span></li>\n      </ul></li>\n    <li data-state=\"ok\" data-note=\"Decided. Runs, steps, executors.\"><span>Workflows/</span></li>\n    <li data-state=\"ok\" data-note=\"Decided. Definitions and render.\"><span>Templates/</span></li>\n    </ul></li>\n  <li data-state=\"warn\" data-note=\"Open. Notion and file stores share no base.\"><span>Orchestrator.Store/</span>\n    <ul>\n    <li data-state=\"warn\" data-note=\"Open.\"><span>Notion/</span></li>\n    <li data-state=\"ok\" data-note=\"Decided.\"><span>Files/</span></li>\n    </ul></li>\n  <li data-state=\"ok\" data-note=\"Decided. The web host.\"><span>Orchestrator.Web/</span></li>\n  <li data-state=\"bad\" data-note=\"Gap. Holds the self-test in the shipping exe.\"><span>Orchestrator.Tray/</span></li>\n  </ul></li>\n</ul></div>"
+    ]
+   ],
+   "use": [
+    "Folders, projects, packages or type hierarchies",
+    "Any hierarchy deeper than 2 levels"
+   ],
+   "avoid": [
+    "Items with the same attributes: use a table",
+    "A flat list: use the foldable list",
+    "Steps in order: use the roadmap"
+   ]
+  },
+  {
+   "id": "tree-state",
+   "area": "structures",
+   "name": "Tree with states",
+   "g": "tree-state",
+   "parts": [
+    [
+     "Square",
+     "data-state",
+     "ok, warn or bad"
+    ],
+    [
+     "Legend",
+     ".legend",
+     "Above the tree"
+    ]
+   ],
+   "rule": "Tree",
+   "purpose": "A tree about states: a colored square before each name, and a legend above the tree.",
+   "status": "approved",
+   "variants": [],
+   "use": [
+    "A tree where the state of each node is the message"
+   ],
+   "avoid": [
+    "A tree with no states: use the plain tree",
+    "States of items with no hierarchy: use marks in a table"
+   ]
+  },
+  {
+   "id": "callstack",
+   "area": "structures",
+   "name": "Call stack",
+   "g": "callstack",
+   "parts": [
+    [
+     "Block",
+     ".cb, plain pre",
+     "Dark, top bar \"Call stack · path\""
+    ],
+    [
+     "Line",
+     "one call",
+     "Call, file and line, → effect"
+    ],
+    [
+     "Return",
+     "←",
+     "On its own line"
+    ],
+    [
+     "Phone",
+     "",
+     "Shrink to 50%, then scroll"
+    ]
+   ],
+   "rule": "Call stack",
+   "purpose": "The calls of one code path, in order, in the code style.",
+   "status": "approved",
+   "variants": [],
+   "use": [
+    "How one request or command runs through the code",
+    "Where a value comes from or goes to"
+   ],
+   "avoid": [
+    "The structure of the code: use a tree or a diagram",
+    "Steps for a person to do: use a numbered list"
+   ]
+  },
+  {
+   "id": "props",
+   "area": "structures",
+   "name": "Properties",
+   "g": "props",
+   "parts": [
+    [
+     "Table",
+     ".tw",
+     "Two columns"
+    ],
+    [
+     "Header",
+     "Field, item name",
+     "Body font 13, bold"
+    ]
+   ],
+   "rule": "Properties of one item",
+   "purpose": "The fields and values of one item.",
+   "status": "approved",
+   "variants": [],
+   "use": [
+    "The facts of one package, file, service or setting"
+   ],
+   "avoid": [
+    "Several items with the same fields: use one table with a row for each item"
+   ]
+  },
+  {
+   "id": "tiles",
+   "area": "plans",
+   "name": "Status tiles",
+   "what": "The status of a plan and its counts.",
+   "g": "tiles",
+   "parts": [
+    [
+     "First tile",
+     "Status: mark and word, amber edge"
+    ],
+    [
+     "Other tiles",
+     "Counts: Step 2 of 3"
+    ]
+   ],
+   "rule": "Plan"
+  },
+  {
+   "id": "roadmap",
+   "area": "plans",
+   "name": "Roadmap",
+   "what": "Numbered steps with a strip of marks; the current step is open.",
+   "g": "roadmap",
+   "parts": [
+    [
+     "Step",
+     "Number, name, mark strip, step mark"
+    ],
+    [
+     "Current",
+     "Blue edge, open, Current step"
+    ],
+    [
+     "Items",
+     "Mark, ID, title"
+    ]
+   ],
+   "rule": "Plan"
+  },
+  {
+   "id": "log",
+   "area": "plans",
+   "name": "Decision log",
+   "what": "Dated answers and decisions.",
+   "g": "log",
+   "parts": [
+    [
+     "Columns",
+     "Date, kind, text"
+    ],
+    [
+     "Long log",
+     "One foldable for each date above about 20 entries"
+    ]
+   ],
+   "rule": "Plan"
+  },
+  {
+   "id": "code",
+   "area": "code",
+   "name": "Code block",
+   "what": "A short piece of code from a file.",
+   "g": "code",
+   "parts": [
+    [
+     "Background",
+     "Dark in both modes"
+    ],
+    [
+     "Top bar",
+     "File name and language"
+    ],
+    [
+     "Phone",
+     "Shrink to 50%, then scroll"
+    ]
+   ],
+   "rule": "Code block"
+  },
+  {
+   "id": "inline",
+   "area": "code",
+   "name": "Code in a sentence",
+   "what": "A name in normal text.",
+   "html": "<p>The engine reads <code>TypeFacts</code> one time, then calls <code>Rules(RuleBook rules)</code>.</p>",
+   "parts": [
+    [
+     "Look",
+     "Code font on a light grey tint"
+    ]
+   ],
+   "rule": "Code block"
+  }
+ ],
+ "lead": "Each component of the house style, taken from the real starter page: an example, its variants, when to use it, its parts, the code to copy and the full rule.",
+ "built": [
+  "structures"
+ ]
 }
