@@ -72,9 +72,10 @@ Decisions and values: `house-style-decisions.md`.
 
 ### Chip
 
-- One fixed word for each state on a page: "decided", "open", "risk".
+- A chip gives a state ("decided", "open", "risk") or a reference to a decision or a phase ("K4", "P7").
+- One fixed word for each state on a page.
 - Green: done or good. Amber: open or partial. Red: failure. Blue: information or default.
-- Use a chip only for a state, not for decoration.
+- Up to 3 chips on one row. No chips for decoration.
 
 ### Foldable list
 
@@ -86,12 +87,21 @@ One component for all lists of items: findings, decisions, proposals, questions 
 | Title | 6 words maximum, one line, cut with "…" when closed |
 | Key fact | Optional second line, 13px grey |
 | ID | Only when readers refer to items by ID: K1, Q1, P3 |
-| Chip | Only when the items have a state |
+| Chips | Only for a state or a reference. Up to 3, at the right |
 | Open content | Full width, under a line |
 | Sizes | Title 15 bold, key fact 13, ID 12 code font, chip 11 code font |
 
 - Put a table or a diagram of all items before the list.
 - Keep the items closed. Do not put the main message or a warning in an item.
+- **Nested items:** an open item can hold a child list (`.fl` in `.body`). The children show as
+  boxes on a grey area. 3 levels maximum.
+- **Groups:** split a long list into one parent item for each group, for example "Gaps". The key
+  fact gives the count: "9 items".
+- **Sections:** split a long item into parts, each with a `.lbl` label above it: "Where",
+  "Why it matters", "Fix". All items of one list use the same labels, in the same order.
+- **Rich content:** text, tables, code blocks and notes use the full width of the item.
+- **Length:** about 300 words in one item. If an item is longer, split it into child items, or
+  give it its own tab.
 - **Question:** ID `Q1`, key fact "Default: …", chip `info` "default" or `ok` "answered".
 - **Plan phase:** ID = phase number, key fact = decisions and issue, chip = PR number or "open".
   The open content gives the changes, then the tests to run.

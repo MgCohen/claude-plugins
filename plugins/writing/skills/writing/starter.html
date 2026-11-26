@@ -94,6 +94,12 @@ nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:va
 .fl details[open] .tt b,.fl details[open] .tt small{white-space:normal}
 .fl .chip{flex:none}
 .fl .body{padding:12px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px;font-size:14px}
+.fl .chips{flex:none;display:flex;gap:4px}
+.fl .body .fl{gap:6px}
+.fl .body .fl details{background:var(--bg)}
+.fl .body .fl .fl details{background:var(--surface)}
+.fl details:not([open])>summary::before{content:"\25B8"}
+.lbl{font:600 13px var(--body);color:var(--muted);margin-bottom:2px}
 
 /* code block: dark, top bar, syntax colors; the script shrinks it to 50%, then it scrolls */
 .cb{background:var(--code-bg);color:#e4e8f0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
@@ -158,8 +164,13 @@ nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:va
     <div class="fl">
       <details><summary><span class="id">K1</span><span class="tt"><b>Item title, 6 words maximum</b><small>Optional key fact</small></span><span class="chip ok">decided</span></summary>
         <div class="body"><p>Content of the item: text, a table or a code block.</p></div></details>
-      <details><summary><span class="tt"><b>Item with no ID and no chip</b></span></summary>
-        <div class="body"><p>Content of the item.</p></div></details>
+      <details><summary><span class="tt"><b>Group: Gaps</b><small>2 items</small></span></summary>
+        <div class="body"><div class="fl">
+          <details><summary><span class="id">G1</span><span class="tt"><b>Child item</b><small>Key fact</small></span><span class="chips"><span class="chip bad">gap</span><span class="chip info">P7</span></span></summary>
+            <div class="body"><div><div class="lbl">Where</div><p>File and line.</p></div><div><div class="lbl">Fix</div><p>The change to make.</p></div></div></details>
+          <details><summary><span class="id">G2</span><span class="tt"><b>Child item</b></span></summary>
+            <div class="body"><p>Content of the item.</p></div></details>
+        </div></div></details>
     </div>
     <div class="cb"><div class="bar-top"><span>Block.cs</span><span>C#</span></div><div class="scroll"><pre data-lang="cs">// Only the lines that make the point
 public abstract record Block : Concept {

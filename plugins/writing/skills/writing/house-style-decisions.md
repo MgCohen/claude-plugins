@@ -58,6 +58,17 @@ One component for all lists: findings, decisions, questions and plan phases.
 
 Question lists (R2) and phase lists (R3) use the foldable.
 
+## Foldable content
+
+| ID | Decision | Value |
+|---|---|---|
+| A1 | Nested items | Child items as boxes on a grey area inside the parent |
+| A2 | Nesting depth | 3 levels maximum |
+| A3 | Groups in a long list | One parent item for each group, with the item count as key fact |
+| A4 | Sections in an item | A label above each part. Items of one list use the same labels |
+| A5 | Rich content | Text, table, code and note at full width. About 300 words in one item |
+| A6 | Chips on one row | Up to 3 chips at the right, for a state or a reference (K4, P7) |
+
 ## Code block
 
 | ID | Decision | Value |
