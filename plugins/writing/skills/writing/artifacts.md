@@ -46,6 +46,7 @@ Decisions and values: `house-style-decisions.md`.
 | Foldable list | `.fl` | 3 or more items of one type |
 | Code block | `.cb` | Code from a file, or an API shape |
 | Code in a sentence | `code` | A name in normal text |
+| Inventory | `.inv`, `.fbar`, `.sbar` | 20 items or more, with filters |
 | Diagram box | `.box`, `.cap`, `.legend` | A diagram |
 
 ### Page header
@@ -105,6 +106,24 @@ One component for all lists of items: findings, decisions, proposals, questions 
 - **Question:** ID `Q1`, key fact "Default: …", chip `info` "default" or `ok` "answered".
 - **Plan phase:** ID = phase number, key fact = decisions and issue, chip = PR number or "open".
   The open content gives the changes, then the tests to run.
+
+### Inventory
+
+A long list of items of one type, for example events, components or concepts.
+
+| Part | Rule |
+|---|---|
+| Groups | One table with group rows (`tr.band`). Use parent foldables instead above about 40 rows |
+| Share bar | `.sbar` and `.tally` above the bar: the share of each state, with its count |
+| Filter bar | `.fbar`: a search box and one dropdown (`.dd`) for each category |
+| Dropdown | Check boxes, several values. The button shows the values and turns blue |
+| Count | "13 items", or "4 of 13" with a filter. A Clear button with a filter |
+| Sort | `th[data-sort]`: click a header to sort. Rows sort inside their group |
+| Row details | When rows need more than one line of facts, use the foldable list, not a table |
+
+- Each item has `data-item` and one `data-<category>` attribute for each dropdown.
+- The bar stays one row while it fits. If not, the search box goes to its own row.
+- If the page needs only search or only one category, use the same bar with fewer controls.
 
 ### Code block
 

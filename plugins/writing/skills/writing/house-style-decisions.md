@@ -69,6 +69,20 @@ Question lists (R2) and phase lists (R3) use the foldable.
 | A5 | Rich content | Text, table, code and note at full width. About 300 words in one item |
 | A6 | Chips on one row | Up to 3 chips at the right, for a state or a reference (K4, P7) |
 
+## Inventory
+
+| ID | Decision | Value |
+|---|---|---|
+| B1 | Groups in a big table | One table with group rows |
+| B2 | Count summary | Share bar with counts |
+| B5 | Sort | Click a header to sort |
+| B6 | Row details | Foldable list when rows need details |
+| U1, U4 | Filter bar layout | One row while it fits, else the search box gets its own row |
+| U2 | Dropdown | One for each category, with check boxes for several values |
+| U3 | Active filters | Count and Clear. A dropdown with a selection turns blue. No filter chips |
+
+Filter and search use one bar (U1 to U4). This replaces the filter buttons and the search box of B3 and B4.
+
 ## Code block
 
 | ID | Decision | Value |

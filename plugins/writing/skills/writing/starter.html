@@ -60,6 +60,7 @@ nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:va
 .tw th,.tw td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;white-space:nowrap}
 .tw th{font:600 13px var(--body);color:var(--fg);background:var(--bg)}
 .tw tr:last-child td{border-bottom:0}
+.tw code{overflow-wrap:normal;white-space:nowrap}
 .num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 .tw.stacked{background:none;border:0;border-radius:0}
 .tw.stacked thead{display:none}
@@ -108,6 +109,31 @@ nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:va
 .cb pre{margin:0;padding:10px 12px;font:12.5px/1.55 var(--mono);white-space:pre;width:max-content;min-width:100%}
 .cb .k{color:#7fa2ff}.cb .t{color:#5fcf95}.cb .s{color:#f0b257}.cb .n{color:#ff7b84}.cb .c{color:#9aa3b5;font-style:italic}
 
+/* inventory: filter bar, share bar, group rows, sort */
+.inv{display:flex;flex-direction:column;gap:8px}
+.fbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.fbar .srch{flex:1 1 180px;min-width:0;font:14px var(--body);padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg)}
+.fbar.stack .srch{flex-basis:100%}
+.dd{position:relative}
+.dd>summary{list-style:none;cursor:pointer;font:500 13px var(--body);padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);display:flex;gap:6px;align-items:center;white-space:nowrap}
+.dd>summary::-webkit-details-marker{display:none}
+.dd>summary::after{content:"\25BE";font-size:11px;color:var(--muted)}
+.dd.on>summary{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.dd .menu{position:absolute;z-index:6;top:calc(100% + 4px);left:0;min-width:160px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px;box-shadow:0 6px 18px rgba(0,0,0,.14);display:flex;flex-direction:column}
+.dd.right .menu{left:auto;right:0}
+.dd .menu label{display:flex;gap:8px;align-items:center;padding:5px 6px;font-size:13px;border-radius:6px;cursor:pointer}
+.dd .menu label:hover{background:var(--bg)}
+.fbar .cnt{margin-left:auto;font:500 12px var(--mono);color:var(--muted);white-space:nowrap}
+.fbar .clr{font:500 13px var(--body);background:none;border:0;color:var(--accent);cursor:pointer;padding:4px 6px}
+.sbar{display:flex;height:12px;border-radius:3px;overflow:hidden;gap:2px}
+.tally{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--muted)}
+.tally i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.tw tr.band td{background:var(--bg);font:600 13px var(--body);color:var(--fg)}
+.tw th[data-sort]{cursor:pointer;color:var(--accent)}
+.tw th[data-sort]::after{content:" \2195";color:var(--muted)}
+.tw th[data-dir="a"]::after{content:" \25B2";color:var(--accent)}
+.tw th[data-dir="d"]::after{content:" \25BC";color:var(--accent)}
+
 /* diagram box and legend (diagram rules are open) */
 .box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;overflow-x:auto}
 .cap{font:500 12px var(--mono);color:var(--muted);margin-bottom:6px}
@@ -126,6 +152,7 @@ nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:va
   <nav class="tabs" id="tabs" role="tablist">
     <button role="tab" data-t="summary">Summary</button>
     <button role="tab" data-t="details">Details</button>
+    <button role="tab" data-t="inventory">Inventory</button>
     <button role="tab" data-t="questions">Questions</button>
   </nav>
 
@@ -178,6 +205,36 @@ public abstract record Block : Concept {
 }</pre></div></div>
   </section>
 
+  <section class="tab" data-p="inventory" hidden>
+    <div class="inv">
+      <div class="sbar"><i style="flex:5;background:var(--ok)"></i><i style="flex:2;background:var(--warn)"></i><i style="flex:2;background:var(--bad)"></i></div>
+      <div class="tally"><span><i style="background:var(--ok)"></i>match 5</span><span><i style="background:var(--warn)"></i>part 2</span><span><i style="background:var(--bad)"></i>gap 2</span></div>
+      <div class="fbar">
+        <input class="srch" type="search" placeholder="Search" aria-label="Search">
+        <details class="dd" data-col="fit" data-label="Fit"><summary><span>Fit: all</span></summary><div class="menu">
+          <label><input type="checkbox" value="match"> match</label><label><input type="checkbox" value="part"> part</label><label><input type="checkbox" value="gap"> gap</label></div></details>
+        <span class="cnt"></span><button type="button" class="clr" hidden>Clear</button>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th data-sort>Event</th><th data-sort>Handler</th><th data-sort>Fit</th></tr></thead>
+        <tbody>
+          <tr class="band"><td colspan="3">Pointer</td></tr>
+          <tr data-item data-fit="match"><td>click</td><td><code>IPointerClickHandler</code></td><td><span class="chip ok">match</span></td></tr>
+          <tr data-item data-fit="part"><td>dblclick</td><td><code>clickCount == 2</code></td><td><span class="chip warn">part</span></td></tr>
+          <tr data-item data-fit="match"><td>drag</td><td><code>IDragHandler</code></td><td><span class="chip ok">match</span></td></tr>
+          <tr class="band"><td colspan="3">Focus</td></tr>
+          <tr data-item data-fit="match"><td>focus</td><td><code>ISelectHandler</code></td><td><span class="chip ok">match</span></td></tr>
+          <tr data-item data-fit="part"><td>tabindex</td><td><code>Navigation</code></td><td><span class="chip warn">part</span></td></tr>
+          <tr data-item data-fit="gap"><td>Tab key</td><td>None</td><td><span class="chip bad">gap</span></td></tr>
+          <tr class="band"><td colspan="3">Keyboard</td></tr>
+          <tr data-item data-fit="match"><td>Escape</td><td><code>ICancelHandler</code></td><td><span class="chip ok">match</span></td></tr>
+          <tr data-item data-fit="match"><td>Arrow keys</td><td><code>IMoveHandler</code></td><td><span class="chip ok">match</span></td></tr>
+          <tr data-item data-fit="gap"><td>accesskey</td><td>None</td><td><span class="chip bad">gap</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
   <section class="tab" data-p="questions" hidden>
     <div class="fl">
       <details><summary><span class="id">Q1</span><span class="tt"><b>The question in one sentence?</b><small>Default: the answer if you do not reply</small></span><span class="chip info">default</span></summary>
@@ -196,7 +253,7 @@ window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
 
 /* tables: label each cell for the stacked form; shrink to fit, or stack below 70% */
 document.querySelectorAll(".tw>table").forEach(t=>{const h=[...t.querySelectorAll("thead th")].map(th=>th.textContent);t.querySelectorAll("tbody tr").forEach(r=>[...r.children].forEach((td,i)=>td.dataset.l=h[i]||""));});
-const fitTable=w=>{const t=w.firstElementChild;w.classList.remove("stacked");t.style.zoom=1;if(!w.clientWidth)return;const k=w.clientWidth/t.scrollWidth;if(k>=1)return;if(k<0.7)w.classList.add("stacked");else t.style.zoom=k;};
+const fitTable=w=>{const t=w.firstElementChild;w.classList.remove("stacked");t.style.zoom=1;if(!w.clientWidth)return;t.style.width="max-content";const need=t.offsetWidth;t.style.width="";const k=w.clientWidth/need;if(k>=1)return;if(k<0.7)w.classList.add("stacked");else t.style.zoom=k;};
 
 /* code: syntax colors, then shrink to fit down to 50%, then scroll */
 const KW=new Set("public private protected internal abstract virtual override sealed static readonly record class struct interface enum void string int bool var new return if else for foreach while in is as null true false async await using namespace function const let import export from def self None True False".split(" "));
@@ -206,7 +263,30 @@ const fitCode=s=>{const p=s.firstElementChild;p.style.zoom=1;if(!s.clientWidth)r
 
 /* tab bar: shrink to fit down to 75%, then scroll */
 const fitTabs=()=>{tabs.style.zoom=1;const k=tabs.clientWidth/tabs.scrollWidth;if(k<1)tabs.style.zoom=Math.max(k,0.75);};
-const fitAll=()=>{fitTabs();document.querySelectorAll(".tw").forEach(fitTable);document.querySelectorAll(".cb .scroll").forEach(fitCode);};
+/* inventory: search, one dropdown with check boxes for each category, count, Clear.
+   Items: [data-item] rows or foldables with data-<category>. Group rows (tr.band) and group
+   foldables hide when no item in them shows. */
+const invApply=v=>{const q=(v.querySelector(".srch")?.value||"").trim().toLowerCase();const f={};
+ v.querySelectorAll(".fbar .dd").forEach(d=>{const on=[...d.querySelectorAll("input:checked")].map(i=>i.value);if(on.length)f[d.dataset.col]=on;d.classList.toggle("on",on.length>0);d.querySelector("summary span").textContent=`${d.dataset.label}: ${on.length?on.join(", "):"all"}`;});
+ const items=[...v.querySelectorAll("[data-item]")];let n=0;
+ items.forEach(it=>{const ok=(!q||it.textContent.toLowerCase().includes(q))&&Object.entries(f).every(([c,vals])=>vals.includes(it.dataset[c]));it.hidden=!ok;if(ok)n++;});
+ v.querySelectorAll("tr.band").forEach(b=>{let x=b.nextElementSibling,any=false;while(x&&!x.classList.contains("band")){if(x.hasAttribute("data-item")&&!x.hidden)any=true;x=x.nextElementSibling;}b.hidden=!any;});
+ v.querySelectorAll(".fl details:not([data-item])").forEach(g=>{const k=g.querySelectorAll("[data-item]");if(k.length)g.hidden=![...k].some(x=>!x.hidden);});
+ const act=q||Object.keys(f).length;const c=v.querySelector(".cnt");if(c)c.textContent=act?`${n} of ${items.length}`:`${items.length} items`;const cl=v.querySelector(".clr");if(cl)cl.hidden=!act;};
+const invBar=b=>{b.classList.remove("stack");const k=[...b.children].filter(x=>!x.hidden);if(k.length>1&&k.some(x=>x.offsetTop>=k[0].offsetTop+k[0].offsetHeight-2))b.classList.add("stack");};
+document.addEventListener("input",e=>{const v=e.target.closest(".inv");if(v){invApply(v);fitAll();}});
+document.addEventListener("change",e=>{const v=e.target.closest(".inv");if(v){invApply(v);fitAll();}});
+document.addEventListener("click",e=>{document.querySelectorAll(".dd[open]").forEach(d=>{if(!d.contains(e.target))d.open=false;});
+ const cl=e.target.closest(".inv .clr");if(cl){const v=cl.closest(".inv");v.querySelectorAll(".srch").forEach(s=>s.value="");v.querySelectorAll(".dd input").forEach(i=>i.checked=false);invApply(v);fitAll();return;}
+ /* sort: click a header; rows sort inside their group */
+ const th=e.target.closest(".tw th[data-sort]");if(th){const i=th.cellIndex,dir=th.dataset.dir==="a"?"d":"a";th.parentElement.querySelectorAll("th").forEach(x=>delete x.dataset.dir);th.dataset.dir=dir;const tb=th.closest("table").tBodies[0];const segs=[[]];[...tb.rows].forEach(r=>{if(r.classList.contains("band"))segs.push([r]);else segs[segs.length-1].push(r);});
+  segs.forEach(sg=>{const head=sg[0]&&sg[0].classList.contains("band")?[sg.shift()]:[];sg.sort((a,b)=>a.cells[i].textContent.localeCompare(b.cells[i].textContent,undefined,{numeric:true})*(dir==="a"?1:-1));[...head,...sg].forEach(r=>tb.appendChild(r));});}});
+document.querySelectorAll(".inv").forEach(invApply);
+/* a dropdown menu opens to the left when it does not fit at the right */
+const ddSide=d=>{d.classList.remove("right");const m=d.querySelector(".menu").getBoundingClientRect();if(m.right>document.documentElement.clientWidth-8)d.classList.add("right");};
+document.addEventListener("toggle",e=>{const d=e.target;if(d.classList&&d.classList.contains("dd")&&d.open)ddSide(d);},true);
+
+const fitAll=()=>{fitTabs();document.querySelectorAll(".fbar").forEach(invBar);document.querySelectorAll(".dd[open]").forEach(ddSide);document.querySelectorAll(".tw").forEach(fitTable);document.querySelectorAll(".cb .scroll").forEach(fitCode);};
 window.addEventListener("resize",fitAll);
 document.addEventListener("toggle",fitAll,true);
 show(location.hash.slice(1));
