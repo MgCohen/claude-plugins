@@ -12,7 +12,8 @@ Each kind of text has its own content rules. All kinds use the same language rul
 | You write | Read |
 |---|---|
 | A chat reply | Nothing more. The output style has the rules. |
-| A document, artifact, README, report or slides | `language.md`, then `documents.md` |
+| A document, README, report or slides | `language.md`, then `documents.md` |
+| An HTML artifact | `language.md`, `documents.md`, then `artifacts.md`. Start from `starter.html` |
 | A commit message or a PR description | `language.md`, then `commits-prs.md` |
 | Code comments or docstrings | `language.md`, then `code-comments.md` |
 | A prompt for a subagent or another session | `language.md` |

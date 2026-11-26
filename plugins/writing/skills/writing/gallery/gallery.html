@@ -1,0 +1,473 @@
+<title>House Style Components</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600&display=swap">
+<style>
+/* Built by gallery/build.py from starter.html, artifacts.md and gallery.json. Do not edit by hand. */
+
+/* House style starter. Copy this file, keep the CSS and the script, and replace the content.
+   Rules: artifacts.md. Decisions: house-style-decisions.md. */
+:root{
+  --bg:#e9ecf1;--surface:#ffffff;--fg:#1b2130;--muted:#5b6475;--line:#dde1e8;--code-in:#eef0f4;--code-bg:#11141b;
+  --accent:#2a5bd7;--accent-soft:#e6edfc;--ok:#1f7a4d;--ok-soft:#e3f3ea;--warn:#9a5b00;--warn-soft:#fbefd9;--bad:#b4232c;--bad-soft:#fbe5e6;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --head:"Space Grotesk","IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#11141b;--surface:#1a1f29;--fg:#e4e8f0;--muted:#9aa3b5;--line:#2c3341;--code-in:#232a36;--code-bg:#06080b;--accent:#7fa2ff;--accent-soft:#1f2a48;--ok:#5fcf95;--ok-soft:#163326;--warn:#f0b257;--warn-soft:#3a2a12;--bad:#ff7b84;--bad-soft:#3d1a1e;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11141b;--surface:#1a1f29;--fg:#e4e8f0;--muted:#9aa3b5;--line:#2c3341;--code-in:#232a36;--code-bg:#06080b;--accent:#7fa2ff;--accent-soft:#1f2a48;--ok:#5fcf95;--ok-soft:#163326;--warn:#f0b257;--warn-soft:#3a2a12;--bad:#ff7b84;--bad-soft:#3d1a1e;color-scheme:dark}
+
+/* base */
+*{box-sizing:border-box;min-width:0}
+[hidden]{display:none!important}
+html{overflow-x:clip}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--body);margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:980px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 64px}
+h1,h2,h3{font-family:var(--head);font-weight:600;text-wrap:balance;margin:0}
+h1{font-size:26px;line-height:1.2}
+h2{font-size:19px;line-height:1.3}
+h3{font-size:16px;line-height:1.3}
+p{margin:0;max-width:72ch}
+a{color:var(--accent)}
+ul,ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
+code{font:13px var(--mono);background:var(--code-in);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+section.tab{display:flex;flex-direction:column;gap:18px;padding-top:20px}
+@media (max-width:600px){h1{font-size:22px}}
+
+/* page header */
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.lead{color:var(--muted);font-size:16px;max-width:70ch}
+
+/* tabs: underline on the open tab */
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);margin-top:16px}
+nav.tabs button{flex-shrink:0;font:500 14px var(--body);color:var(--muted);background:none;border:0;border-bottom:2px solid transparent;padding:10px 10px 8px;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* card, note banner, recommendation card */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.note{background:var(--surface);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:10px 14px}
+.note.ok{border-left-color:var(--ok)}.note.warn{border-left-color:var(--warn)}.note.bad{border-left-color:var(--bad)}
+.rec{border-left:3px solid var(--ok)}
+
+/* chips: filled tint */
+.chip{display:inline-block;font:500 11px var(--mono);padding:2px 8px;border-radius:99px;white-space:nowrap}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}.chip.warn{background:var(--warn-soft);color:var(--warn)}.chip.bad{background:var(--bad-soft);color:var(--bad)}.chip.info{background:var(--accent-soft);color:var(--accent)}
+
+/* table: white box; cell text never wraps; the script shrinks it or stacks it */
+.tw{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.tw>table{border-collapse:collapse;width:100%;font-size:14px}
+.tw th,.tw td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;white-space:nowrap}
+.tw th{font:600 13px var(--body);color:var(--fg);background:var(--bg)}
+.tw tr:last-child td{border-bottom:0}
+.tw code{overflow-wrap:normal;white-space:nowrap}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tw.stacked{background:none;border:0;border-radius:0}
+.tw.stacked thead{display:none}
+.tw.stacked tr{display:block;background:var(--surface);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}
+.tw.stacked td{display:block;text-align:right;border:0;padding:4px 12px;white-space:normal}
+.tw.stacked td::before{content:attr(data-l);float:left;margin-right:12px;font:600 14px var(--body);color:var(--muted);text-align:left}
+
+/* marks: color = health, symbol = stage (as in the stream tracker) */
+.mk{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;color:#fff;font:700 9px/1 var(--mono);font-style:normal;flex:none;vertical-align:-3px}
+.mk.done{background:var(--ok)}.mk.prog{background:var(--accent)}.mk.you{background:var(--warn)}.mk.blocked{background:var(--bad)}.mk.plan{background:#6b4fbb}.mk.none{background:#8a93a3}
+.mk.big{width:20px;height:20px;font-size:11px}
+.marks{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted)}
+.marks div{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}
+.marks em{font:600 10px var(--mono);font-style:normal;text-transform:uppercase;letter-spacing:.05em;width:100%}
+.marks span{display:inline-flex;gap:5px;align-items:center}
+.strip{display:flex;gap:3px;align-items:center;margin-left:auto;flex:none}
+.strip em{font:600 11px var(--mono);font-style:normal;color:var(--muted)}
+
+/* plan: tiles and roadmap */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;display:flex;flex-direction:column;gap:2px}
+.tile.key{border-left:3px solid var(--warn)}
+.tile span{font:600 10.5px var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.tile b{font-size:15px;display:flex;gap:6px;align-items:center}
+.rm{display:flex;flex-direction:column;gap:6px}
+.rm details{background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.rm summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 12px}
+.rm summary::-webkit-details-marker{display:none}
+.rm .rn{width:26px;height:26px;border-radius:6px;background:var(--accent-soft);color:var(--accent);font:600 13px var(--mono);display:flex;align-items:center;justify-content:center;flex:none}
+.rm .rt{display:flex;flex-direction:column;flex:1;min-width:0}
+.rm .rt b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rm .rt small{font-size:12px;color:var(--accent);font-weight:600}
+.rm details.cur{border-left:3px solid var(--accent)}
+.rm details.cur .rn{background:var(--accent);color:#fff}
+.rm .items{border-top:1px solid var(--line)}
+.rm .irow{display:flex;align-items:center;gap:10px;padding:7px 12px 7px 48px;border-bottom:1px solid var(--line);font-size:14px}
+.rm .irow:last-child{border-bottom:0}
+.rm .iid{font:500 12px var(--mono);min-width:40px}
+.rm .itt{flex:1;min-width:0}
+
+/* stat tiles */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.stat b{display:block;font:600 24px/1.1 var(--head)}
+.stat span{color:var(--muted);font-size:13px}
+
+/* bar rows */
+.bars{display:flex;flex-direction:column;gap:8px}
+.bar{display:grid;grid-template-columns:minmax(0,140px) 1fr 64px;gap:10px;align-items:center;font-size:13px}
+.bar>i{display:block;height:14px;border-radius:3px;background:var(--accent)}
+.bar>i.bad{background:var(--bad)}
+.src{font-size:12.5px;color:var(--muted)}
+
+/* foldable list */
+.fl{display:flex;flex-direction:column;gap:8px}
+.fl details{background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.fl summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 12px}
+.fl summary::-webkit-details-marker{display:none}
+.fl summary::before{content:"\25B8";flex:none;width:12px;font-size:12px;color:var(--muted);text-align:center}
+.fl details[open]>summary::before{content:"\25BE"}
+.fl .id{flex:none;min-width:28px;font:500 12px var(--mono);color:var(--muted)}
+.fl .tt{flex:1;min-width:0}
+.fl .tt b{display:block;font:600 15px/1.35 var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fl .tt small{display:block;font:13px/1.4 var(--body);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fl details[open] .tt b,.fl details[open] .tt small{white-space:normal}
+.fl .chip{flex:none}
+.fl .body{padding:12px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px;font-size:14px}
+.fl .chips{flex:none;display:flex;gap:4px}
+.fl .body .fl{gap:6px}
+.fl .body .fl details{background:var(--bg)}
+.fl .body .fl .fl details{background:var(--surface)}
+.fl details:not([open])>summary::before{content:"\25B8"}
+.lbl{font:600 13px var(--body);color:var(--muted);margin-bottom:2px}
+
+/* code block: dark, top bar, syntax colors; the script shrinks it to 50%, then it scrolls */
+.cb{background:var(--code-bg);color:#e4e8f0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.cb .bar-top{display:flex;justify-content:space-between;padding:5px 12px;font:500 11px var(--mono);background:#1a1f29;color:#9aa3b5}
+.cb .scroll{overflow-x:auto}
+.cb pre{margin:0;padding:10px 12px;font:12.5px/1.55 var(--mono);white-space:pre;width:max-content;min-width:100%}
+.cb .k{color:#7fa2ff}.cb .t{color:#5fcf95}.cb .s{color:#f0b257}.cb .n{color:#ff7b84}.cb .c{color:#9aa3b5;font-style:italic}
+
+/* inventory: filter bar, share bar, group rows, sort */
+.inv{display:flex;flex-direction:column;gap:8px}
+.fbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.fbar .srch{flex:1 1 180px;min-width:0;font:14px var(--body);padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg)}
+.fbar.stack .srch{flex-basis:100%}
+.dd{position:relative}
+.dd>summary{list-style:none;cursor:pointer;font:500 13px var(--body);padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);display:flex;gap:6px;align-items:center;white-space:nowrap}
+.dd>summary::-webkit-details-marker{display:none}
+.dd>summary::after{content:"\25BE";font-size:11px;color:var(--muted)}
+.dd.on>summary{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.dd .menu{position:absolute;z-index:6;top:calc(100% + 4px);left:0;min-width:160px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px;box-shadow:0 6px 18px rgba(0,0,0,.14);display:flex;flex-direction:column}
+.dd.right .menu{left:auto;right:0}
+.dd .menu label{display:flex;gap:8px;align-items:center;padding:5px 6px;font-size:13px;border-radius:6px;cursor:pointer}
+.dd .menu label:hover{background:var(--bg)}
+.fbar .cnt{margin-left:auto;font:500 12px var(--mono);color:var(--muted);white-space:nowrap}
+.fbar .clr{font:500 13px var(--body);background:none;border:0;color:var(--accent);cursor:pointer;padding:4px 6px}
+.sbar{display:flex;height:12px;border-radius:3px;overflow:hidden;gap:2px}
+.tally{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--muted)}
+.tally i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.tw tr.band td{background:var(--bg);font:600 13px var(--body);color:var(--fg)}
+.tw th[data-sort]{cursor:pointer;color:var(--accent)}
+.tw th[data-sort]::after{content:" \2195";color:var(--muted)}
+.tw th[data-dir="a"]::after{content:" \25B2";color:var(--accent)}
+.tw th[data-dir="d"]::after{content:" \25BC";color:var(--accent)}
+
+/* tree: one line for each node, fold each branch, click a name for its note */
+.tree-box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.tree-box>.tscroll{overflow-x:auto}
+.tlines{font:13px/1.65 var(--mono);white-space:pre;width:max-content}
+.trow .g{color:var(--muted)}
+.trow .tg{display:inline-block;width:1.3em;background:none;border:0;padding:0;font:inherit;color:var(--muted);cursor:pointer}
+.trow .tg[aria-expanded="false"]::before{content:"\25B8"}
+.trow .tg[aria-expanded="true"]::before{content:"\25BE"}
+.trow .tg.none{cursor:default}
+.trow .nm{font:600 13px var(--mono);background:none;border:0;padding:0 3px;border-radius:3px;color:var(--fg);cursor:pointer}
+.trow .nm.sel{background:var(--accent-soft);box-shadow:inset 0 -2px 0 var(--accent)}
+.trow .sq{font-style:normal;margin-right:4px}
+.trow .sq.ok{color:var(--ok)}.trow .sq.warn{color:var(--warn)}.trow .sq.bad{color:var(--bad)}
+.tree-box .legend{margin-bottom:6px}
+.tree-box .legend i{background:var(--c);border-color:var(--c)}
+.tnote{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:14px;min-height:1.6em}
+.tnote b{font-family:var(--mono)}
+.tnote .hint{color:var(--muted)}
+
+/* diagram box and legend (diagram rules are open) */
+.box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;overflow-x:auto}
+.cap{font:500 12px var(--mono);color:var(--muted);margin-bottom:6px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px;border:2px solid var(--c)}
+.legend b{display:inline-block;width:18px;border-top:2px solid var(--c);margin-right:6px;vertical-align:3px}
+
+/* gallery-only classes */
+.gal-c{display:flex;flex-direction:column;gap:12px;padding-top:28px;margin-top:12px;border-top:1px solid var(--line)}
+.gal-h{display:flex;align-items:center;gap:10px}
+.gal-h h2{font-size:22px}
+.gal-p{font-size:16px;max-width:70ch}
+.gal-src{font:12px var(--mono);color:var(--muted)}
+.gal-lbl{font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.gal-ex{display:flex;flex-direction:column;gap:10px}
+.gal-vars{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px}
+.gal-var{display:flex;flex-direction:column;gap:6px}
+.gal-use{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px}
+.gal-use .card ul{font-size:14px}
+.gal-rule{font-size:14px}
+.gal-rule ul{gap:4px}
+.gal-none{color:var(--muted);font-style:italic}
+.gal-jump{font-weight:600;text-decoration:none}
+</style>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Writing skill · House style</span>
+    <h1>House Style Components</h1>
+    <p class="lead">Each component of the house style, taken from the real starter page: an example, its variants, when to use it, its parts, the code to copy and the full rule.</p>
+  </header>
+  <nav class="tabs" id="tabs" role="tablist">
+    <button role="tab" data-t="structures">Structures</button><button role="tab" data-t="foundations">Foundations</button><button role="tab" data-t="frame">Page frame</button><button role="tab" data-t="data">Data</button><button role="tab" data-t="lists">Lists</button><button role="tab" data-t="plans">Plans</button><button role="tab" data-t="code">Code</button>
+  </nav>
+  <section class="tab" data-p="structures" hidden>
+<div class="tw gal-index"><table><thead><tr><th>Component</th><th>Use for</th><th>State</th></tr></thead><tbody><tr><td><a href="#g-tree" class="gal-jump">Tree</a></td><td>Folders, projects, packages or type hierarchies</td><td><i class="mk done">✓</i></td></tr><tr><td><a href="#g-tree-state" class="gal-jump">Tree with states</a></td><td>A tree where the state of each node is the message</td><td><i class="mk done">✓</i></td></tr><tr><td><a href="#g-callstack" class="gal-jump">Call stack</a></td><td>How one request or command runs through the code</td><td><i class="mk done">✓</i></td></tr><tr><td><a href="#g-props" class="gal-jump">Properties</a></td><td>The facts of one package, file, service or setting</td><td><i class="mk done">✓</i></td></tr></tbody></table></div>
+<p class="gal-src"><i class="mk done">✓</i> approved · <i class="mk you">?</i> rule is a draft</p>
+<section class="gal-c" id="g-tree">
+<div class="gal-h"><h2>Tree</h2><i class="mk done">✓</i></div>
+<p class="gal-p">A hierarchy of folders, projects or types. Each branch folds, and a click on a name shows its note.</p>
+<p class="gal-src">starter.html, data-g=&quot;tree&quot;</p>
+<div class="gal-lbl">Example</div>
+<div class="gal-ex"><div class="tree-box" data-g="tree">
+      <ul class="tree">
+        <li data-note="The source root."><span>src/</span>
+          <ul>
+            <li data-note="Events, ports and projections. No feature code."><span>Orchestrator.Kernel/</span>
+              <ul>
+                <li data-note="Append with an expected version. One write path."><span>Events/</span></li>
+                <li data-note="One interface for each outside system."><span>Ports/</span></li>
+              </ul></li>
+            <li data-note="One folder for each slice."><span>Orchestrator.Features/</span>
+              <ul>
+                <li data-note="Registry, create, archive."><span>Sessions/</span></li>
+                <li data-note="State machine and state check."><span>Lifecycle/</span></li>
+              </ul></li>
+            <li data-note="The web host."><span>Orchestrator.Web/</span></li>
+          </ul></li>
+      </ul>
+    </div></div>
+<div class="gal-lbl">Variants</div><div class="gal-vars"><div class="gal-var"><div class="gal-lbl">Large tree with states: 24 nodes, 4 levels</div><div class="gal-ex"><div class="tree-box"><div class="legend"><span><i style="--c:var(--ok)"></i>decided</span><span><i style="--c:var(--warn)"></i>open</span><span><i style="--c:var(--bad)"></i>gap</span></div><ul class="tree">
+<li data-note="The source root."><span>src/</span>
+  <ul>
+  <li data-note="Events, ports and projections. No feature code."><span>Orchestrator.Kernel/</span>
+    <ul>
+    <li data-state="ok" data-note="Decided. Append with an expected version."><span>Events/</span></li>
+    <li data-state="ok" data-note="Decided. One interface for each outside system."><span>Ports/</span></li>
+    <li data-state="warn" data-note="Open. The rebuild runs on start only."><span>Projections/</span></li>
+    <li data-state="ok" data-note="Decided. One clock port for tests."><span>Clock/</span></li>
+    </ul></li>
+  <li data-note="One folder for each slice."><span>Orchestrator.Features/</span>
+    <ul>
+    <li data-state="ok" data-note="Decided. Registry, create, archive."><span>Sessions/</span>
+      <ul>
+      <li data-state="ok" data-note="Decided."><span>Create/</span></li>
+      <li data-state="ok" data-note="Decided."><span>Archive/</span></li>
+      <li data-state="warn" data-note="Open. Version 3 of the store."><span>Registry/</span></li>
+      </ul></li>
+    <li data-state="bad" data-note="Gap. The state machine and the state check live in two places."><span>Lifecycle/</span>
+      <ul>
+      <li data-state="bad" data-note="Gap. Duplicate states."><span>StateMachine/</span></li>
+      <li data-state="warn" data-note="Open. Moves into StateMachine."><span>StateCheck/</span></li>
+      </ul></li>
+    <li data-state="warn" data-note="Open. Delivery waits for task K3."><span>Messages/</span>
+      <ul>
+      <li data-state="ok" data-note="Decided."><span>Inbox/</span></li>
+      <li data-state="warn" data-note="Open."><span>Delivery/</span></li>
+      </ul></li>
+    <li data-state="ok" data-note="Decided. Runs, steps, executors."><span>Workflows/</span></li>
+    <li data-state="ok" data-note="Decided. Definitions and render."><span>Templates/</span></li>
+    </ul></li>
+  <li data-state="warn" data-note="Open. Notion and file stores share no base."><span>Orchestrator.Store/</span>
+    <ul>
+    <li data-state="warn" data-note="Open."><span>Notion/</span></li>
+    <li data-state="ok" data-note="Decided."><span>Files/</span></li>
+    </ul></li>
+  <li data-state="ok" data-note="Decided. The web host."><span>Orchestrator.Web/</span></li>
+  <li data-state="bad" data-note="Gap. Holds the self-test in the shipping exe."><span>Orchestrator.Tray/</span></li>
+  </ul></li>
+</ul></div></div></div></div>
+<div class="gal-use"><div class="card"><h3>Use when</h3><ul><li>Folders, projects, packages or type hierarchies</li><li>Any hierarchy deeper than 2 levels</li></ul></div><div class="card"><h3>Do not use when</h3><ul><li>Items with the same attributes: use a table</li><li>A flat list: use the foldable list</li><li>Steps in order: use the roadmap</li></ul></div></div>
+<div class="gal-lbl">Parts</div>
+<div class="tw"><table><thead><tr><th>Part</th><th>Class</th><th>Value</th></tr></thead><tbody><tr><td>Box</td><td><code>.tree-box</code></td><td>White, outline</td></tr><tr><td>Line</td><td><code>one node</code></td><td>Code font 13, names only</td></tr><tr><td>Branch</td><td><code>▾ ▸</code></td><td>Folds on click</td></tr><tr><td>Note</td><td><code>under the tree</code></td><td>Body font 14, the description</td></tr><tr><td>Phone</td><td></td><td>Shrink to 50%, then scroll</td></tr></tbody></table></div>
+<div class="fl">
+<details><summary><span class="tt"><b>Code</b><small>HTML to copy</small></span></summary><div class="body"><div class="cb"><div class="bar-top"><span>starter.html, data-g=&quot;tree&quot;</span><span>HTML</span></div><div class="scroll"><pre>&lt;div class=&quot;tree-box&quot; data-g=&quot;tree&quot;&gt;
+      &lt;ul class=&quot;tree&quot;&gt;
+        &lt;li data-note=&quot;The source root.&quot;&gt;&lt;span&gt;src/&lt;/span&gt;
+          &lt;ul&gt;
+            &lt;li data-note=&quot;Events, ports and projections. No feature code.&quot;&gt;&lt;span&gt;Orchestrator.Kernel/&lt;/span&gt;
+              &lt;ul&gt;
+                &lt;li data-note=&quot;Append with an expected version. One write path.&quot;&gt;&lt;span&gt;Events/&lt;/span&gt;&lt;/li&gt;
+                &lt;li data-note=&quot;One interface for each outside system.&quot;&gt;&lt;span&gt;Ports/&lt;/span&gt;&lt;/li&gt;
+              &lt;/ul&gt;&lt;/li&gt;
+            &lt;li data-note=&quot;One folder for each slice.&quot;&gt;&lt;span&gt;Orchestrator.Features/&lt;/span&gt;
+              &lt;ul&gt;
+                &lt;li data-note=&quot;Registry, create, archive.&quot;&gt;&lt;span&gt;Sessions/&lt;/span&gt;&lt;/li&gt;
+                &lt;li data-note=&quot;State machine and state check.&quot;&gt;&lt;span&gt;Lifecycle/&lt;/span&gt;&lt;/li&gt;
+              &lt;/ul&gt;&lt;/li&gt;
+            &lt;li data-note=&quot;The web host.&quot;&gt;&lt;span&gt;Orchestrator.Web/&lt;/span&gt;&lt;/li&gt;
+          &lt;/ul&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;</pre></div></div></div></details>
+<details><summary><span class="tt"><b>Full rule</b><small>From artifacts.md</small></span></summary><div class="body gal-rule"><p class="gal-src">artifacts.md, section "Tree"</p><ul><li>Write the tree as <code>ul.tree</code> in a <code>.tree-box</code>. Each <code>li</code> holds <code>&lt;span&gt;name&lt;/span&gt;</code>, a <code>data-note</code> and an optional child <code>ul</code>.</li><li>Use the same tree for each hierarchy, with or without state.</li><li>Tree lines show only the names. A description goes into the note, not at the right of the name.</li><li><b>State:</b> only when the tree is about states. Set <code>data-state</code> (<code>ok</code>, <code>warn</code>, <code>bad</code>) on each <code>li</code>. A colored square shows before the name. Add a <code>.legend</code> above the tree.</li><li>The script draws one line for each node, with <code>├─ └─</code> lines. Each branch folds and opens on its own. A click on a name shows its note under the tree.</li><li>Lines never wrap. On a narrow screen the tree shrinks down to 50%, then scrolls.</li></ul></div></details>
+</div>
+</section><section class="gal-c" id="g-tree-state">
+<div class="gal-h"><h2>Tree with states</h2><i class="mk done">✓</i></div>
+<p class="gal-p">A tree about states: a colored square before each name, and a legend above the tree.</p>
+<p class="gal-src">starter.html, data-g=&quot;tree-state&quot;</p>
+<div class="gal-lbl">Example</div>
+<div class="gal-ex"><div class="tree-box" data-g="tree-state">
+      <div class="legend"><span><i style="--c:var(--ok)"></i>decided</span><span><i style="--c:var(--warn)"></i>open</span><span><i style="--c:var(--bad)"></i>gap</span></div>
+      <ul class="tree">
+        <li data-note="One folder for each slice."><span>Orchestrator.Features/</span>
+          <ul>
+            <li data-state="ok" data-note="Decided. Registry, create, archive."><span>Sessions/</span></li>
+            <li data-state="bad" data-note="Gap. The state machine and the state check live in two places."><span>Lifecycle/</span></li>
+            <li data-state="warn" data-note="Open. Delivery waits for task K3."><span>Messages/</span></li>
+          </ul></li>
+      </ul>
+    </div></div>
+
+<div class="gal-use"><div class="card"><h3>Use when</h3><ul><li>A tree where the state of each node is the message</li></ul></div><div class="card"><h3>Do not use when</h3><ul><li>A tree with no states: use the plain tree</li><li>States of items with no hierarchy: use marks in a table</li></ul></div></div>
+<div class="gal-lbl">Parts</div>
+<div class="tw"><table><thead><tr><th>Part</th><th>Class</th><th>Value</th></tr></thead><tbody><tr><td>Square</td><td><code>data-state</code></td><td>ok, warn or bad</td></tr><tr><td>Legend</td><td><code>.legend</code></td><td>Above the tree</td></tr></tbody></table></div>
+<div class="fl">
+<details><summary><span class="tt"><b>Code</b><small>HTML to copy</small></span></summary><div class="body"><div class="cb"><div class="bar-top"><span>starter.html, data-g=&quot;tree-state&quot;</span><span>HTML</span></div><div class="scroll"><pre>&lt;div class=&quot;tree-box&quot; data-g=&quot;tree-state&quot;&gt;
+      &lt;div class=&quot;legend&quot;&gt;&lt;span&gt;&lt;i style=&quot;--c:var(--ok)&quot;&gt;&lt;/i&gt;decided&lt;/span&gt;&lt;span&gt;&lt;i style=&quot;--c:var(--warn)&quot;&gt;&lt;/i&gt;open&lt;/span&gt;&lt;span&gt;&lt;i style=&quot;--c:var(--bad)&quot;&gt;&lt;/i&gt;gap&lt;/span&gt;&lt;/div&gt;
+      &lt;ul class=&quot;tree&quot;&gt;
+        &lt;li data-note=&quot;One folder for each slice.&quot;&gt;&lt;span&gt;Orchestrator.Features/&lt;/span&gt;
+          &lt;ul&gt;
+            &lt;li data-state=&quot;ok&quot; data-note=&quot;Decided. Registry, create, archive.&quot;&gt;&lt;span&gt;Sessions/&lt;/span&gt;&lt;/li&gt;
+            &lt;li data-state=&quot;bad&quot; data-note=&quot;Gap. The state machine and the state check live in two places.&quot;&gt;&lt;span&gt;Lifecycle/&lt;/span&gt;&lt;/li&gt;
+            &lt;li data-state=&quot;warn&quot; data-note=&quot;Open. Delivery waits for task K3.&quot;&gt;&lt;span&gt;Messages/&lt;/span&gt;&lt;/li&gt;
+          &lt;/ul&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;</pre></div></div></div></details>
+<details><summary><span class="tt"><b>Full rule</b><small>From artifacts.md</small></span></summary><div class="body gal-rule"><p class="gal-src">artifacts.md, section "Tree"</p><ul><li>Write the tree as <code>ul.tree</code> in a <code>.tree-box</code>. Each <code>li</code> holds <code>&lt;span&gt;name&lt;/span&gt;</code>, a <code>data-note</code> and an optional child <code>ul</code>.</li><li>Use the same tree for each hierarchy, with or without state.</li><li>Tree lines show only the names. A description goes into the note, not at the right of the name.</li><li><b>State:</b> only when the tree is about states. Set <code>data-state</code> (<code>ok</code>, <code>warn</code>, <code>bad</code>) on each <code>li</code>. A colored square shows before the name. Add a <code>.legend</code> above the tree.</li><li>The script draws one line for each node, with <code>├─ └─</code> lines. Each branch folds and opens on its own. A click on a name shows its note under the tree.</li><li>Lines never wrap. On a narrow screen the tree shrinks down to 50%, then scrolls.</li></ul></div></details>
+</div>
+</section><section class="gal-c" id="g-callstack">
+<div class="gal-h"><h2>Call stack</h2><i class="mk done">✓</i></div>
+<p class="gal-p">The calls of one code path, in order, in the code style.</p>
+<p class="gal-src">starter.html, data-g=&quot;callstack&quot;</p>
+<div class="gal-lbl">Example</div>
+<div class="gal-ex"><div class="cb" data-g="callstack"><div class="bar-top"><span>Call stack · orch post question</span><span>C#</span></div><div class="scroll"><pre>PostQuestion()                        Cli/Post.cs:42
+├─ Envelope.Create(kind, body)        Stream/Envelope.cs:18
+├─ store.WriteBody(body)              Store/NotionStore.cs:77  → creates a Bodies row
+│  └─ NotionTransport.Create()        Store/NotionTransport.cs:30
+├─ store.Append(envelope)             Store/NotionStore.cs:95  → creates an Events row
+│  ← EnvelopeId
+└─ Supervisor.Nudge(to)               Supervisor/Nudge.cs:12   → wakes the receiver</pre></div></div></div>
+
+<div class="gal-use"><div class="card"><h3>Use when</h3><ul><li>How one request or command runs through the code</li><li>Where a value comes from or goes to</li></ul></div><div class="card"><h3>Do not use when</h3><ul><li>The structure of the code: use a tree or a diagram</li><li>Steps for a person to do: use a numbered list</li></ul></div></div>
+<div class="gal-lbl">Parts</div>
+<div class="tw"><table><thead><tr><th>Part</th><th>Class</th><th>Value</th></tr></thead><tbody><tr><td>Block</td><td><code>.cb, plain pre</code></td><td>Dark, top bar &quot;Call stack · path&quot;</td></tr><tr><td>Line</td><td><code>one call</code></td><td>Call, file and line, → effect</td></tr><tr><td>Return</td><td><code>←</code></td><td>On its own line</td></tr><tr><td>Phone</td><td></td><td>Shrink to 50%, then scroll</td></tr></tbody></table></div>
+<div class="fl">
+<details><summary><span class="tt"><b>Code</b><small>HTML to copy</small></span></summary><div class="body"><div class="cb"><div class="bar-top"><span>starter.html, data-g=&quot;callstack&quot;</span><span>HTML</span></div><div class="scroll"><pre>&lt;div class=&quot;cb&quot; data-g=&quot;callstack&quot;&gt;&lt;div class=&quot;bar-top&quot;&gt;&lt;span&gt;Call stack · orch post question&lt;/span&gt;&lt;span&gt;C#&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;scroll&quot;&gt;&lt;pre&gt;PostQuestion()                        Cli/Post.cs:42
+├─ Envelope.Create(kind, body)        Stream/Envelope.cs:18
+├─ store.WriteBody(body)              Store/NotionStore.cs:77  → creates a Bodies row
+│  └─ NotionTransport.Create()        Store/NotionTransport.cs:30
+├─ store.Append(envelope)             Store/NotionStore.cs:95  → creates an Events row
+│  ← EnvelopeId
+└─ Supervisor.Nudge(to)               Supervisor/Nudge.cs:12   → wakes the receiver&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</pre></div></div></div></details>
+<details><summary><span class="tt"><b>Full rule</b><small>From artifacts.md</small></span></summary><div class="body gal-rule"><p class="gal-src">artifacts.md, section "Call stack"</p><ul><li>Use a code block (<code>.cb</code>) with the top bar &quot;Call stack · &lt;path&gt;&quot; and a plain <code>pre</code> (no <code>data-lang</code>).</li><li>One line for each call: <code>├─ └─ │</code> lines, the call at the left, the file and line at the right, then &quot;→ effect&quot; when the call changes something.</li><li>Mark a return value with &quot;←&quot; on its own line.</li></ul></div></details>
+</div>
+</section><section class="gal-c" id="g-props">
+<div class="gal-h"><h2>Properties</h2><i class="mk done">✓</i></div>
+<p class="gal-p">The fields and values of one item.</p>
+<p class="gal-src">starter.html, data-g=&quot;props&quot;</p>
+<div class="gal-lbl">Example</div>
+<div class="gal-ex"><div class="tw" data-g="props"><table>
+      <thead><tr><th>Field</th><th>Umpire.Analyzers</th></tr></thead>
+      <tbody>
+        <tr><td>Target</td><td><code>netstandard2.0</code></td></tr>
+        <tr><td>Owner</td><td>Engine</td></tr>
+        <tr><td>Source</td><td><code>src/Analyzers/</code></td></tr>
+      </tbody>
+    </table></div></div>
+
+<div class="gal-use"><div class="card"><h3>Use when</h3><ul><li>The facts of one package, file, service or setting</li></ul></div><div class="card"><h3>Do not use when</h3><ul><li>Several items with the same fields: use one table with a row for each item</li></ul></div></div>
+<div class="gal-lbl">Parts</div>
+<div class="tw"><table><thead><tr><th>Part</th><th>Class</th><th>Value</th></tr></thead><tbody><tr><td>Table</td><td><code>.tw</code></td><td>Two columns</td></tr><tr><td>Header</td><td><code>Field, item name</code></td><td>Body font 13, bold</td></tr></tbody></table></div>
+<div class="fl">
+<details><summary><span class="tt"><b>Code</b><small>HTML to copy</small></span></summary><div class="body"><div class="cb"><div class="bar-top"><span>starter.html, data-g=&quot;props&quot;</span><span>HTML</span></div><div class="scroll"><pre>&lt;div class=&quot;tw&quot; data-g=&quot;props&quot;&gt;&lt;table&gt;
+      &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Field&lt;/th&gt;&lt;th&gt;Umpire.Analyzers&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;&lt;td&gt;Target&lt;/td&gt;&lt;td&gt;&lt;code&gt;netstandard2.0&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;Owner&lt;/td&gt;&lt;td&gt;Engine&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;Source&lt;/td&gt;&lt;td&gt;&lt;code&gt;src/Analyzers/&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;&lt;/div&gt;</pre></div></div></div></details>
+<details><summary><span class="tt"><b>Full rule</b><small>From artifacts.md</small></span></summary><div class="body gal-rule"><p class="gal-src">artifacts.md, section "Properties of one item"</p><ul><li>Use a two-column table: &quot;Field&quot; and the item name.</li><li>For several items with the same fields, use one normal table with a row for each item.</li></ul></div></details>
+</div>
+</section>
+</section><section class="tab" data-p="foundations" hidden><div class="note"><b>Not built yet.</b> This tab follows when the format of the Structures tab is approved. 2 components.</div></section><section class="tab" data-p="frame" hidden><div class="note"><b>Not built yet.</b> This tab follows when the format of the Structures tab is approved. 4 components.</div></section><section class="tab" data-p="data" hidden><div class="note"><b>Not built yet.</b> This tab follows when the format of the Structures tab is approved. 5 components.</div></section><section class="tab" data-p="lists" hidden><div class="note"><b>Not built yet.</b> This tab follows when the format of the Structures tab is approved. 3 components.</div></section><section class="tab" data-p="plans" hidden><div class="note"><b>Not built yet.</b> This tab follows when the format of the Structures tab is approved. 3 components.</div></section><section class="tab" data-p="code" hidden><div class="note"><b>Not built yet.</b> This tab follows when the format of the Structures tab is approved. 2 components.</div></section>
+</div>
+<script>
+
+{
+/* tabs with #hash routing */
+const tabs=document.getElementById("tabs");
+const show=t=>{if(!tabs){fitAll();return;}if(!document.querySelector(`section.tab[data-p="${t}"]`))t=tabs.querySelector("button").dataset.t;document.querySelectorAll("section.tab").forEach(s=>s.hidden=s.dataset.p!==t);tabs.querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",b.dataset.t===t?"true":"false"));fitAll();};
+if(tabs)tabs.addEventListener("click",e=>{const b=e.target.closest("button");if(b)location.hash=b.dataset.t;});
+window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
+
+/* tables: label each cell for the stacked form; shrink to fit, or stack below 70% */
+document.querySelectorAll(".tw>table").forEach(t=>{const h=[...t.querySelectorAll("thead th")].map(th=>th.textContent);t.querySelectorAll("tbody tr").forEach(r=>[...r.children].forEach((td,i)=>td.dataset.l=h[i]||""));});
+const fitTable=w=>{const t=w.firstElementChild;w.classList.remove("stacked");t.style.zoom=1;if(!w.clientWidth)return;t.style.width="max-content";const need=t.offsetWidth;t.style.width="";const k=w.clientWidth/need;if(k>=1)return;if(k<0.7)w.classList.add("stacked");else t.style.zoom=k;};
+
+/* code: syntax colors, then shrink to fit down to 50%, then scroll */
+const KW=new Set("public private protected internal abstract virtual override sealed static readonly record class struct interface enum void string int bool var new return if else for foreach while in is as null true false async await using namespace function const let import export from def self None True False".split(" "));
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+document.querySelectorAll(".cb pre[data-lang]").forEach(p=>{p.innerHTML=p.textContent.split("\n").map(line=>{const m=line.match(/(\/\/|#).*$/);const ci=m&&!/["']/.test(line.slice(m.index))?m.index:-1;const code=ci>=0?line.slice(0,ci):line;const cm=ci>=0?line.slice(ci):"";return code.replace(/("[^"]*"|'[^']*')|(\b\d+(?:\.\d+)?\b)|(\b[A-Za-z_]\w*\b)|([^"'\w]+)/g,(x,s,n,w,o)=>s?`<span class="s">${esc(s)}</span>`:n?`<span class="n">${n}</span>`:w?(KW.has(w)?`<span class="k">${w}</span>`:/^[A-Z]/.test(w)?`<span class="t">${w}</span>`:w):esc(o))+(cm?`<span class="c">${esc(cm)}</span>`:"");}).join("\n");});
+const fitCode=s=>{const p=s.firstElementChild;p.style.zoom=1;if(!s.clientWidth)return;const k=s.clientWidth/p.scrollWidth;if(k<1)p.style.zoom=Math.max(k,0.5);};
+
+/* tab bar: shrink to fit down to 75%, then scroll */
+const fitTabs=()=>{if(!tabs)return;tabs.style.zoom=1;const k=tabs.clientWidth/tabs.scrollWidth;if(k<1)tabs.style.zoom=Math.max(k,0.75);};
+/* inventory: search, one dropdown with check boxes for each category, count, Clear.
+   Items: [data-item] rows or foldables with data-<category>. Group rows (tr.band) and group
+   foldables hide when no item in them shows. */
+const invApply=v=>{const q=(v.querySelector(".srch")?.value||"").trim().toLowerCase();const f={};
+ v.querySelectorAll(".fbar .dd").forEach(d=>{const on=[...d.querySelectorAll("input:checked")].map(i=>i.value);if(on.length)f[d.dataset.col]=on;d.classList.toggle("on",on.length>0);d.querySelector("summary span").textContent=`${d.dataset.label}: ${on.length?on.join(", "):"all"}`;});
+ const items=[...v.querySelectorAll("[data-item]")];let n=0;
+ items.forEach(it=>{const ok=(!q||it.textContent.toLowerCase().includes(q))&&Object.entries(f).every(([c,vals])=>vals.includes(it.dataset[c]));it.hidden=!ok;if(ok)n++;});
+ v.querySelectorAll("tr.band").forEach(b=>{let x=b.nextElementSibling,any=false;while(x&&!x.classList.contains("band")){if(x.hasAttribute("data-item")&&!x.hidden)any=true;x=x.nextElementSibling;}b.hidden=!any;});
+ v.querySelectorAll(".fl details:not([data-item])").forEach(g=>{const k=g.querySelectorAll("[data-item]");if(k.length)g.hidden=![...k].some(x=>!x.hidden);});
+ const act=q||Object.keys(f).length;const c=v.querySelector(".cnt");if(c)c.textContent=act?`${n} of ${items.length}`:`${items.length} items`;const cl=v.querySelector(".clr");if(cl)cl.hidden=!act;};
+const invBar=b=>{b.classList.remove("stack");const k=[...b.children].filter(x=>!x.hidden);if(k.length>1&&k.some(x=>x.offsetTop>=k[0].offsetTop+k[0].offsetHeight-2))b.classList.add("stack");};
+document.addEventListener("input",e=>{const v=e.target.closest(".inv");if(v){invApply(v);fitAll();}});
+document.addEventListener("change",e=>{const v=e.target.closest(".inv");if(v){invApply(v);fitAll();}});
+document.addEventListener("click",e=>{document.querySelectorAll(".dd[open]").forEach(d=>{if(!d.contains(e.target))d.open=false;});
+ const cl=e.target.closest(".inv .clr");if(cl){const v=cl.closest(".inv");v.querySelectorAll(".srch").forEach(s=>s.value="");v.querySelectorAll(".dd input").forEach(i=>i.checked=false);invApply(v);fitAll();return;}
+ /* sort: click a header; rows sort inside their group */
+ const th=e.target.closest(".tw th[data-sort]");if(th){const i=th.cellIndex,dir=th.dataset.dir==="a"?"d":"a";th.parentElement.querySelectorAll("th").forEach(x=>delete x.dataset.dir);th.dataset.dir=dir;const tb=th.closest("table").tBodies[0];const segs=[[]];[...tb.rows].forEach(r=>{if(r.classList.contains("band"))segs.push([r]);else segs[segs.length-1].push(r);});
+  segs.forEach(sg=>{const head=sg[0]&&sg[0].classList.contains("band")?[sg.shift()]:[];sg.sort((a,b)=>a.cells[i].textContent.localeCompare(b.cells[i].textContent,undefined,{numeric:true})*(dir==="a"?1:-1));[...head,...sg].forEach(r=>tb.appendChild(r));});}});
+document.querySelectorAll(".inv").forEach(invApply);
+/* a dropdown menu opens to the left when it does not fit at the right */
+const ddSide=d=>{d.classList.remove("right");const m=d.querySelector(".menu").getBoundingClientRect();if(m.right>document.documentElement.clientWidth-8)d.classList.add("right");};
+document.addEventListener("toggle",e=>{const d=e.target;if(d.classList&&d.classList.contains("dd")&&d.open)ddSide(d);},true);
+
+/* tree: build lines from ul.tree; li holds <span>name</span>, an optional data-state (ok, warn, bad),
+   data-note and a child ul. Each branch folds. A click on a name shows its note under the tree. */
+document.querySelectorAll("ul.tree").forEach(ul=>{const box=ul.parentElement;const lines=document.createElement("div");lines.className="tlines";const rows=[];
+ const walk=(list,pre,top,parent)=>{const items=[...list.children];items.forEach((li,i)=>{const last=i===items.length-1;const kids=li.querySelector(":scope>ul");
+  const row=document.createElement("div");row.className="trow";row.parentRow=parent;
+  const g=document.createElement("span");g.className="g";g.textContent=top?"":pre+(last?"\u2514\u2500 ":"\u251C\u2500 ");
+  const tg=document.createElement("button");tg.type="button";tg.className="tg"+(kids?"":" none");if(kids){tg.setAttribute("aria-expanded","true");tg.setAttribute("aria-label","Fold or open");}else tg.tabIndex=-1;
+  const nm=document.createElement("button");nm.type="button";nm.className="nm";nm.textContent=li.querySelector(":scope>span").textContent;nm.dataset.note=li.dataset.note||"";
+  row.append(g,tg);const stt=li.dataset.state;if(stt){const q=document.createElement("i");q.className="sq "+stt;q.textContent="\u25A0";row.append(q);}row.append(nm);
+  lines.append(row);rows.push(row);if(kids)walk(kids,top?"":pre+(last?"   ":"\u2502  "),false,row);});};
+ walk(ul,"",true,null);
+ const sc=document.createElement("div");sc.className="tscroll";sc.append(lines);const note=document.createElement("div");note.className="tnote";note.innerHTML='<span class="hint">Select a name for its note.</span>';
+ ul.replaceWith(sc);box.append(note);
+ const vis=r=>{for(let p=r.parentRow;p;p=p.parentRow){if(p.querySelector(".tg").getAttribute("aria-expanded")==="false")return false;}return true;};
+ box.addEventListener("click",e=>{const t=e.target.closest(".tg");if(t&&!t.classList.contains("none")){t.setAttribute("aria-expanded",t.getAttribute("aria-expanded")==="true"?"false":"true");rows.forEach(r=>r.hidden=!vis(r));fitAll();return;}
+  const n=e.target.closest(".nm");if(n){box.querySelectorAll(".nm.sel").forEach(x=>x.classList.remove("sel"));n.classList.add("sel");note.textContent="";const b=document.createElement("b");b.textContent=n.textContent;note.append(b," ",n.dataset.note);}});});
+const fitTree=s=>{const t=s.firstElementChild;t.style.zoom=1;if(!s.clientWidth)return;const k=s.clientWidth/t.scrollWidth;if(k<1)t.style.zoom=Math.max(k,0.5);};
+
+const fitAll=()=>{fitTabs();document.querySelectorAll(".tree-box>.tscroll").forEach(fitTree);document.querySelectorAll(".fbar").forEach(invBar);document.querySelectorAll(".dd[open]").forEach(ddSide);document.querySelectorAll(".tw").forEach(fitTable);document.querySelectorAll(".cb .scroll").forEach(fitCode);};
+window.addEventListener("resize",fitAll);
+document.addEventListener("toggle",fitAll,true);
+show(location.hash.slice(1));
+}
+
+</script>

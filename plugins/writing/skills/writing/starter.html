@@ -1,0 +1,438 @@
+<title>Page Name</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600&display=swap">
+<style>
+/* House style starter. Copy this file, keep the CSS and the script, and replace the content.
+   Rules: artifacts.md. Decisions: house-style-decisions.md. */
+:root{
+  --bg:#e9ecf1;--surface:#ffffff;--fg:#1b2130;--muted:#5b6475;--line:#dde1e8;--code-in:#eef0f4;--code-bg:#11141b;
+  --accent:#2a5bd7;--accent-soft:#e6edfc;--ok:#1f7a4d;--ok-soft:#e3f3ea;--warn:#9a5b00;--warn-soft:#fbefd9;--bad:#b4232c;--bad-soft:#fbe5e6;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --head:"Space Grotesk","IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#11141b;--surface:#1a1f29;--fg:#e4e8f0;--muted:#9aa3b5;--line:#2c3341;--code-in:#232a36;--code-bg:#06080b;--accent:#7fa2ff;--accent-soft:#1f2a48;--ok:#5fcf95;--ok-soft:#163326;--warn:#f0b257;--warn-soft:#3a2a12;--bad:#ff7b84;--bad-soft:#3d1a1e;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11141b;--surface:#1a1f29;--fg:#e4e8f0;--muted:#9aa3b5;--line:#2c3341;--code-in:#232a36;--code-bg:#06080b;--accent:#7fa2ff;--accent-soft:#1f2a48;--ok:#5fcf95;--ok-soft:#163326;--warn:#f0b257;--warn-soft:#3a2a12;--bad:#ff7b84;--bad-soft:#3d1a1e;color-scheme:dark}
+
+/* base */
+*{box-sizing:border-box;min-width:0}
+[hidden]{display:none!important}
+html{overflow-x:clip}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--body);margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:980px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 64px}
+h1,h2,h3{font-family:var(--head);font-weight:600;text-wrap:balance;margin:0}
+h1{font-size:26px;line-height:1.2}
+h2{font-size:19px;line-height:1.3}
+h3{font-size:16px;line-height:1.3}
+p{margin:0;max-width:72ch}
+a{color:var(--accent)}
+ul,ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
+code{font:13px var(--mono);background:var(--code-in);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+section.tab{display:flex;flex-direction:column;gap:18px;padding-top:20px}
+@media (max-width:600px){h1{font-size:22px}}
+
+/* page header */
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.lead{color:var(--muted);font-size:16px;max-width:70ch}
+
+/* tabs: underline on the open tab */
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);margin-top:16px}
+nav.tabs button{flex-shrink:0;font:500 14px var(--body);color:var(--muted);background:none;border:0;border-bottom:2px solid transparent;padding:10px 10px 8px;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* card, note banner, recommendation card */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.note{background:var(--surface);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:10px 14px}
+.note.ok{border-left-color:var(--ok)}.note.warn{border-left-color:var(--warn)}.note.bad{border-left-color:var(--bad)}
+.rec{border-left:3px solid var(--ok)}
+
+/* chips: filled tint */
+.chip{display:inline-block;font:500 11px var(--mono);padding:2px 8px;border-radius:99px;white-space:nowrap}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}.chip.warn{background:var(--warn-soft);color:var(--warn)}.chip.bad{background:var(--bad-soft);color:var(--bad)}.chip.info{background:var(--accent-soft);color:var(--accent)}
+
+/* table: white box; cell text never wraps; the script shrinks it or stacks it */
+.tw{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.tw>table{border-collapse:collapse;width:100%;font-size:14px}
+.tw th,.tw td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;white-space:nowrap}
+.tw th{font:600 13px var(--body);color:var(--fg);background:var(--bg)}
+.tw tr:last-child td{border-bottom:0}
+.tw code{overflow-wrap:normal;white-space:nowrap}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tw.stacked{background:none;border:0;border-radius:0}
+.tw.stacked thead{display:none}
+.tw.stacked tr{display:block;background:var(--surface);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}
+.tw.stacked td{display:block;text-align:right;border:0;padding:4px 12px;white-space:normal}
+.tw.stacked td::before{content:attr(data-l);float:left;margin-right:12px;font:600 14px var(--body);color:var(--muted);text-align:left}
+
+/* marks: color = health, symbol = stage (as in the stream tracker) */
+.mk{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;color:#fff;font:700 9px/1 var(--mono);font-style:normal;flex:none;vertical-align:-3px}
+.mk.done{background:var(--ok)}.mk.prog{background:var(--accent)}.mk.you{background:var(--warn)}.mk.blocked{background:var(--bad)}.mk.plan{background:#6b4fbb}.mk.none{background:#8a93a3}
+.mk.big{width:20px;height:20px;font-size:11px}
+.marks{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted)}
+.marks div{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}
+.marks em{font:600 10px var(--mono);font-style:normal;text-transform:uppercase;letter-spacing:.05em;width:100%}
+.marks span{display:inline-flex;gap:5px;align-items:center}
+.strip{display:flex;gap:3px;align-items:center;margin-left:auto;flex:none}
+.strip em{font:600 11px var(--mono);font-style:normal;color:var(--muted)}
+
+/* plan: tiles and roadmap */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;display:flex;flex-direction:column;gap:2px}
+.tile.key{border-left:3px solid var(--warn)}
+.tile span{font:600 10.5px var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.tile b{font-size:15px;display:flex;gap:6px;align-items:center}
+.rm{display:flex;flex-direction:column;gap:6px}
+.rm details{background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.rm summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 12px}
+.rm summary::-webkit-details-marker{display:none}
+.rm .rn{width:26px;height:26px;border-radius:6px;background:var(--accent-soft);color:var(--accent);font:600 13px var(--mono);display:flex;align-items:center;justify-content:center;flex:none}
+.rm .rt{display:flex;flex-direction:column;flex:1;min-width:0}
+.rm .rt b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rm .rt small{font-size:12px;color:var(--accent);font-weight:600}
+.rm details.cur{border-left:3px solid var(--accent)}
+.rm details.cur .rn{background:var(--accent);color:#fff}
+.rm .items{border-top:1px solid var(--line)}
+.rm .irow{display:flex;align-items:center;gap:10px;padding:7px 12px 7px 48px;border-bottom:1px solid var(--line);font-size:14px}
+.rm .irow:last-child{border-bottom:0}
+.rm .iid{font:500 12px var(--mono);min-width:40px}
+.rm .itt{flex:1;min-width:0}
+
+/* stat tiles */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.stat b{display:block;font:600 24px/1.1 var(--head)}
+.stat span{color:var(--muted);font-size:13px}
+
+/* bar rows */
+.bars{display:flex;flex-direction:column;gap:8px}
+.bar{display:grid;grid-template-columns:minmax(0,140px) 1fr 64px;gap:10px;align-items:center;font-size:13px}
+.bar>i{display:block;height:14px;border-radius:3px;background:var(--accent)}
+.bar>i.bad{background:var(--bad)}
+.src{font-size:12.5px;color:var(--muted)}
+
+/* foldable list */
+.fl{display:flex;flex-direction:column;gap:8px}
+.fl details{background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.fl summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 12px}
+.fl summary::-webkit-details-marker{display:none}
+.fl summary::before{content:"\25B8";flex:none;width:12px;font-size:12px;color:var(--muted);text-align:center}
+.fl details[open]>summary::before{content:"\25BE"}
+.fl .id{flex:none;min-width:28px;font:500 12px var(--mono);color:var(--muted)}
+.fl .tt{flex:1;min-width:0}
+.fl .tt b{display:block;font:600 15px/1.35 var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fl .tt small{display:block;font:13px/1.4 var(--body);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fl details[open] .tt b,.fl details[open] .tt small{white-space:normal}
+.fl .chip{flex:none}
+.fl .body{padding:12px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px;font-size:14px}
+.fl .chips{flex:none;display:flex;gap:4px}
+.fl .body .fl{gap:6px}
+.fl .body .fl details{background:var(--bg)}
+.fl .body .fl .fl details{background:var(--surface)}
+.fl details:not([open])>summary::before{content:"\25B8"}
+.lbl{font:600 13px var(--body);color:var(--muted);margin-bottom:2px}
+
+/* code block: dark, top bar, syntax colors; the script shrinks it to 50%, then it scrolls */
+.cb{background:var(--code-bg);color:#e4e8f0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.cb .bar-top{display:flex;justify-content:space-between;padding:5px 12px;font:500 11px var(--mono);background:#1a1f29;color:#9aa3b5}
+.cb .scroll{overflow-x:auto}
+.cb pre{margin:0;padding:10px 12px;font:12.5px/1.55 var(--mono);white-space:pre;width:max-content;min-width:100%}
+.cb .k{color:#7fa2ff}.cb .t{color:#5fcf95}.cb .s{color:#f0b257}.cb .n{color:#ff7b84}.cb .c{color:#9aa3b5;font-style:italic}
+
+/* inventory: filter bar, share bar, group rows, sort */
+.inv{display:flex;flex-direction:column;gap:8px}
+.fbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.fbar .srch{flex:1 1 180px;min-width:0;font:14px var(--body);padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg)}
+.fbar.stack .srch{flex-basis:100%}
+.dd{position:relative}
+.dd>summary{list-style:none;cursor:pointer;font:500 13px var(--body);padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);display:flex;gap:6px;align-items:center;white-space:nowrap}
+.dd>summary::-webkit-details-marker{display:none}
+.dd>summary::after{content:"\25BE";font-size:11px;color:var(--muted)}
+.dd.on>summary{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.dd .menu{position:absolute;z-index:6;top:calc(100% + 4px);left:0;min-width:160px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px;box-shadow:0 6px 18px rgba(0,0,0,.14);display:flex;flex-direction:column}
+.dd.right .menu{left:auto;right:0}
+.dd .menu label{display:flex;gap:8px;align-items:center;padding:5px 6px;font-size:13px;border-radius:6px;cursor:pointer}
+.dd .menu label:hover{background:var(--bg)}
+.fbar .cnt{margin-left:auto;font:500 12px var(--mono);color:var(--muted);white-space:nowrap}
+.fbar .clr{font:500 13px var(--body);background:none;border:0;color:var(--accent);cursor:pointer;padding:4px 6px}
+.sbar{display:flex;height:12px;border-radius:3px;overflow:hidden;gap:2px}
+.tally{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--muted)}
+.tally i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.tw tr.band td{background:var(--bg);font:600 13px var(--body);color:var(--fg)}
+.tw th[data-sort]{cursor:pointer;color:var(--accent)}
+.tw th[data-sort]::after{content:" \2195";color:var(--muted)}
+.tw th[data-dir="a"]::after{content:" \25B2";color:var(--accent)}
+.tw th[data-dir="d"]::after{content:" \25BC";color:var(--accent)}
+
+/* tree: one line for each node, fold each branch, click a name for its note */
+.tree-box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.tree-box>.tscroll{overflow-x:auto}
+.tlines{font:13px/1.65 var(--mono);white-space:pre;width:max-content}
+.trow .g{color:var(--muted)}
+.trow .tg{display:inline-block;width:1.3em;background:none;border:0;padding:0;font:inherit;color:var(--muted);cursor:pointer}
+.trow .tg[aria-expanded="false"]::before{content:"\25B8"}
+.trow .tg[aria-expanded="true"]::before{content:"\25BE"}
+.trow .tg.none{cursor:default}
+.trow .nm{font:600 13px var(--mono);background:none;border:0;padding:0 3px;border-radius:3px;color:var(--fg);cursor:pointer}
+.trow .nm.sel{background:var(--accent-soft);box-shadow:inset 0 -2px 0 var(--accent)}
+.trow .sq{font-style:normal;margin-right:4px}
+.trow .sq.ok{color:var(--ok)}.trow .sq.warn{color:var(--warn)}.trow .sq.bad{color:var(--bad)}
+.tree-box .legend{margin-bottom:6px}
+.tree-box .legend i{background:var(--c);border-color:var(--c)}
+.tnote{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:14px;min-height:1.6em}
+.tnote b{font-family:var(--mono)}
+.tnote .hint{color:var(--muted)}
+
+/* diagram box and legend (diagram rules are open) */
+.box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;overflow-x:auto}
+.cap{font:500 12px var(--mono);color:var(--muted);margin-bottom:6px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px;border:2px solid var(--c)}
+.legend b{display:inline-block;width:18px;border-top:2px solid var(--c);margin-right:6px;vertical-align:3px}
+</style>
+
+<div class="wrap">
+  <header data-g="header">
+    <span class="eyebrow">Project · Topic</span>
+    <h1>Page Name</h1>
+    <p class="lead">The result or the decision first, in 1 to 3 sentences.</p>
+  </header>
+
+  <nav class="tabs" id="tabs" role="tablist" data-g="tabs">
+    <button role="tab" data-t="summary">Summary</button>
+    <button role="tab" data-t="details">Details</button>
+    <button role="tab" data-t="plan">Plan</button>
+    <button role="tab" data-t="structure">Structure</button>
+    <button role="tab" data-t="inventory">Inventory</button>
+    <button role="tab" data-t="questions">Questions</button>
+  </nav>
+
+  <section class="tab" data-p="summary">
+    <div class="card rec" data-g="rec">
+      <h2>Recommendation</h2>
+      <ul>
+        <li><b>K1:</b> one line for each decision.</li>
+        <li><b>Not recommended:</b> the rejected option, last.</li>
+      </ul>
+    </div>
+    <div class="stats" data-g="stats">
+      <div class="stat"><b>4</b><span>label with the unit</span></div>
+      <div class="stat"><b>1.9 MB</b><span>label with the unit</span></div>
+      <div class="stat"><b>3.8 s</b><span>label with the unit</span></div>
+    </div>
+    <div class="card" data-g="bars">
+      <h2>Heading that states the finding</h2>
+      <div class="bars">
+        <div class="bar"><span>Largest part</span><i class="bad" style="width:57%"></i><span class="num">4.6 s</span></div>
+        <div class="bar"><span>Other part</span><i style="width:42%"></i><span class="num">3.3 s</span></div>
+      </div>
+      <p class="src">Source: name of the source.</p>
+    </div>
+  </section>
+
+  <section class="tab" data-p="details" hidden>
+    <div class="marks" data-g="marks"><div><em>Color: health</em><span><i class="mk done"></i>Done</span><span><i class="mk prog"></i>In progress</span><span><i class="mk you"></i>Waits for you</span><span><i class="mk blocked"></i>Blocked</span><span><i class="mk plan"></i>Planning</span><span><i class="mk none"></i>Not started</span></div>
+      <div><em>Symbol: stage</em><span><i class="mk none">✓</i>Merged</span><span><i class="mk none">?</i>Waits for an answer</span><span><i class="mk none">▶</i>Running</span><span><i class="mk none">‖</i>Stopped</span><span><i class="mk none">×</i>Cancelled</span></div></div>
+    <div class="note warn" data-g="note"><b>Risk.</b> One sentence for the risk.</div>
+    <div class="tw" data-g="table"><table>
+      <thead><tr><th>Part</th><th>Reader</th><th>Time (s)</th><th>State</th></tr></thead>
+      <tbody>
+        <tr><td>Fact reader</td><td><code>TypeFacts</code></td><td class="num">4.6</td><td><i class="mk done">✓</i></td></tr>
+        <tr><td>Report format</td><td><code>--report</code></td><td class="num">0.4</td><td><i class="mk you">?</i></td></tr>
+      </tbody>
+    </table></div>
+    <div class="fl" data-g="foldable">
+      <details><summary><span class="id">K1</span><span class="tt"><b>Item title, 6 words maximum</b><small>Optional key fact</small></span><i class="mk done">✓</i></summary>
+        <div class="body"><p>Content of the item: text, a table or a code block.</p></div></details>
+      <details><summary><span class="tt"><b>Group: Gaps</b><small>2 items</small></span></summary>
+        <div class="body"><div class="fl">
+          <details><summary><span class="id">G1</span><span class="tt"><b>Child item</b><small>Key fact</small></span><span class="chips"><i class="mk blocked">×</i><span class="chip info">P7</span></span></summary>
+            <div class="body"><div><div class="lbl">Where</div><p>File and line.</p></div><div><div class="lbl">Fix</div><p>The change to make.</p></div></div></details>
+          <details><summary><span class="id">G2</span><span class="tt"><b>Child item</b></span></summary>
+            <div class="body"><p>Content of the item.</p></div></details>
+        </div></div></details>
+    </div>
+    <div class="cb" data-g="code"><div class="bar-top"><span>Block.cs</span><span>C#</span></div><div class="scroll"><pre data-lang="cs">// Only the lines that make the point
+public abstract record Block : Concept {
+    public string Folder => "Kernel";
+}</pre></div></div>
+  </section>
+
+  <section class="tab" data-p="plan" hidden>
+    <div class="tiles" data-g="tiles">
+      <div class="tile key"><span>Status</span><b><i class="mk you">?</i>Waits for you</b></div>
+      <div class="tile"><span>Roadmap</span><b>Step 2 of 3</b></div>
+      <div class="tile"><span>Items</span><b>3 of 6</b></div>
+    </div>
+    <div class="rm" data-g="roadmap">
+      <details><summary><span class="rn">1</span><span class="rt"><b>Base</b></span><span class="strip"><i class="mk done">✓</i><i class="mk done">✓</i></span><i class="mk big done">✓</i></summary>
+        <div class="items"><div class="irow"><i class="mk done">✓</i><span class="iid">A1</span><span class="itt">Design page</span></div><div class="irow"><i class="mk done">✓</i><span class="iid">B1</span><span class="itt">Lifecycle design</span></div></div></details>
+      <details class="cur" open><summary><span class="rn">2</span><span class="rt"><b>Foundations</b><small>Current step</small></span><span class="strip"><i class="mk prog">?</i><i class="mk done">✓</i><i class="mk none"></i></span><i class="mk big prog">▶</i></summary>
+        <div class="items"><div class="irow"><i class="mk prog">?</i><span class="iid">K1</span><span class="itt">Architecture review</span></div><div class="irow"><i class="mk done">✓</i><span class="iid">S9</span><span class="itt">Plugin in one place</span></div><div class="irow"><i class="mk none"></i><span class="iid">S10</span><span class="itt">Supervisor self-start</span></div></div></details>
+      <details><summary><span class="rn">3</span><span class="rt"><b>Features</b></span><span class="strip"><i class="mk plan">?</i></span><i class="mk big plan">?</i></summary>
+        <div class="items"><div class="irow"><i class="mk plan">?</i><span class="iid">M1</span><span class="itt">Voice dictation</span></div></div></details>
+    </div>
+    <div class="tw" data-g="log"><table>
+      <thead><tr><th>Date</th><th>Kind</th><th>Text</th></tr></thead>
+      <tbody>
+        <tr><td class="num">11-17</td><td><span class="chip info">answer</span></td><td>Tunnel and Access, as for the runner.</td></tr>
+        <tr><td class="num">11-17</td><td><span class="chip ok">decision</span></td><td>Plan only now. Code is a later task.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="tab" data-p="structure" hidden>
+    <div class="tree-box" data-g="tree">
+      <ul class="tree">
+        <li data-note="The source root."><span>src/</span>
+          <ul>
+            <li data-note="Events, ports and projections. No feature code."><span>Orchestrator.Kernel/</span>
+              <ul>
+                <li data-note="Append with an expected version. One write path."><span>Events/</span></li>
+                <li data-note="One interface for each outside system."><span>Ports/</span></li>
+              </ul></li>
+            <li data-note="One folder for each slice."><span>Orchestrator.Features/</span>
+              <ul>
+                <li data-note="Registry, create, archive."><span>Sessions/</span></li>
+                <li data-note="State machine and state check."><span>Lifecycle/</span></li>
+              </ul></li>
+            <li data-note="The web host."><span>Orchestrator.Web/</span></li>
+          </ul></li>
+      </ul>
+    </div>
+    <div class="tree-box" data-g="tree-state">
+      <div class="legend"><span><i style="--c:var(--ok)"></i>decided</span><span><i style="--c:var(--warn)"></i>open</span><span><i style="--c:var(--bad)"></i>gap</span></div>
+      <ul class="tree">
+        <li data-note="One folder for each slice."><span>Orchestrator.Features/</span>
+          <ul>
+            <li data-state="ok" data-note="Decided. Registry, create, archive."><span>Sessions/</span></li>
+            <li data-state="bad" data-note="Gap. The state machine and the state check live in two places."><span>Lifecycle/</span></li>
+            <li data-state="warn" data-note="Open. Delivery waits for task K3."><span>Messages/</span></li>
+          </ul></li>
+      </ul>
+    </div>
+    <div class="cb" data-g="callstack"><div class="bar-top"><span>Call stack · orch post question</span><span>C#</span></div><div class="scroll"><pre>PostQuestion()                        Cli/Post.cs:42
+├─ Envelope.Create(kind, body)        Stream/Envelope.cs:18
+├─ store.WriteBody(body)              Store/NotionStore.cs:77  → creates a Bodies row
+│  └─ NotionTransport.Create()        Store/NotionTransport.cs:30
+├─ store.Append(envelope)             Store/NotionStore.cs:95  → creates an Events row
+│  ← EnvelopeId
+└─ Supervisor.Nudge(to)               Supervisor/Nudge.cs:12   → wakes the receiver</pre></div></div>
+    <div class="tw" data-g="props"><table>
+      <thead><tr><th>Field</th><th>Umpire.Analyzers</th></tr></thead>
+      <tbody>
+        <tr><td>Target</td><td><code>netstandard2.0</code></td></tr>
+        <tr><td>Owner</td><td>Engine</td></tr>
+        <tr><td>Source</td><td><code>src/Analyzers/</code></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="tab" data-p="inventory" hidden>
+    <div class="inv" data-g="inventory">
+      <div class="sbar"><i style="flex:5;background:var(--ok)"></i><i style="flex:2;background:var(--warn)"></i><i style="flex:2;background:var(--bad)"></i></div>
+      <div class="tally"><span><i style="background:var(--ok)"></i>match 5</span><span><i style="background:var(--warn)"></i>part 2</span><span><i style="background:var(--bad)"></i>gap 2</span></div>
+      <div class="fbar">
+        <input class="srch" type="search" placeholder="Search" aria-label="Search">
+        <details class="dd" data-col="fit" data-label="Fit"><summary><span>Fit: all</span></summary><div class="menu">
+          <label><input type="checkbox" value="match"> match</label><label><input type="checkbox" value="part"> part</label><label><input type="checkbox" value="gap"> gap</label></div></details>
+        <span class="cnt"></span><button type="button" class="clr" hidden>Clear</button>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th data-sort>Event</th><th data-sort>Handler</th><th data-sort>Fit</th></tr></thead>
+        <tbody>
+          <tr class="band"><td colspan="3">Pointer</td></tr>
+          <tr data-item data-fit="match"><td>click</td><td><code>IPointerClickHandler</code></td><td><span class="chip ok">match</span></td></tr>
+          <tr data-item data-fit="part"><td>dblclick</td><td><code>clickCount == 2</code></td><td><span class="chip warn">part</span></td></tr>
+          <tr data-item data-fit="match"><td>drag</td><td><code>IDragHandler</code></td><td><span class="chip ok">match</span></td></tr>
+          <tr class="band"><td colspan="3">Focus</td></tr>
+          <tr data-item data-fit="match"><td>focus</td><td><code>ISelectHandler</code></td><td><span class="chip ok">match</span></td></tr>
+          <tr data-item data-fit="part"><td>tabindex</td><td><code>Navigation</code></td><td><span class="chip warn">part</span></td></tr>
+          <tr data-item data-fit="gap"><td>Tab key</td><td>None</td><td><span class="chip bad">gap</span></td></tr>
+          <tr class="band"><td colspan="3">Keyboard</td></tr>
+          <tr data-item data-fit="match"><td>Escape</td><td><code>ICancelHandler</code></td><td><span class="chip ok">match</span></td></tr>
+          <tr data-item data-fit="match"><td>Arrow keys</td><td><code>IMoveHandler</code></td><td><span class="chip ok">match</span></td></tr>
+          <tr data-item data-fit="gap"><td>accesskey</td><td>None</td><td><span class="chip bad">gap</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <section class="tab" data-p="questions" hidden>
+    <div class="fl" data-g="questions">
+      <details><summary><span class="id">Q1</span><span class="tt"><b>The question in one sentence?</b><small>Default: the answer if you do not reply</small></span><i class="mk you">?</i></summary>
+        <div class="body"><p>Context and options.</p></div></details>
+    </div>
+  </section>
+</div>
+
+<script>
+{
+/* tabs with #hash routing */
+const tabs=document.getElementById("tabs");
+const show=t=>{if(!tabs){fitAll();return;}if(!document.querySelector(`section.tab[data-p="${t}"]`))t=tabs.querySelector("button").dataset.t;document.querySelectorAll("section.tab").forEach(s=>s.hidden=s.dataset.p!==t);tabs.querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",b.dataset.t===t?"true":"false"));fitAll();};
+if(tabs)tabs.addEventListener("click",e=>{const b=e.target.closest("button");if(b)location.hash=b.dataset.t;});
+window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
+
+/* tables: label each cell for the stacked form; shrink to fit, or stack below 70% */
+document.querySelectorAll(".tw>table").forEach(t=>{const h=[...t.querySelectorAll("thead th")].map(th=>th.textContent);t.querySelectorAll("tbody tr").forEach(r=>[...r.children].forEach((td,i)=>td.dataset.l=h[i]||""));});
+const fitTable=w=>{const t=w.firstElementChild;w.classList.remove("stacked");t.style.zoom=1;if(!w.clientWidth)return;t.style.width="max-content";const need=t.offsetWidth;t.style.width="";const k=w.clientWidth/need;if(k>=1)return;if(k<0.7)w.classList.add("stacked");else t.style.zoom=k;};
+
+/* code: syntax colors, then shrink to fit down to 50%, then scroll */
+const KW=new Set("public private protected internal abstract virtual override sealed static readonly record class struct interface enum void string int bool var new return if else for foreach while in is as null true false async await using namespace function const let import export from def self None True False".split(" "));
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+document.querySelectorAll(".cb pre[data-lang]").forEach(p=>{p.innerHTML=p.textContent.split("\n").map(line=>{const m=line.match(/(\/\/|#).*$/);const ci=m&&!/["']/.test(line.slice(m.index))?m.index:-1;const code=ci>=0?line.slice(0,ci):line;const cm=ci>=0?line.slice(ci):"";return code.replace(/("[^"]*"|'[^']*')|(\b\d+(?:\.\d+)?\b)|(\b[A-Za-z_]\w*\b)|([^"'\w]+)/g,(x,s,n,w,o)=>s?`<span class="s">${esc(s)}</span>`:n?`<span class="n">${n}</span>`:w?(KW.has(w)?`<span class="k">${w}</span>`:/^[A-Z]/.test(w)?`<span class="t">${w}</span>`:w):esc(o))+(cm?`<span class="c">${esc(cm)}</span>`:"");}).join("\n");});
+const fitCode=s=>{const p=s.firstElementChild;p.style.zoom=1;if(!s.clientWidth)return;const k=s.clientWidth/p.scrollWidth;if(k<1)p.style.zoom=Math.max(k,0.5);};
+
+/* tab bar: shrink to fit down to 75%, then scroll */
+const fitTabs=()=>{if(!tabs)return;tabs.style.zoom=1;const k=tabs.clientWidth/tabs.scrollWidth;if(k<1)tabs.style.zoom=Math.max(k,0.75);};
+/* inventory: search, one dropdown with check boxes for each category, count, Clear.
+   Items: [data-item] rows or foldables with data-<category>. Group rows (tr.band) and group
+   foldables hide when no item in them shows. */
+const invApply=v=>{const q=(v.querySelector(".srch")?.value||"").trim().toLowerCase();const f={};
+ v.querySelectorAll(".fbar .dd").forEach(d=>{const on=[...d.querySelectorAll("input:checked")].map(i=>i.value);if(on.length)f[d.dataset.col]=on;d.classList.toggle("on",on.length>0);d.querySelector("summary span").textContent=`${d.dataset.label}: ${on.length?on.join(", "):"all"}`;});
+ const items=[...v.querySelectorAll("[data-item]")];let n=0;
+ items.forEach(it=>{const ok=(!q||it.textContent.toLowerCase().includes(q))&&Object.entries(f).every(([c,vals])=>vals.includes(it.dataset[c]));it.hidden=!ok;if(ok)n++;});
+ v.querySelectorAll("tr.band").forEach(b=>{let x=b.nextElementSibling,any=false;while(x&&!x.classList.contains("band")){if(x.hasAttribute("data-item")&&!x.hidden)any=true;x=x.nextElementSibling;}b.hidden=!any;});
+ v.querySelectorAll(".fl details:not([data-item])").forEach(g=>{const k=g.querySelectorAll("[data-item]");if(k.length)g.hidden=![...k].some(x=>!x.hidden);});
+ const act=q||Object.keys(f).length;const c=v.querySelector(".cnt");if(c)c.textContent=act?`${n} of ${items.length}`:`${items.length} items`;const cl=v.querySelector(".clr");if(cl)cl.hidden=!act;};
+const invBar=b=>{b.classList.remove("stack");const k=[...b.children].filter(x=>!x.hidden);if(k.length>1&&k.some(x=>x.offsetTop>=k[0].offsetTop+k[0].offsetHeight-2))b.classList.add("stack");};
+document.addEventListener("input",e=>{const v=e.target.closest(".inv");if(v){invApply(v);fitAll();}});
+document.addEventListener("change",e=>{const v=e.target.closest(".inv");if(v){invApply(v);fitAll();}});
+document.addEventListener("click",e=>{document.querySelectorAll(".dd[open]").forEach(d=>{if(!d.contains(e.target))d.open=false;});
+ const cl=e.target.closest(".inv .clr");if(cl){const v=cl.closest(".inv");v.querySelectorAll(".srch").forEach(s=>s.value="");v.querySelectorAll(".dd input").forEach(i=>i.checked=false);invApply(v);fitAll();return;}
+ /* sort: click a header; rows sort inside their group */
+ const th=e.target.closest(".tw th[data-sort]");if(th){const i=th.cellIndex,dir=th.dataset.dir==="a"?"d":"a";th.parentElement.querySelectorAll("th").forEach(x=>delete x.dataset.dir);th.dataset.dir=dir;const tb=th.closest("table").tBodies[0];const segs=[[]];[...tb.rows].forEach(r=>{if(r.classList.contains("band"))segs.push([r]);else segs[segs.length-1].push(r);});
+  segs.forEach(sg=>{const head=sg[0]&&sg[0].classList.contains("band")?[sg.shift()]:[];sg.sort((a,b)=>a.cells[i].textContent.localeCompare(b.cells[i].textContent,undefined,{numeric:true})*(dir==="a"?1:-1));[...head,...sg].forEach(r=>tb.appendChild(r));});}});
+document.querySelectorAll(".inv").forEach(invApply);
+/* a dropdown menu opens to the left when it does not fit at the right */
+const ddSide=d=>{d.classList.remove("right");const m=d.querySelector(".menu").getBoundingClientRect();if(m.right>document.documentElement.clientWidth-8)d.classList.add("right");};
+document.addEventListener("toggle",e=>{const d=e.target;if(d.classList&&d.classList.contains("dd")&&d.open)ddSide(d);},true);
+
+/* tree: build lines from ul.tree; li holds <span>name</span>, an optional data-state (ok, warn, bad),
+   data-note and a child ul. Each branch folds. A click on a name shows its note under the tree. */
+document.querySelectorAll("ul.tree").forEach(ul=>{const box=ul.parentElement;const lines=document.createElement("div");lines.className="tlines";const rows=[];
+ const walk=(list,pre,top,parent)=>{const items=[...list.children];items.forEach((li,i)=>{const last=i===items.length-1;const kids=li.querySelector(":scope>ul");
+  const row=document.createElement("div");row.className="trow";row.parentRow=parent;
+  const g=document.createElement("span");g.className="g";g.textContent=top?"":pre+(last?"\u2514\u2500 ":"\u251C\u2500 ");
+  const tg=document.createElement("button");tg.type="button";tg.className="tg"+(kids?"":" none");if(kids){tg.setAttribute("aria-expanded","true");tg.setAttribute("aria-label","Fold or open");}else tg.tabIndex=-1;
+  const nm=document.createElement("button");nm.type="button";nm.className="nm";nm.textContent=li.querySelector(":scope>span").textContent;nm.dataset.note=li.dataset.note||"";
+  row.append(g,tg);const stt=li.dataset.state;if(stt){const q=document.createElement("i");q.className="sq "+stt;q.textContent="\u25A0";row.append(q);}row.append(nm);
+  lines.append(row);rows.push(row);if(kids)walk(kids,top?"":pre+(last?"   ":"\u2502  "),false,row);});};
+ walk(ul,"",true,null);
+ const sc=document.createElement("div");sc.className="tscroll";sc.append(lines);const note=document.createElement("div");note.className="tnote";note.innerHTML='<span class="hint">Select a name for its note.</span>';
+ ul.replaceWith(sc);box.append(note);
+ const vis=r=>{for(let p=r.parentRow;p;p=p.parentRow){if(p.querySelector(".tg").getAttribute("aria-expanded")==="false")return false;}return true;};
+ box.addEventListener("click",e=>{const t=e.target.closest(".tg");if(t&&!t.classList.contains("none")){t.setAttribute("aria-expanded",t.getAttribute("aria-expanded")==="true"?"false":"true");rows.forEach(r=>r.hidden=!vis(r));fitAll();return;}
+  const n=e.target.closest(".nm");if(n){box.querySelectorAll(".nm.sel").forEach(x=>x.classList.remove("sel"));n.classList.add("sel");note.textContent="";const b=document.createElement("b");b.textContent=n.textContent;note.append(b," ",n.dataset.note);}});});
+const fitTree=s=>{const t=s.firstElementChild;t.style.zoom=1;if(!s.clientWidth)return;const k=s.clientWidth/t.scrollWidth;if(k<1)t.style.zoom=Math.max(k,0.5);};
+
+const fitAll=()=>{fitTabs();document.querySelectorAll(".tree-box>.tscroll").forEach(fitTree);document.querySelectorAll(".fbar").forEach(invBar);document.querySelectorAll(".dd[open]").forEach(ddSide);document.querySelectorAll(".tw").forEach(fitTable);document.querySelectorAll(".cb .scroll").forEach(fitCode);};
+window.addEventListener("resize",fitAll);
+document.addEventListener("toggle",fitAll,true);
+show(location.hash.slice(1));
+}
+</script>

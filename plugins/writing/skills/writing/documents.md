@@ -106,7 +106,7 @@ for example layers, findings or endpoints.
 
 | Format | Foldable |
 |---|---|
-| HTML or artifact | `<details>`, with "Open all" and "Close all" for 5 items or more |
+| HTML or artifact | The foldable list of `artifacts.md` |
 | Markdown on GitHub or in a browser | `<details>` |
 | Markdown in other editors | A heading for each item |
 
