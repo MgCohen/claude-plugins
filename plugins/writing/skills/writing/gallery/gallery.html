@@ -1,0 +1,664 @@
+<title>House Style Gallery</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600&display=swap">
+<style>
+/* Gallery frame: plain system font, so that only the samples carry the house style.
+   Built by gallery/build.py from starter.html, artifacts.md and gallery.json. Do not edit by hand. */
+:root{color-scheme:light dark;--g-bg:light-dark(#ffffff,#121212);--g-ink:light-dark(#111111,#eeeeee);--g-soft:light-dark(#666666,#a0a0a0);--g-rule:light-dark(#dddddd,#333333)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+[hidden]{display:none!important}
+body{background:var(--g-bg);color:var(--g-ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;overflow-x:clip}
+.gw{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 64px}
+.gw>h1{font-size:26px;margin:0 0 6px}
+.intro{margin:0 0 10px;max-width:68ch}
+.gtabs{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0;padding-bottom:12px;border-bottom:1px solid var(--g-rule)}
+.gtabs button{font:500 14px system-ui,sans-serif;padding:6px 12px;border:1px solid var(--g-rule);border-radius:99px;background:var(--g-bg);color:var(--g-ink);cursor:pointer}
+.gtabs button em{font-style:normal;color:var(--g-soft);font-size:12px}
+.gtabs button[aria-selected=true]{background:var(--g-ink);color:var(--g-bg);border-color:var(--g-ink)}
+.gtabs button[aria-selected=true] em{color:var(--g-bg)}
+details.comp{border:1px solid var(--g-rule);border-radius:8px;margin-bottom:10px}
+details.comp>summary{list-style:none;cursor:pointer;padding:10px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+details.comp>summary::-webkit-details-marker{display:none}
+.head{flex:1 1 240px;display:flex;gap:8px;align-items:baseline}
+.arrow::before{content:"\25B8";color:var(--g-soft)}
+details.comp[open] .arrow::before{content:"\25BE"}
+.name{font-weight:600}
+.name small{display:block;font-weight:400;color:var(--g-soft);font-size:14px}
+.ans{display:flex;gap:6px}
+.ans button{font:500 14px system-ui,sans-serif;min-height:34px;padding:4px 12px;border-radius:6px;border:1px solid var(--g-rule);background:var(--g-bg);color:var(--g-ink);cursor:pointer}
+.ans button[aria-pressed=true]{background:var(--g-ink);color:var(--g-bg);border-color:var(--g-ink)}
+.body{padding:4px 12px 14px;border-top:1px solid var(--g-rule)}
+.lbl{font-size:13px;font-weight:700;color:var(--g-soft);margin:14px 0 6px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.lbl .src,.rule .src{font-weight:400;font-family:ui-monospace,monospace;font-size:11.5px}
+.frame{border:2px dashed var(--g-soft);border-radius:6px;overflow:hidden}
+.vars{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px}
+.cap{font-size:13px;font-weight:600;margin-bottom:4px}
+table.parts{border-collapse:collapse;width:100%;font-size:14px}
+table.parts td{border-top:1px solid var(--g-rule);padding:5px 8px;vertical-align:top}
+table.parts td:first-child{color:var(--g-soft);width:34%}
+.rule{font-size:14px;border-left:3px solid var(--g-rule);padding:2px 0 2px 12px}
+.rule p,.rule ul{margin:4px 0}
+.rule table{border-collapse:collapse;font-size:13px;margin:6px 0;width:100%}
+.rule th,.rule td{border-top:1px solid var(--g-rule);padding:4px 6px;text-align:left;vertical-align:top}
+.rule code{font-size:12px}
+.none{color:var(--g-soft);font-style:italic;margin:0}
+textarea{width:100%;min-height:50px;font:15px system-ui,sans-serif;padding:8px;border:1px solid var(--g-rule);border-radius:6px;background:var(--g-bg);color:var(--g-ink)}
+.saved{font-size:13px;color:var(--g-soft)}
+.warn{border:1px solid var(--g-rule);padding:8px 12px;border-radius:6px;margin-bottom:12px}
+/* the starter CSS, scoped to .gx */
+.gx{
+  --bg:#e9ecf1;--surface:#ffffff;--fg:#1b2130;--muted:#5b6475;--line:#dde1e8;--code-in:#eef0f4;--code-bg:#11141b;
+  --accent:#2a5bd7;--accent-soft:#e6edfc;--ok:#1f7a4d;--ok-soft:#e3f3ea;--warn:#9a5b00;--warn-soft:#fbefd9;--bad:#b4232c;--bad-soft:#fbe5e6;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --head:"Space Grotesk","IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .gx{--bg:#11141b;--surface:#1a1f29;--fg:#e4e8f0;--muted:#9aa3b5;--line:#2c3341;--code-in:#232a36;--code-bg:#06080b;--accent:#7fa2ff;--accent-soft:#1f2a48;--ok:#5fcf95;--ok-soft:#163326;--warn:#f0b257;--warn-soft:#3a2a12;--bad:#ff7b84;--bad-soft:#3d1a1e;color-scheme:dark}}
+:root[data-theme="dark"] .gx{--bg:#11141b;--surface:#1a1f29;--fg:#e4e8f0;--muted:#9aa3b5;--line:#2c3341;--code-in:#232a36;--code-bg:#06080b;--accent:#7fa2ff;--accent-soft:#1f2a48;--ok:#5fcf95;--ok-soft:#163326;--warn:#f0b257;--warn-soft:#3a2a12;--bad:#ff7b84;--bad-soft:#3d1a1e;color-scheme:dark}
+.gx *{box-sizing:border-box;min-width:0}
+.gx [hidden]{display:none!important}
+.gx{overflow-x:clip}
+.gx{background:var(--bg);color:var(--fg);font:15px/1.55 var(--body);margin:0}
+.gx .wrap{max-width:980px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 64px}
+.gx h1,.gx h2,.gx h3{font-family:var(--head);font-weight:600;text-wrap:balance;margin:0}
+.gx h1{font-size:26px;line-height:1.2}
+.gx h2{font-size:19px;line-height:1.3}
+.gx h3{font-size:16px;line-height:1.3}
+.gx p{margin:0;max-width:72ch}
+.gx a{color:var(--accent)}
+.gx ul,.gx ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
+.gx code{font:13px var(--mono);background:var(--code-in);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.gx button:focus-visible,.gx summary:focus-visible,.gx a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.gx section.tab{display:flex;flex-direction:column;gap:18px;padding-top:20px}
+@media (max-width:600px){.gx h1{font-size:22px}}
+.gx header{display:flex;flex-direction:column;gap:6px}
+.gx .eyebrow{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.gx .lead{color:var(--muted);font-size:16px;max-width:70ch}
+.gx nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);margin-top:16px}
+.gx nav.tabs button{flex-shrink:0;font:500 14px var(--body);color:var(--muted);background:none;border:0;border-bottom:2px solid transparent;padding:10px 10px 8px;cursor:pointer;white-space:nowrap}
+.gx nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.gx .card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.gx .note{background:var(--surface);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:10px 14px}
+.gx .note.ok{border-left-color:var(--ok)}
+.gx .note.warn{border-left-color:var(--warn)}
+.gx .note.bad{border-left-color:var(--bad)}
+.gx .rec{border-left:3px solid var(--ok)}
+.gx .chip{display:inline-block;font:500 11px var(--mono);padding:2px 8px;border-radius:99px;white-space:nowrap}
+.gx .chip.ok{background:var(--ok-soft);color:var(--ok)}
+.gx .chip.warn{background:var(--warn-soft);color:var(--warn)}
+.gx .chip.bad{background:var(--bad-soft);color:var(--bad)}
+.gx .chip.info{background:var(--accent-soft);color:var(--accent)}
+.gx .tw{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.gx .tw>table{border-collapse:collapse;width:100%;font-size:14px}
+.gx .tw th,.gx .tw td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;white-space:nowrap}
+.gx .tw th{font:600 13px var(--body);color:var(--fg);background:var(--bg)}
+.gx .tw tr:last-child td{border-bottom:0}
+.gx .tw code{overflow-wrap:normal;white-space:nowrap}
+.gx .num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.gx .tw.stacked{background:none;border:0;border-radius:0}
+.gx .tw.stacked thead{display:none}
+.gx .tw.stacked tr{display:block;background:var(--surface);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}
+.gx .tw.stacked td{display:block;text-align:right;border:0;padding:4px 12px;white-space:normal}
+.gx .tw.stacked td::before{content:attr(data-l);float:left;margin-right:12px;font:600 14px var(--body);color:var(--muted);text-align:left}
+.gx .mk{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;color:#fff;font:700 9px/1 var(--mono);font-style:normal;flex:none;vertical-align:-3px}
+.gx .mk.done{background:var(--ok)}
+.gx .mk.prog{background:var(--accent)}
+.gx .mk.you{background:var(--warn)}
+.gx .mk.blocked{background:var(--bad)}
+.gx .mk.plan{background:#6b4fbb}
+.gx .mk.none{background:#8a93a3}
+.gx .mk.big{width:20px;height:20px;font-size:11px}
+.gx .marks{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted)}
+.gx .marks div{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}
+.gx .marks em{font:600 10px var(--mono);font-style:normal;text-transform:uppercase;letter-spacing:.05em;width:100%}
+.gx .marks span{display:inline-flex;gap:5px;align-items:center}
+.gx .strip{display:flex;gap:3px;align-items:center;margin-left:auto;flex:none}
+.gx .strip em{font:600 11px var(--mono);font-style:normal;color:var(--muted)}
+.gx .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px}
+.gx .tile{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;display:flex;flex-direction:column;gap:2px}
+.gx .tile.key{border-left:3px solid var(--warn)}
+.gx .tile span{font:600 10.5px var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.gx .tile b{font-size:15px;display:flex;gap:6px;align-items:center}
+.gx .rm{display:flex;flex-direction:column;gap:6px}
+.gx .rm details{background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.gx .rm summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 12px}
+.gx .rm summary::-webkit-details-marker{display:none}
+.gx .rm .rn{width:26px;height:26px;border-radius:6px;background:var(--accent-soft);color:var(--accent);font:600 13px var(--mono);display:flex;align-items:center;justify-content:center;flex:none}
+.gx .rm .rt{display:flex;flex-direction:column;flex:1;min-width:0}
+.gx .rm .rt b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gx .rm .rt small{font-size:12px;color:var(--accent);font-weight:600}
+.gx .rm details.cur{border-left:3px solid var(--accent)}
+.gx .rm details.cur .rn{background:var(--accent);color:#fff}
+.gx .rm .items{border-top:1px solid var(--line)}
+.gx .rm .irow{display:flex;align-items:center;gap:10px;padding:7px 12px 7px 48px;border-bottom:1px solid var(--line);font-size:14px}
+.gx .rm .irow:last-child{border-bottom:0}
+.gx .rm .iid{font:500 12px var(--mono);min-width:40px}
+.gx .rm .itt{flex:1;min-width:0}
+.gx .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:10px}
+.gx .stat{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.gx .stat b{display:block;font:600 24px/1.1 var(--head)}
+.gx .stat span{color:var(--muted);font-size:13px}
+.gx .bars{display:flex;flex-direction:column;gap:8px}
+.gx .bar{display:grid;grid-template-columns:minmax(0,140px) 1fr 64px;gap:10px;align-items:center;font-size:13px}
+.gx .bar>i{display:block;height:14px;border-radius:3px;background:var(--accent)}
+.gx .bar>i.bad{background:var(--bad)}
+.gx .src{font-size:12.5px;color:var(--muted)}
+.gx .fl{display:flex;flex-direction:column;gap:8px}
+.gx .fl details{background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.gx .fl summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 12px}
+.gx .fl summary::-webkit-details-marker{display:none}
+.gx .fl summary::before{content:"\25B8";flex:none;width:12px;font-size:12px;color:var(--muted);text-align:center}
+.gx .fl details[open]>summary::before{content:"\25BE"}
+.gx .fl .id{flex:none;min-width:28px;font:500 12px var(--mono);color:var(--muted)}
+.gx .fl .tt{flex:1;min-width:0}
+.gx .fl .tt b{display:block;font:600 15px/1.35 var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gx .fl .tt small{display:block;font:13px/1.4 var(--body);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gx .fl details[open] .tt b,.gx .fl details[open] .tt small{white-space:normal}
+.gx .fl .chip{flex:none}
+.gx .fl .body{padding:12px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px;font-size:14px}
+.gx .fl .chips{flex:none;display:flex;gap:4px}
+.gx .fl .body .fl{gap:6px}
+.gx .fl .body .fl details{background:var(--bg)}
+.gx .fl .body .fl .fl details{background:var(--surface)}
+.gx .fl details:not([open])>summary::before{content:"\25B8"}
+.gx .lbl{font:600 13px var(--body);color:var(--muted);margin-bottom:2px}
+.gx .cb{background:var(--code-bg);color:#e4e8f0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.gx .cb .bar-top{display:flex;justify-content:space-between;padding:5px 12px;font:500 11px var(--mono);background:#1a1f29;color:#9aa3b5}
+.gx .cb .scroll{overflow-x:auto}
+.gx .cb pre{margin:0;padding:10px 12px;font:12.5px/1.55 var(--mono);white-space:pre;width:max-content;min-width:100%}
+.gx .cb .k{color:#7fa2ff}
+.gx .cb .t{color:#5fcf95}
+.gx .cb .s{color:#f0b257}
+.gx .cb .n{color:#ff7b84}
+.gx .cb .c{color:#9aa3b5;font-style:italic}
+.gx .inv{display:flex;flex-direction:column;gap:8px}
+.gx .fbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.gx .fbar .srch{flex:1 1 180px;min-width:0;font:14px var(--body);padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg)}
+.gx .fbar.stack .srch{flex-basis:100%}
+.gx .dd{position:relative}
+.gx .dd>summary{list-style:none;cursor:pointer;font:500 13px var(--body);padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);display:flex;gap:6px;align-items:center;white-space:nowrap}
+.gx .dd>summary::-webkit-details-marker{display:none}
+.gx .dd>summary::after{content:"\25BE";font-size:11px;color:var(--muted)}
+.gx .dd.on>summary{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.gx .dd .menu{position:absolute;z-index:6;top:calc(100% + 4px);left:0;min-width:160px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px;box-shadow:0 6px 18px rgba(0,0,0,.14);display:flex;flex-direction:column}
+.gx .dd.right .menu{left:auto;right:0}
+.gx .dd .menu label{display:flex;gap:8px;align-items:center;padding:5px 6px;font-size:13px;border-radius:6px;cursor:pointer}
+.gx .dd .menu label:hover{background:var(--bg)}
+.gx .fbar .cnt{margin-left:auto;font:500 12px var(--mono);color:var(--muted);white-space:nowrap}
+.gx .fbar .clr{font:500 13px var(--body);background:none;border:0;color:var(--accent);cursor:pointer;padding:4px 6px}
+.gx .sbar{display:flex;height:12px;border-radius:3px;overflow:hidden;gap:2px}
+.gx .tally{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--muted)}
+.gx .tally i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.gx .tw tr.band td{background:var(--bg);font:600 13px var(--body);color:var(--fg)}
+.gx .tw th[data-sort]{cursor:pointer;color:var(--accent)}
+.gx .tw th[data-sort]::after{content:" \2195";color:var(--muted)}
+.gx .tw th[data-dir="a"]::after{content:" \25B2";color:var(--accent)}
+.gx .tw th[data-dir="d"]::after{content:" \25BC";color:var(--accent)}
+.gx .tree-box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.gx .tree-box>.tscroll{overflow-x:auto}
+.gx .tlines{font:13px/1.65 var(--mono);white-space:pre;width:max-content}
+.gx .trow .g{color:var(--muted)}
+.gx .trow .tg{display:inline-block;width:1.3em;background:none;border:0;padding:0;font:inherit;color:var(--muted);cursor:pointer}
+.gx .trow .tg[aria-expanded="false"]::before{content:"\25B8"}
+.gx .trow .tg[aria-expanded="true"]::before{content:"\25BE"}
+.gx .trow .tg.none{cursor:default}
+.gx .trow .nm{font:600 13px var(--mono);background:none;border:0;padding:0 3px;border-radius:3px;color:var(--fg);cursor:pointer}
+.gx .trow .nm.sel{background:var(--accent-soft);box-shadow:inset 0 -2px 0 var(--accent)}
+.gx .trow .sq{font-style:normal;margin-right:4px}
+.gx .trow .sq.ok{color:var(--ok)}
+.gx .trow .sq.warn{color:var(--warn)}
+.gx .trow .sq.bad{color:var(--bad)}
+.gx .tree-box .legend{margin-bottom:6px}
+.gx .tree-box .legend i{background:var(--c);border-color:var(--c)}
+.gx .tnote{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:14px;min-height:1.6em}
+.gx .tnote b{font-family:var(--mono)}
+.gx .tnote .hint{color:var(--muted)}
+.gx .box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;overflow-x:auto}
+.gx .cap{font:500 12px var(--mono);color:var(--muted);margin-bottom:6px}
+.gx .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted)}
+.gx .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px;border:2px solid var(--c)}
+.gx .legend b{display:inline-block;width:18px;border-top:2px solid var(--c);margin-right:6px;vertical-align:3px}
+.gx{padding:16px;display:flex;flex-direction:column;gap:12px}
+.gx .swatches{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px}
+.gx .swatches div{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface);font:11px var(--mono)}
+.gx .swatches i{display:block;height:34px}
+.gx .swatches span{display:block;padding:4px 8px}
+</style>
+<div class="gw">
+<h1>House Style Gallery</h1>
+<p class="intro">Each approved component, taken from the real starter page. Open a component to see it, its variants, its parts and its draft rule. Mark it Keep or Change. <span id="count"></span></p>
+<div class="warn" id="nosave" hidden>Answers do not save in this view. Send them in the chat.</div>
+<nav class="gtabs" id="gtabs"><button type="button" data-a="foundations">Foundations <em>2</em></button><button type="button" data-a="frame">Page frame <em>4</em></button><button type="button" data-a="data">Data <em>5</em></button><button type="button" data-a="lists">Lists <em>3</em></button><button type="button" data-a="structures">Structures <em>4</em></button><button type="button" data-a="plans">Plans <em>3</em></button><button type="button" data-a="code">Code <em>2</em></button></nav>
+<details class="comp" id="c-colors" data-area="foundations">
+<summary><span class="head"><span class="arrow"></span><span class="name">Colors<small>The color tokens of each page, in light and dark mode.</small></span></span><span class="ans" data-id="colors"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">gallery.json</span></div>
+<div class="frame"><div class="gx"><div class="swatches"><div><i style="background:var(--bg)"></i><span>--bg</span></div><div><i style="background:var(--surface)"></i><span>--surface</span></div><div><i style="background:var(--fg)"></i><span>--fg</span></div><div><i style="background:var(--muted)"></i><span>--muted</span></div><div><i style="background:var(--line)"></i><span>--line</span></div><div><i style="background:var(--accent)"></i><span>--accent</span></div><div><i style="background:var(--ok)"></i><span>--ok</span></div><div><i style="background:var(--warn)"></i><span>--warn</span></div><div><i style="background:var(--bad)"></i><span>--bad</span></div></div></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Page</td><td>--bg, light grey</td></tr><tr><td>Cards and tables</td><td>--surface, white</td></tr><tr><td>Accent</td><td>--accent, blue</td></tr><tr><td>States</td><td>--ok, --warn, --bad, each with a -soft tint</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><p class="none">No draft rule yet.</p></div>
+<div class="lbl">5 · Note</div><textarea data-id="colors" placeholder="What to change"></textarea><span class="saved" data-saved="colors"></span>
+</div></details><details class="comp" id="c-type" data-area="foundations">
+<summary><span class="head"><span class="arrow"></span><span class="name">Type<small>The three fonts and their sizes.</small></span></span><span class="ans" data-id="type"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">gallery.json</span></div>
+<div class="frame"><div class="gx"><h1>Title 26</h1><h2>Heading 19</h2><p>Body text 15. The engine reads each DLL one time.</p><p><code>Code font 13</code> <span class="eyebrow">Label 11</span></p></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Headings</td><td>Space Grotesk 600</td></tr><tr><td>Body</td><td>IBM Plex Sans 400 and 600</td></tr><tr><td>Code, IDs, labels</td><td>IBM Plex Mono</td></tr><tr><td>Sizes</td><td>26, 19, 15, 14, 13, 11</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><p class="none">No draft rule yet.</p></div>
+<div class="lbl">5 · Note</div><textarea data-id="type" placeholder="What to change"></textarea><span class="saved" data-saved="type"></span>
+</div></details><details class="comp" id="c-header" data-area="frame">
+<summary><span class="head"><span class="arrow"></span><span class="name">Page header<small>Label line, title and summary at the top of each page.</small></span></span><span class="ans" data-id="header"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">starter.html, data-g=&quot;header&quot;</span></div>
+<div class="frame"><div class="gx"><header data-g="header">
+    <span class="eyebrow">Project · Topic</span>
+    <h1>Page Name</h1>
+    <p class="lead">The result or the decision first, in 1 to 3 sentences.</p>
+  </header></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Label line</td><td>.eyebrow, project and topic</td></tr><tr><td>Title</td><td>h1, the page name</td></tr><tr><td>Summary</td><td>.lead, 1 to 3 sentences</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><div class="src">From artifacts.md, section "Page header"</div><ul><li>The label line gives the project and the topic: &quot;Umpire · Check system&quot;.</li><li>The page shows no status mark (draft, done). If the reader must know the status, use a note banner with the reason.</li><li>The lead gives the result or the decision in 1 to 3 sentences.</li></ul></div>
+<div class="lbl">5 · Note</div><textarea data-id="header" placeholder="What to change"></textarea><span class="saved" data-saved="header"></span>
+</div></details><details class="comp" id="c-tabs" data-area="frame">
+<summary><span class="head"><span class="arrow"></span><span class="name">Tabs<small>The tab bar of a long page.</small></span></span><span class="ans" data-id="tabs"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">starter.html, data-g=&quot;tabs&quot;</span></div>
+<div class="frame"><div class="gx"><nav class="tabs" role="tablist" data-g="tabs">
+    <button role="tab" aria-selected="true" data-t="summary">Summary</button>
+    <button role="tab" data-t="details">Details</button>
+    <button role="tab" data-t="plan">Plan</button>
+    <button role="tab" data-t="structure">Structure</button>
+    <button role="tab" data-t="inventory">Inventory</button>
+    <button role="tab" data-t="questions">Questions</button>
+  </nav></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Open tab</td><td>Blue underline</td></tr><tr><td>Names</td><td>2 words maximum, no numbers</td></tr><tr><td>Count</td><td>2 to 6</td></tr><tr><td>Phone</td><td>Shrink to 75%, then scroll</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><div class="src">From artifacts.md, section "Page types"</div><table><thead><tr><th>Type</th><th>First tab</th><th>Other tabs</th></tr></thead><tbody><tr><td>Decision</td><td>Recommendation card, questions</td><td>One tab for each option, Questions</td></tr><tr><td>Audit or research</td><td>Summary note, stat tiles, main visual</td><td>Findings, Options, Prior art</td></tr><tr><td>Plan</td><td>Scope, phase list</td><td>Details, Questions</td></tr><tr><td>Architecture or reference</td><td>Main diagram, parts table</td><td>One tab for each part</td></tr></tbody></table><ul><li>Use tabs when the page has more than about 1,500 words. 2 to 6 tabs.</li><li>Tab names: 2 words maximum, no numbers.</li><li>Put open questions on the last tab, as a question list.</li></ul></div>
+<div class="lbl">5 · Note</div><textarea data-id="tabs" placeholder="What to change"></textarea><span class="saved" data-saved="tabs"></span>
+</div></details><details class="comp" id="c-note" data-area="frame">
+<summary><span class="head"><span class="arrow"></span><span class="name">Note banner<small>A box with a colored left edge and bold first words.</small></span></span><span class="ans" data-id="note"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">starter.html, data-g=&quot;note&quot;</span></div>
+<div class="frame"><div class="gx"><div class="note warn" data-g="note"><b>Risk.</b> One sentence for the risk.</div></div></div>
+<div class="lbl">2 · Variants</div><div class="vars"><div class="var"><div class="cap">Information</div><div class="frame"><div class="gx"><div class="note"><b>Example.</b> The plan said: one interface for each call.</div></div></div></div><div class="var"><div class="cap">Done</div><div class="frame"><div class="gx"><div class="note ok"><b>Done.</b> All phases are merged.</div></div></div></div><div class="var"><div class="cap">Failure</div><div class="frame"><div class="gx"><div class="note bad"><b>Risk.</b> Each rule would exist two times.</div></div></div></div></div>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Edge</td><td>3px: blue, green, amber or red</td></tr><tr><td>First words</td><td>Bold, give the point</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><div class="src">From artifacts.md, section "Note banner and recommendation card"</div><ul><li>Start a note banner with bold words that give the point: &quot;<b>Risk.</b> …&quot;.</li><li>Edge color: blue for information, green for done, amber for a draft or a risk, red for a failure.</li><li>A recommendation card has one line for each decision, with the decision key in bold. The rejected option comes last, as &quot;<b>Not recommended:</b> …&quot;.</li></ul></div>
+<div class="lbl">5 · Note</div><textarea data-id="note" placeholder="What to change"></textarea><span class="saved" data-saved="note"></span>
+</div></details><details class="comp" id="c-rec" data-area="frame">
+<summary><span class="head"><span class="arrow"></span><span class="name">Recommendation card<small>The decision or the answer, at the top of the first tab.</small></span></span><span class="ans" data-id="rec"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">starter.html, data-g=&quot;rec&quot;</span></div>
+<div class="frame"><div class="gx"><div class="card rec" data-g="rec">
+      <h2>Recommendation</h2>
+      <ul>
+        <li><b>K1:</b> one line for each decision.</li>
+        <li><b>Not recommended:</b> the rejected option, last.</li>
+      </ul>
+    </div></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Edge</td><td>3px green</td></tr><tr><td>Lines</td><td>One for each decision, key in bold</td></tr><tr><td>Last line</td><td>Not recommended</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><div class="src">From artifacts.md, section "Note banner and recommendation card"</div><ul><li>Start a note banner with bold words that give the point: &quot;<b>Risk.</b> …&quot;.</li><li>Edge color: blue for information, green for done, amber for a draft or a risk, red for a failure.</li><li>A recommendation card has one line for each decision, with the decision key in bold. The rejected option comes last, as &quot;<b>Not recommended:</b> …&quot;.</li></ul></div>
+<div class="lbl">5 · Note</div><textarea data-id="rec" placeholder="What to change"></textarea><span class="saved" data-saved="rec"></span>
+</div></details><details class="comp" id="c-table" data-area="data">
+<summary><span class="head"><span class="arrow"></span><span class="name">Table<small>Items with the same attributes.</small></span></span><span class="ans" data-id="table"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">starter.html, data-g=&quot;table&quot;</span></div>
+<div class="frame"><div class="gx"><div class="tw" data-g="table"><table>
+      <thead><tr><th>Part</th><th>Reader</th><th>Time (s)</th><th>State</th></tr></thead>
+      <tbody>
+        <tr><td>Fact reader</td><td><code>TypeFacts</code></td><td class="num">4.6</td><td><i class="mk done">✓</i></td></tr>
+        <tr><td>Report format</td><td><code>--report</code></td><td class="num">0.4</td><td><i class="mk you">?</i></td></tr>
+      </tbody>
+    </table></div></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Header</td><td>Body font 13, bold</td></tr><tr><td>Box</td><td>White, outline, round corners</td></tr><tr><td>Cells</td><td>Never wrap</td></tr><tr><td>Phone</td><td>Shrink to fit, below 70%: one card for each row</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><div class="src">From artifacts.md, section "Table"</div><ul><li>Put each table in <code>.tw</code>. Put the unit in the header: &quot;Time (s)&quot;.</li><li>Cell text never wraps. Write short cells.</li><li>On a narrow screen, the script shrinks the table to fit. If the table must shrink below 70%, the script shows one card for each row.</li><li>If a cell needs a sentence, the content is too much for a table. Use a foldable list.</li></ul></div>
+<div class="lbl">5 · Note</div><textarea data-id="table" placeholder="What to change"></textarea><span class="saved" data-saved="table"></span>
+</div></details><details class="comp" id="c-marks" data-area="data">
+<summary><span class="head"><span class="arrow"></span><span class="name">Marks<small>The state of an item: color for health, symbol for stage.</small></span></span><span class="ans" data-id="marks"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">starter.html, data-g=&quot;marks&quot;</span></div>
+<div class="frame"><div class="gx"><div class="marks" data-g="marks"><div><em>Color: health</em><span><i class="mk done"></i>Done</span><span><i class="mk prog"></i>In progress</span><span><i class="mk you"></i>Waits for you</span><span><i class="mk blocked"></i>Blocked</span><span><i class="mk plan"></i>Planning</span><span><i class="mk none"></i>Not started</span></div>
+      <div><em>Symbol: stage</em><span><i class="mk none">✓</i>Merged</span><span><i class="mk none">?</i>Waits for an answer</span><span><i class="mk none">▶</i>Running</span><span><i class="mk none">‖</i>Stopped</span><span><i class="mk none">×</i>Cancelled</span></div></div></div></div>
+<div class="lbl">2 · Variants</div><div class="vars"><div class="var"><div class="cap">In a row</div><div class="frame"><div class="gx"><p><i class="mk done">✓</i> <i class="mk prog">▶</i> <i class="mk you">?</i> <i class="mk blocked">×</i> <i class="mk plan">?</i> <i class="mk none"></i> <i class="mk done">‖</i></p></div></div></div><div class="var"><div class="cap">Large, for a step</div><div class="frame"><div class="gx"><p><i class="mk big prog">▶</i> <i class="mk big done">✓</i></p></div></div></div></div>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Size</td><td>16px, 20px for a step</td></tr><tr><td>Colors</td><td>done, prog, you, blocked, plan, none</td></tr><tr><td>Symbols</td><td>✓ ? ▶ ‖ × or none</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><div class="src">From artifacts.md, section "Mark"</div><p>A mark gives the state of an item. It is the mark of the stream tracker.</p><table><thead><tr><th>Part</th><th>Values</th></tr></thead><tbody><tr><td>Color: health</td><td><code>done</code> green, <code>prog</code> blue (in progress), <code>you</code> amber (waits for you), <code>blocked</code> red, <code>plan</code> purple (planning), <code>none</code> grey (not started)</td></tr><tr><td>Symbol: stage</td><td>✓ merged or done, ? waits for an answer, ▶ running, ‖ stopped, × cancelled, no symbol</td></tr></tbody></table><ul><li>Each page that uses marks shows the legend (<code>.marks</code>) once, near the top of the first tab that uses them.</li><li>Use marks, not chips, for each state: in tables, foldables, trees and plans.</li></ul></div>
+<div class="lbl">5 · Note</div><textarea data-id="marks" placeholder="What to change"></textarea><span class="saved" data-saved="marks"></span>
+</div></details><details class="comp" id="c-chip" data-area="data">
+<summary><span class="head"><span class="arrow"></span><span class="name">Chips<small>A reference or a category in one word.</small></span></span><span class="ans" data-id="chip"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">gallery.json</span></div>
+<div class="frame"><div class="gx"><p><span class="chip info">K4</span> <span class="chip info">P7</span> <span class="chip ok">decision</span> <span class="chip info">answer</span></p></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Font</td><td>Code font 11</td></tr><tr><td>Use</td><td>References and categories, not states</td></tr><tr><td>Row</td><td>Up to 3</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><div class="src">From artifacts.md, section "Chip"</div><ul><li>A chip gives a reference to a decision or a phase (&quot;K4&quot;, &quot;P7&quot;), or a category (&quot;answer&quot;, &quot;decision&quot;).</li><li>One fixed word for each category on a page.</li><li>Up to 3 chips on one row. No chips for decoration.</li></ul></div>
+<div class="lbl">5 · Note</div><textarea data-id="chip" placeholder="What to change"></textarea><span class="saved" data-saved="chip"></span>
+</div></details><details class="comp" id="c-stats" data-area="data">
+<summary><span class="head"><span class="arrow"></span><span class="name">Stat tiles<small>3 or 4 key figures.</small></span></span><span class="ans" data-id="stats"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">starter.html, data-g=&quot;stats&quot;</span></div>
+<div class="frame"><div class="gx"><div class="stats" data-g="stats">
+      <div class="stat"><b>4</b><span>label with the unit</span></div>
+      <div class="stat"><b>1.9 MB</b><span>label with the unit</span></div>
+      <div class="stat"><b>3.8 s</b><span>label with the unit</span></div>
+    </div></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Figure</td><td>Space Grotesk 24</td></tr><tr><td>Label</td><td>13, grey, with the unit</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><p class="none">No draft rule yet.</p></div>
+<div class="lbl">5 · Note</div><textarea data-id="stats" placeholder="What to change"></textarea><span class="saved" data-saved="stats"></span>
+</div></details><details class="comp" id="c-bars" data-area="data">
+<summary><span class="head"><span class="arrow"></span><span class="name">Bar rows<small>2 to 12 values to compare.</small></span></span><span class="ans" data-id="bars"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">starter.html, data-g=&quot;bars&quot;</span></div>
+<div class="frame"><div class="gx"><div class="card" data-g="bars">
+      <h2>Heading that states the finding</h2>
+      <div class="bars">
+        <div class="bar"><span>Largest part</span><i class="bad" style="width:57%"></i><span class="num">4.6 s</span></div>
+        <div class="bar"><span>Other part</span><i style="width:42%"></i><span class="num">3.3 s</span></div>
+      </div>
+      <p class="src">Source: name of the source.</p>
+    </div></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Heading</td><td>States the finding</td></tr><tr><td>Value</td><td>Own column, code font</td></tr><tr><td>Source</td><td>Under the bars</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><p class="none">No draft rule yet.</p></div>
+<div class="lbl">5 · Note</div><textarea data-id="bars" placeholder="What to change"></textarea><span class="saved" data-saved="bars"></span>
+</div></details><details class="comp" id="c-foldable" data-area="lists">
+<summary><span class="head"><span class="arrow"></span><span class="name">Foldable list<small>One box for each item of a list. Nested items show on a grey area.</small></span></span><span class="ans" data-id="foldable"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">starter.html, data-g=&quot;foldable&quot;</span></div>
+<div class="frame"><div class="gx"><div class="fl" data-g="foldable">
+      <details><summary><span class="id">K1</span><span class="tt"><b>Item title, 6 words maximum</b><small>Optional key fact</small></span><i class="mk done">✓</i></summary>
+        <div class="body"><p>Content of the item: text, a table or a code block.</p></div></details>
+      <details><summary><span class="tt"><b>Group: Gaps</b><small>2 items</small></span></summary>
+        <div class="body"><div class="fl">
+          <details><summary><span class="id">G1</span><span class="tt"><b>Child item</b><small>Key fact</small></span><span class="chips"><i class="mk blocked">×</i><span class="chip info">P7</span></span></summary>
+            <div class="body"><div><div class="lbl">Where</div><p>File and line.</p></div><div><div class="lbl">Fix</div><p>The change to make.</p></div></div></details>
+          <details><summary><span class="id">G2</span><span class="tt"><b>Child item</b></span></summary>
+            <div class="body"><p>Content of the item.</p></div></details>
+        </div></div></details>
+    </div></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Title</td><td>15 bold, one line, cut with …</td></tr><tr><td>Key fact</td><td>13 grey, optional</td></tr><tr><td>ID</td><td>12 code font, optional</td></tr><tr><td>State</td><td>One mark at the right</td></tr><tr><td>Nesting</td><td>3 levels maximum</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><div class="src">From artifacts.md, section "Foldable list"</div><p>One component for all lists of items: findings, decisions, proposals, questions and plan phases.</p><table><thead><tr><th>Part</th><th>Rule</th></tr></thead><tbody><tr><td>Box</td><td>One box for each item, with a gap between</td></tr><tr><td>Title</td><td>6 words maximum, one line, cut with &quot;…&quot; when closed</td></tr><tr><td>Key fact</td><td>Optional second line, 13px grey</td></tr><tr><td>ID</td><td>Only when readers refer to items by ID: K1, Q1, P3</td></tr><tr><td>State</td><td>One mark at the right. References as chips, up to 3</td></tr><tr><td>Open content</td><td>Full width, under a line</td></tr><tr><td>Sizes</td><td>Title 15 bold, key fact 13, ID 12 code font, chip 11 code font</td></tr></tbody></table><ul><li>Put a table or a diagram of all items before the list.</li><li>Keep the items closed. Do not put the main message or a warning in an item.</li><li><b>Nested items:</b> an open item can hold a child list (<code>.fl</code> in <code>.body</code>). The children show as boxes on a grey area. 3 levels maximum.</li><li><b>Groups:</b> split a long list into one parent item for each group, for example &quot;Gaps&quot;. The key fact gives the count: &quot;9 items&quot;.</li><li><b>Sections:</b> split a long item into parts, each with a <code>.lbl</code> label above it: &quot;Where&quot;, &quot;Why it matters&quot;, &quot;Fix&quot;. All items of one list use the same labels, in the same order.</li><li><b>Rich content:</b> text, tables, code blocks and notes use the full width of the item.</li><li><b>Length:</b> about 300 words in one item. If an item is longer, split it into child items, or give it its own tab.</li><li><b>Question:</b> ID <code>Q1</code>, key fact &quot;Default: …&quot;, mark <code>you ?</code> while open, mark <code>done ✓</code> when answered.</li><li><b>Plan phase:</b> ID = phase number, key fact = decisions and issue, chip = PR number or &quot;open&quot;. The open content gives the changes, then the tests to run.</li></ul></div>
+<div class="lbl">5 · Note</div><textarea data-id="foldable" placeholder="What to change"></textarea><span class="saved" data-saved="foldable"></span>
+</div></details><details class="comp" id="c-questions" data-area="lists">
+<summary><span class="head"><span class="arrow"></span><span class="name">Question form<small>Open questions as foldables, with the default answer.</small></span></span><span class="ans" data-id="questions"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">starter.html, data-g=&quot;questions&quot;</span></div>
+<div class="frame"><div class="gx"><div class="fl" data-g="questions">
+      <details><summary><span class="id">Q1</span><span class="tt"><b>The question in one sentence?</b><small>Default: the answer if you do not reply</small></span><i class="mk you">?</i></summary>
+        <div class="body"><p>Context and options.</p></div></details>
+    </div></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>ID</td><td>Q1, Q2</td></tr><tr><td>Key fact</td><td>Default: the answer</td></tr><tr><td>Mark</td><td>you ? while open, done ✓ when answered</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><div class="src">From artifacts.md, section "Foldable list"</div><p>One component for all lists of items: findings, decisions, proposals, questions and plan phases.</p><table><thead><tr><th>Part</th><th>Rule</th></tr></thead><tbody><tr><td>Box</td><td>One box for each item, with a gap between</td></tr><tr><td>Title</td><td>6 words maximum, one line, cut with &quot;…&quot; when closed</td></tr><tr><td>Key fact</td><td>Optional second line, 13px grey</td></tr><tr><td>ID</td><td>Only when readers refer to items by ID: K1, Q1, P3</td></tr><tr><td>State</td><td>One mark at the right. References as chips, up to 3</td></tr><tr><td>Open content</td><td>Full width, under a line</td></tr><tr><td>Sizes</td><td>Title 15 bold, key fact 13, ID 12 code font, chip 11 code font</td></tr></tbody></table><ul><li>Put a table or a diagram of all items before the list.</li><li>Keep the items closed. Do not put the main message or a warning in an item.</li><li><b>Nested items:</b> an open item can hold a child list (<code>.fl</code> in <code>.body</code>). The children show as boxes on a grey area. 3 levels maximum.</li><li><b>Groups:</b> split a long list into one parent item for each group, for example &quot;Gaps&quot;. The key fact gives the count: &quot;9 items&quot;.</li><li><b>Sections:</b> split a long item into parts, each with a <code>.lbl</code> label above it: &quot;Where&quot;, &quot;Why it matters&quot;, &quot;Fix&quot;. All items of one list use the same labels, in the same order.</li><li><b>Rich content:</b> text, tables, code blocks and notes use the full width of the item.</li><li><b>Length:</b> about 300 words in one item. If an item is longer, split it into child items, or give it its own tab.</li><li><b>Question:</b> ID <code>Q1</code>, key fact &quot;Default: …&quot;, mark <code>you ?</code> while open, mark <code>done ✓</code> when answered.</li><li><b>Plan phase:</b> ID = phase number, key fact = decisions and issue, chip = PR number or &quot;open&quot;. The open content gives the changes, then the tests to run.</li></ul></div>
+<div class="lbl">5 · Note</div><textarea data-id="questions" placeholder="What to change"></textarea><span class="saved" data-saved="questions"></span>
+</div></details><details class="comp" id="c-inventory" data-area="lists">
+<summary><span class="head"><span class="arrow"></span><span class="name">Inventory<small>A long list with a share bar, a filter bar, group rows and sort.</small></span></span><span class="ans" data-id="inventory"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">starter.html, data-g=&quot;inventory&quot;</span></div>
+<div class="frame"><div class="gx"><div class="inv" data-g="inventory">
+      <div class="sbar"><i style="flex:5;background:var(--ok)"></i><i style="flex:2;background:var(--warn)"></i><i style="flex:2;background:var(--bad)"></i></div>
+      <div class="tally"><span><i style="background:var(--ok)"></i>match 5</span><span><i style="background:var(--warn)"></i>part 2</span><span><i style="background:var(--bad)"></i>gap 2</span></div>
+      <div class="fbar">
+        <input class="srch" type="search" placeholder="Search" aria-label="Search">
+        <details class="dd" data-col="fit" data-label="Fit"><summary><span>Fit: all</span></summary><div class="menu">
+          <label><input type="checkbox" value="match"> match</label><label><input type="checkbox" value="part"> part</label><label><input type="checkbox" value="gap"> gap</label></div></details>
+        <span class="cnt"></span><button type="button" class="clr" hidden>Clear</button>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th data-sort>Event</th><th data-sort>Handler</th><th data-sort>Fit</th></tr></thead>
+        <tbody>
+          <tr class="band"><td colspan="3">Pointer</td></tr>
+          <tr data-item data-fit="match"><td>click</td><td><code>IPointerClickHandler</code></td><td><span class="chip ok">match</span></td></tr>
+          <tr data-item data-fit="part"><td>dblclick</td><td><code>clickCount == 2</code></td><td><span class="chip warn">part</span></td></tr>
+          <tr data-item data-fit="match"><td>drag</td><td><code>IDragHandler</code></td><td><span class="chip ok">match</span></td></tr>
+          <tr class="band"><td colspan="3">Focus</td></tr>
+          <tr data-item data-fit="match"><td>focus</td><td><code>ISelectHandler</code></td><td><span class="chip ok">match</span></td></tr>
+          <tr data-item data-fit="part"><td>tabindex</td><td><code>Navigation</code></td><td><span class="chip warn">part</span></td></tr>
+          <tr data-item data-fit="gap"><td>Tab key</td><td>None</td><td><span class="chip bad">gap</span></td></tr>
+          <tr class="band"><td colspan="3">Keyboard</td></tr>
+          <tr data-item data-fit="match"><td>Escape</td><td><code>ICancelHandler</code></td><td><span class="chip ok">match</span></td></tr>
+          <tr data-item data-fit="match"><td>Arrow keys</td><td><code>IMoveHandler</code></td><td><span class="chip ok">match</span></td></tr>
+          <tr data-item data-fit="gap"><td>accesskey</td><td>None</td><td><span class="chip bad">gap</span></td></tr>
+        </tbody>
+      </table></div>
+    </div></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Filter bar</td><td>Search and one dropdown for each category</td></tr><tr><td>Count</td><td>9 items, or 2 of 9</td></tr><tr><td>Groups</td><td>Group rows; parent foldables above about 40 rows</td></tr><tr><td>Sort</td><td>Click a header; rows sort inside their group</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><div class="src">From artifacts.md, section "Inventory"</div><p>A long list of items of one type, for example events, components or concepts.</p><table><thead><tr><th>Part</th><th>Rule</th></tr></thead><tbody><tr><td>Groups</td><td>One table with group rows (<code>tr.band</code>). Use parent foldables instead above about 40 rows</td></tr><tr><td>Share bar</td><td><code>.sbar</code> and <code>.tally</code> above the bar: the share of each state, with its count</td></tr><tr><td>Filter bar</td><td><code>.fbar</code>: a search box and one dropdown (<code>.dd</code>) for each category</td></tr><tr><td>Dropdown</td><td>Check boxes, several values. The button shows the values and turns blue</td></tr><tr><td>Count</td><td>&quot;13 items&quot;, or &quot;4 of 13&quot; with a filter. A Clear button with a filter</td></tr><tr><td>Sort</td><td><code>th[data-sort]</code>: click a header to sort. Rows sort inside their group</td></tr><tr><td>Row details</td><td>When rows need more than one line of facts, use the foldable list, not a table</td></tr></tbody></table><ul><li>Each item has <code>data-item</code> and one <code>data-&lt;category&gt;</code> attribute for each dropdown.</li><li>The bar stays one row while it fits. If not, the search box goes to its own row.</li><li>If the page needs only search or only one category, use the same bar with fewer controls.</li></ul></div>
+<div class="lbl">5 · Note</div><textarea data-id="inventory" placeholder="What to change"></textarea><span class="saved" data-saved="inventory"></span>
+</div></details><details class="comp" id="c-tree" data-area="structures">
+<summary><span class="head"><span class="arrow"></span><span class="name">Tree<small>Folders, projects or types. Each branch folds; a click on a name shows its note.</small></span></span><span class="ans" data-id="tree"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">starter.html, data-g=&quot;tree&quot;</span></div>
+<div class="frame"><div class="gx"><div class="tree-box" data-g="tree">
+      <ul class="tree">
+        <li data-note="The source root."><span>src/</span>
+          <ul>
+            <li data-note="Events, ports and projections. No feature code."><span>Orchestrator.Kernel/</span>
+              <ul>
+                <li data-note="Append with an expected version. One write path."><span>Events/</span></li>
+                <li data-note="One interface for each outside system."><span>Ports/</span></li>
+              </ul></li>
+            <li data-note="One folder for each slice."><span>Orchestrator.Features/</span>
+              <ul>
+                <li data-note="Registry, create, archive."><span>Sessions/</span></li>
+                <li data-note="State machine and state check."><span>Lifecycle/</span></li>
+              </ul></li>
+            <li data-note="The web host."><span>Orchestrator.Web/</span></li>
+          </ul></li>
+      </ul>
+    </div></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Lines</td><td>Names only, ├─ └─</td></tr><tr><td>Note</td><td>Under the tree, holds the description</td></tr><tr><td>Phone</td><td>Shrink to 50%, then scroll</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><div class="src">From artifacts.md, section "Tree"</div><ul><li>Write the tree as <code>ul.tree</code> in a <code>.tree-box</code>. Each <code>li</code> holds <code>&lt;span&gt;name&lt;/span&gt;</code>, a <code>data-note</code> and an optional child <code>ul</code>.</li><li>Use the same tree for each hierarchy, with or without state.</li><li>Tree lines show only the names. A description goes into the note, not at the right of the name.</li><li><b>State:</b> only when the tree is about states. Set <code>data-state</code> (<code>ok</code>, <code>warn</code>, <code>bad</code>) on each <code>li</code>. A colored square shows before the name. Add a <code>.legend</code> above the tree.</li><li>The script draws one line for each node, with <code>├─ └─</code> lines. Each branch folds and opens on its own. A click on a name shows its note under the tree.</li><li>Lines never wrap. On a narrow screen the tree shrinks down to 50%, then scrolls.</li></ul></div>
+<div class="lbl">5 · Note</div><textarea data-id="tree" placeholder="What to change"></textarea><span class="saved" data-saved="tree"></span>
+</div></details><details class="comp" id="c-tree-state" data-area="structures">
+<summary><span class="head"><span class="arrow"></span><span class="name">Tree with states<small>A tree about states: a colored square before each name, and a legend.</small></span></span><span class="ans" data-id="tree-state"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">starter.html, data-g=&quot;tree-state&quot;</span></div>
+<div class="frame"><div class="gx"><div class="tree-box" data-g="tree-state">
+      <div class="legend"><span><i style="--c:var(--ok)"></i>decided</span><span><i style="--c:var(--warn)"></i>open</span><span><i style="--c:var(--bad)"></i>gap</span></div>
+      <ul class="tree">
+        <li data-note="One folder for each slice."><span>Orchestrator.Features/</span>
+          <ul>
+            <li data-state="ok" data-note="Decided. Registry, create, archive."><span>Sessions/</span></li>
+            <li data-state="bad" data-note="Gap. The state machine and the state check live in two places."><span>Lifecycle/</span></li>
+            <li data-state="warn" data-note="Open. Delivery waits for task K3."><span>Messages/</span></li>
+          </ul></li>
+      </ul>
+    </div></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Square</td><td>ok, warn, bad</td></tr><tr><td>Legend</td><td>Above the tree</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><div class="src">From artifacts.md, section "Tree"</div><ul><li>Write the tree as <code>ul.tree</code> in a <code>.tree-box</code>. Each <code>li</code> holds <code>&lt;span&gt;name&lt;/span&gt;</code>, a <code>data-note</code> and an optional child <code>ul</code>.</li><li>Use the same tree for each hierarchy, with or without state.</li><li>Tree lines show only the names. A description goes into the note, not at the right of the name.</li><li><b>State:</b> only when the tree is about states. Set <code>data-state</code> (<code>ok</code>, <code>warn</code>, <code>bad</code>) on each <code>li</code>. A colored square shows before the name. Add a <code>.legend</code> above the tree.</li><li>The script draws one line for each node, with <code>├─ └─</code> lines. Each branch folds and opens on its own. A click on a name shows its note under the tree.</li><li>Lines never wrap. On a narrow screen the tree shrinks down to 50%, then scrolls.</li></ul></div>
+<div class="lbl">5 · Note</div><textarea data-id="tree-state" placeholder="What to change"></textarea><span class="saved" data-saved="tree-state"></span>
+</div></details><details class="comp" id="c-callstack" data-area="structures">
+<summary><span class="head"><span class="arrow"></span><span class="name">Call stack<small>The calls of one code path, in the code style.</small></span></span><span class="ans" data-id="callstack"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">starter.html, data-g=&quot;callstack&quot;</span></div>
+<div class="frame"><div class="gx"><div class="cb" data-g="callstack"><div class="bar-top"><span>Call stack · orch post question</span><span>C#</span></div><div class="scroll"><pre>PostQuestion()                        Cli/Post.cs:42
+├─ Envelope.Create(kind, body)        Stream/Envelope.cs:18
+├─ store.WriteBody(body)              Store/NotionStore.cs:77  → creates a Bodies row
+│  └─ NotionTransport.Create()        Store/NotionTransport.cs:30
+├─ store.Append(envelope)             Store/NotionStore.cs:95  → creates an Events row
+│  ← EnvelopeId
+└─ Supervisor.Nudge(to)               Supervisor/Nudge.cs:12   → wakes the receiver</pre></div></div></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Line</td><td>Call, file and line, → effect</td></tr><tr><td>Return</td><td>← on its own line</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><div class="src">From artifacts.md, section "Call stack"</div><ul><li>Use a code block (<code>.cb</code>) with the top bar &quot;Call stack · &lt;path&gt;&quot; and a plain <code>pre</code> (no <code>data-lang</code>).</li><li>One line for each call: <code>├─ └─ │</code> lines, the call at the left, the file and line at the right, then &quot;→ effect&quot; when the call changes something.</li><li>Mark a return value with &quot;←&quot; on its own line.</li></ul></div>
+<div class="lbl">5 · Note</div><textarea data-id="callstack" placeholder="What to change"></textarea><span class="saved" data-saved="callstack"></span>
+</div></details><details class="comp" id="c-props" data-area="structures">
+<summary><span class="head"><span class="arrow"></span><span class="name">Properties<small>The fields of one item.</small></span></span><span class="ans" data-id="props"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">starter.html, data-g=&quot;props&quot;</span></div>
+<div class="frame"><div class="gx"><div class="tw" data-g="props"><table>
+      <thead><tr><th>Field</th><th>Umpire.Analyzers</th></tr></thead>
+      <tbody>
+        <tr><td>Target</td><td><code>netstandard2.0</code></td></tr>
+        <tr><td>Owner</td><td>Engine</td></tr>
+        <tr><td>Source</td><td><code>src/Analyzers/</code></td></tr>
+      </tbody>
+    </table></div></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Columns</td><td>Field and the item name</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><div class="src">From artifacts.md, section "Properties of one item"</div><ul><li>Use a two-column table: &quot;Field&quot; and the item name.</li><li>For several items with the same fields, use one normal table with a row for each item.</li></ul></div>
+<div class="lbl">5 · Note</div><textarea data-id="props" placeholder="What to change"></textarea><span class="saved" data-saved="props"></span>
+</div></details><details class="comp" id="c-tiles" data-area="plans">
+<summary><span class="head"><span class="arrow"></span><span class="name">Status tiles<small>The status of a plan and its counts.</small></span></span><span class="ans" data-id="tiles"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">starter.html, data-g=&quot;tiles&quot;</span></div>
+<div class="frame"><div class="gx"><div class="tiles" data-g="tiles">
+      <div class="tile key"><span>Status</span><b><i class="mk you">?</i>Waits for you</b></div>
+      <div class="tile"><span>Roadmap</span><b>Step 2 of 3</b></div>
+      <div class="tile"><span>Items</span><b>3 of 6</b></div>
+    </div></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>First tile</td><td>Status: mark and word, amber edge</td></tr><tr><td>Other tiles</td><td>Counts: Step 2 of 3</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><div class="src">From artifacts.md, section "Plan"</div><table><thead><tr><th>Part</th><th>Rule</th></tr></thead><tbody><tr><td>Tiles</td><td><code>.tiles</code> on top: the status as a mark and a word, then counts (&quot;Step 2 of 3&quot;, &quot;3 of 6&quot;)</td></tr><tr><td>Roadmap</td><td><code>.rm</code>: one foldable for each step, with a step number, a strip of marks for its items and one mark for the step</td></tr><tr><td>Current step</td><td><code>class=&quot;cur&quot;</code> on its foldable, open by default, with &quot;Current step&quot; under the name</td></tr><tr><td>Items</td><td>Open, a step shows one row for each item: mark, ID, title</td></tr><tr><td>Decision log</td><td>A table: date, kind (chip), text. Above about 20 entries: one foldable for each date</td></tr><tr><td>Timeline</td><td>A branch graph, as in the stream tracker: branches, merges as diamonds, releases as squares, a &quot;You are here&quot; line, dashed lines for work not started</td></tr></tbody></table></div>
+<div class="lbl">5 · Note</div><textarea data-id="tiles" placeholder="What to change"></textarea><span class="saved" data-saved="tiles"></span>
+</div></details><details class="comp" id="c-roadmap" data-area="plans">
+<summary><span class="head"><span class="arrow"></span><span class="name">Roadmap<small>Numbered steps with a strip of marks; the current step is open.</small></span></span><span class="ans" data-id="roadmap"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">starter.html, data-g=&quot;roadmap&quot;</span></div>
+<div class="frame"><div class="gx"><div class="rm" data-g="roadmap">
+      <details><summary><span class="rn">1</span><span class="rt"><b>Base</b></span><span class="strip"><i class="mk done">✓</i><i class="mk done">✓</i></span><i class="mk big done">✓</i></summary>
+        <div class="items"><div class="irow"><i class="mk done">✓</i><span class="iid">A1</span><span class="itt">Design page</span></div><div class="irow"><i class="mk done">✓</i><span class="iid">B1</span><span class="itt">Lifecycle design</span></div></div></details>
+      <details class="cur" open><summary><span class="rn">2</span><span class="rt"><b>Foundations</b><small>Current step</small></span><span class="strip"><i class="mk prog">?</i><i class="mk done">✓</i><i class="mk none"></i></span><i class="mk big prog">▶</i></summary>
+        <div class="items"><div class="irow"><i class="mk prog">?</i><span class="iid">K1</span><span class="itt">Architecture review</span></div><div class="irow"><i class="mk done">✓</i><span class="iid">S9</span><span class="itt">Plugin in one place</span></div><div class="irow"><i class="mk none"></i><span class="iid">S10</span><span class="itt">Supervisor self-start</span></div></div></details>
+      <details><summary><span class="rn">3</span><span class="rt"><b>Features</b></span><span class="strip"><i class="mk plan">?</i></span><i class="mk big plan">?</i></summary>
+        <div class="items"><div class="irow"><i class="mk plan">?</i><span class="iid">M1</span><span class="itt">Voice dictation</span></div></div></details>
+    </div></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Step</td><td>Number, name, mark strip, step mark</td></tr><tr><td>Current</td><td>Blue edge, open, Current step</td></tr><tr><td>Items</td><td>Mark, ID, title</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><div class="src">From artifacts.md, section "Plan"</div><table><thead><tr><th>Part</th><th>Rule</th></tr></thead><tbody><tr><td>Tiles</td><td><code>.tiles</code> on top: the status as a mark and a word, then counts (&quot;Step 2 of 3&quot;, &quot;3 of 6&quot;)</td></tr><tr><td>Roadmap</td><td><code>.rm</code>: one foldable for each step, with a step number, a strip of marks for its items and one mark for the step</td></tr><tr><td>Current step</td><td><code>class=&quot;cur&quot;</code> on its foldable, open by default, with &quot;Current step&quot; under the name</td></tr><tr><td>Items</td><td>Open, a step shows one row for each item: mark, ID, title</td></tr><tr><td>Decision log</td><td>A table: date, kind (chip), text. Above about 20 entries: one foldable for each date</td></tr><tr><td>Timeline</td><td>A branch graph, as in the stream tracker: branches, merges as diamonds, releases as squares, a &quot;You are here&quot; line, dashed lines for work not started</td></tr></tbody></table></div>
+<div class="lbl">5 · Note</div><textarea data-id="roadmap" placeholder="What to change"></textarea><span class="saved" data-saved="roadmap"></span>
+</div></details><details class="comp" id="c-log" data-area="plans">
+<summary><span class="head"><span class="arrow"></span><span class="name">Decision log<small>Dated answers and decisions.</small></span></span><span class="ans" data-id="log"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">starter.html, data-g=&quot;log&quot;</span></div>
+<div class="frame"><div class="gx"><div class="tw" data-g="log"><table>
+      <thead><tr><th>Date</th><th>Kind</th><th>Text</th></tr></thead>
+      <tbody>
+        <tr><td class="num">11-17</td><td><span class="chip info">answer</span></td><td>Tunnel and Access, as for the runner.</td></tr>
+        <tr><td class="num">11-17</td><td><span class="chip ok">decision</span></td><td>Plan only now. Code is a later task.</td></tr>
+      </tbody>
+    </table></div></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Columns</td><td>Date, kind, text</td></tr><tr><td>Long log</td><td>One foldable for each date above about 20 entries</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><div class="src">From artifacts.md, section "Plan"</div><table><thead><tr><th>Part</th><th>Rule</th></tr></thead><tbody><tr><td>Tiles</td><td><code>.tiles</code> on top: the status as a mark and a word, then counts (&quot;Step 2 of 3&quot;, &quot;3 of 6&quot;)</td></tr><tr><td>Roadmap</td><td><code>.rm</code>: one foldable for each step, with a step number, a strip of marks for its items and one mark for the step</td></tr><tr><td>Current step</td><td><code>class=&quot;cur&quot;</code> on its foldable, open by default, with &quot;Current step&quot; under the name</td></tr><tr><td>Items</td><td>Open, a step shows one row for each item: mark, ID, title</td></tr><tr><td>Decision log</td><td>A table: date, kind (chip), text. Above about 20 entries: one foldable for each date</td></tr><tr><td>Timeline</td><td>A branch graph, as in the stream tracker: branches, merges as diamonds, releases as squares, a &quot;You are here&quot; line, dashed lines for work not started</td></tr></tbody></table></div>
+<div class="lbl">5 · Note</div><textarea data-id="log" placeholder="What to change"></textarea><span class="saved" data-saved="log"></span>
+</div></details><details class="comp" id="c-code" data-area="code">
+<summary><span class="head"><span class="arrow"></span><span class="name">Code block<small>A short piece of code from a file.</small></span></span><span class="ans" data-id="code"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">starter.html, data-g=&quot;code&quot;</span></div>
+<div class="frame"><div class="gx"><div class="cb" data-g="code"><div class="bar-top"><span>Block.cs</span><span>C#</span></div><div class="scroll"><pre data-lang="cs">// Only the lines that make the point
+public abstract record Block : Concept {
+    public string Folder => "Kernel";
+}</pre></div></div></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Background</td><td>Dark in both modes</td></tr><tr><td>Top bar</td><td>File name and language</td></tr><tr><td>Phone</td><td>Shrink to 50%, then scroll</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><div class="src">From artifacts.md, section "Code block"</div><ul><li>Add the top bar with the file name and the language when the code comes from a file.</li><li>Set <code>data-lang</code> on the <code>pre</code>. The script adds the syntax colors.</li><li>Show only the lines that make the point. No line numbers.</li><li>On a narrow screen, the script shrinks the code down to 50%. Below that, the block scrolls.</li></ul></div>
+<div class="lbl">5 · Note</div><textarea data-id="code" placeholder="What to change"></textarea><span class="saved" data-saved="code"></span>
+</div></details><details class="comp" id="c-inline" data-area="code">
+<summary><span class="head"><span class="arrow"></span><span class="name">Code in a sentence<small>A name in normal text.</small></span></span><span class="ans" data-id="inline"><button type="button" data-v="Keep" aria-pressed="false">Keep</button><button type="button" data-v="Change" aria-pressed="false">Change</button></span></summary>
+<div class="body">
+<div class="lbl">1 · Component <span class="src">gallery.json</span></div>
+<div class="frame"><div class="gx"><p>The engine reads <code>TypeFacts</code> one time, then calls <code>Rules(RuleBook rules)</code>.</p></div></div>
+<div class="lbl">2 · Variants</div><p class="none">One form only.</p>
+<div class="lbl">3 · Details</div><table class="parts"><tbody><tr><td>Look</td><td>Code font on a light grey tint</td></tr></tbody></table>
+<div class="lbl">4 · Draft rule</div><div class="rule"><div class="src">From artifacts.md, section "Code block"</div><ul><li>Add the top bar with the file name and the language when the code comes from a file.</li><li>Set <code>data-lang</code> on the <code>pre</code>. The script adds the syntax colors.</li><li>Show only the lines that make the point. No line numbers.</li><li>On a narrow screen, the script shrinks the code down to 50%. Below that, the block scrolls.</li></ul></div>
+<div class="lbl">5 · Note</div><textarea data-id="inline" placeholder="What to change"></textarea><span class="saved" data-saved="inline"></span>
+</div></details>
+</div>
+<script>
+{
+/* gallery: area tabs */
+const gt=document.getElementById("gtabs");
+const area=a=>{if(!gt.querySelector(`[data-a="${a}"]`))a=gt.querySelector("button").dataset.a;gt.querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",b.dataset.a===a?"true":"false"));document.querySelectorAll("details.comp").forEach(d=>d.hidden=d.dataset.area!==a);};
+gt.addEventListener("click",e=>{const b=e.target.closest("button");if(b)location.hash="a-"+b.dataset.a;});
+window.addEventListener("hashchange",()=>area(location.hash.slice(3)));
+area(location.hash.slice(3));
+/* answers: Keep or Change, and a note, saved in the page database */
+const state={};const ids=[...document.querySelectorAll(".ans")].map(a=>a.dataset.id);
+const paint=()=>{document.querySelectorAll(".ans").forEach(a=>{const v=state[a.dataset.id]?.choice;a.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v?"true":"false"));});document.querySelectorAll("textarea").forEach(t=>{const n=state[t.dataset.id]?.note;if(document.activeElement!==t&&n!==undefined)t.value=n;});document.getElementById("count").textContent=`${ids.filter(i=>state[i]?.choice).length} of ${ids.length} answered.`;};
+let db=null;
+const save=id=>{if(!db)return;const el=document.querySelector(`[data-saved="${id}"]`);db.collection("gallery").doc(id).set({choice:state[id]?.choice||"",note:state[id]?.note||""}).then(()=>el.textContent="Saved.").catch(()=>el.textContent="Not saved. Send it in the chat.");};
+document.addEventListener("click",e=>{const b=e.target.closest(".ans button");if(!b)return;e.preventDefault();e.stopPropagation();const id=b.parentElement.dataset.id;state[id]={...state[id],choice:state[id]?.choice===b.dataset.v?"":b.dataset.v};paint();save(id);},true);
+document.querySelectorAll("textarea").forEach(t=>t.addEventListener("change",()=>{const id=t.dataset.id;state[id]={...state[id],note:t.value};save(id);}));
+paint();
+(async()=>{try{db=await window.claude?.use?.("db");}catch(e){db=null}if(!db){document.getElementById("nosave").hidden=false;return;}db.collection("gallery").onSnapshot(s=>{s.docs.forEach(d=>state[d.id]=d.data()||{});paint();},()=>document.getElementById("nosave").hidden=false);})();
+}
+</script>
+<script>
+
+{
+/* tabs with #hash routing */
+const tabs=document.getElementById("tabs");
+const show=t=>{if(!tabs){fitAll();return;}if(!document.querySelector(`section.tab[data-p="${t}"]`))t=tabs.querySelector("button").dataset.t;document.querySelectorAll("section.tab").forEach(s=>s.hidden=s.dataset.p!==t);tabs.querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",b.dataset.t===t?"true":"false"));fitAll();};
+if(tabs)tabs.addEventListener("click",e=>{const b=e.target.closest("button");if(b)location.hash=b.dataset.t;});
+window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
+
+/* tables: label each cell for the stacked form; shrink to fit, or stack below 70% */
+document.querySelectorAll(".tw>table").forEach(t=>{const h=[...t.querySelectorAll("thead th")].map(th=>th.textContent);t.querySelectorAll("tbody tr").forEach(r=>[...r.children].forEach((td,i)=>td.dataset.l=h[i]||""));});
+const fitTable=w=>{const t=w.firstElementChild;w.classList.remove("stacked");t.style.zoom=1;if(!w.clientWidth)return;t.style.width="max-content";const need=t.offsetWidth;t.style.width="";const k=w.clientWidth/need;if(k>=1)return;if(k<0.7)w.classList.add("stacked");else t.style.zoom=k;};
+
+/* code: syntax colors, then shrink to fit down to 50%, then scroll */
+const KW=new Set("public private protected internal abstract virtual override sealed static readonly record class struct interface enum void string int bool var new return if else for foreach while in is as null true false async await using namespace function const let import export from def self None True False".split(" "));
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+document.querySelectorAll(".cb pre[data-lang]").forEach(p=>{p.innerHTML=p.textContent.split("\n").map(line=>{const m=line.match(/(\/\/|#).*$/);const ci=m&&!/["']/.test(line.slice(m.index))?m.index:-1;const code=ci>=0?line.slice(0,ci):line;const cm=ci>=0?line.slice(ci):"";return code.replace(/("[^"]*"|'[^']*')|(\b\d+(?:\.\d+)?\b)|(\b[A-Za-z_]\w*\b)|([^"'\w]+)/g,(x,s,n,w,o)=>s?`<span class="s">${esc(s)}</span>`:n?`<span class="n">${n}</span>`:w?(KW.has(w)?`<span class="k">${w}</span>`:/^[A-Z]/.test(w)?`<span class="t">${w}</span>`:w):esc(o))+(cm?`<span class="c">${esc(cm)}</span>`:"");}).join("\n");});
+const fitCode=s=>{const p=s.firstElementChild;p.style.zoom=1;if(!s.clientWidth)return;const k=s.clientWidth/p.scrollWidth;if(k<1)p.style.zoom=Math.max(k,0.5);};
+
+/* tab bar: shrink to fit down to 75%, then scroll */
+const fitTabs=()=>{if(!tabs)return;tabs.style.zoom=1;const k=tabs.clientWidth/tabs.scrollWidth;if(k<1)tabs.style.zoom=Math.max(k,0.75);};
+/* inventory: search, one dropdown with check boxes for each category, count, Clear.
+   Items: [data-item] rows or foldables with data-<category>. Group rows (tr.band) and group
+   foldables hide when no item in them shows. */
+const invApply=v=>{const q=(v.querySelector(".srch")?.value||"").trim().toLowerCase();const f={};
+ v.querySelectorAll(".fbar .dd").forEach(d=>{const on=[...d.querySelectorAll("input:checked")].map(i=>i.value);if(on.length)f[d.dataset.col]=on;d.classList.toggle("on",on.length>0);d.querySelector("summary span").textContent=`${d.dataset.label}: ${on.length?on.join(", "):"all"}`;});
+ const items=[...v.querySelectorAll("[data-item]")];let n=0;
+ items.forEach(it=>{const ok=(!q||it.textContent.toLowerCase().includes(q))&&Object.entries(f).every(([c,vals])=>vals.includes(it.dataset[c]));it.hidden=!ok;if(ok)n++;});
+ v.querySelectorAll("tr.band").forEach(b=>{let x=b.nextElementSibling,any=false;while(x&&!x.classList.contains("band")){if(x.hasAttribute("data-item")&&!x.hidden)any=true;x=x.nextElementSibling;}b.hidden=!any;});
+ v.querySelectorAll(".fl details:not([data-item])").forEach(g=>{const k=g.querySelectorAll("[data-item]");if(k.length)g.hidden=![...k].some(x=>!x.hidden);});
+ const act=q||Object.keys(f).length;const c=v.querySelector(".cnt");if(c)c.textContent=act?`${n} of ${items.length}`:`${items.length} items`;const cl=v.querySelector(".clr");if(cl)cl.hidden=!act;};
+const invBar=b=>{b.classList.remove("stack");const k=[...b.children].filter(x=>!x.hidden);if(k.length>1&&k.some(x=>x.offsetTop>=k[0].offsetTop+k[0].offsetHeight-2))b.classList.add("stack");};
+document.addEventListener("input",e=>{const v=e.target.closest(".inv");if(v){invApply(v);fitAll();}});
+document.addEventListener("change",e=>{const v=e.target.closest(".inv");if(v){invApply(v);fitAll();}});
+document.addEventListener("click",e=>{document.querySelectorAll(".dd[open]").forEach(d=>{if(!d.contains(e.target))d.open=false;});
+ const cl=e.target.closest(".inv .clr");if(cl){const v=cl.closest(".inv");v.querySelectorAll(".srch").forEach(s=>s.value="");v.querySelectorAll(".dd input").forEach(i=>i.checked=false);invApply(v);fitAll();return;}
+ /* sort: click a header; rows sort inside their group */
+ const th=e.target.closest(".tw th[data-sort]");if(th){const i=th.cellIndex,dir=th.dataset.dir==="a"?"d":"a";th.parentElement.querySelectorAll("th").forEach(x=>delete x.dataset.dir);th.dataset.dir=dir;const tb=th.closest("table").tBodies[0];const segs=[[]];[...tb.rows].forEach(r=>{if(r.classList.contains("band"))segs.push([r]);else segs[segs.length-1].push(r);});
+  segs.forEach(sg=>{const head=sg[0]&&sg[0].classList.contains("band")?[sg.shift()]:[];sg.sort((a,b)=>a.cells[i].textContent.localeCompare(b.cells[i].textContent,undefined,{numeric:true})*(dir==="a"?1:-1));[...head,...sg].forEach(r=>tb.appendChild(r));});}});
+document.querySelectorAll(".inv").forEach(invApply);
+/* a dropdown menu opens to the left when it does not fit at the right */
+const ddSide=d=>{d.classList.remove("right");const m=d.querySelector(".menu").getBoundingClientRect();if(m.right>document.documentElement.clientWidth-8)d.classList.add("right");};
+document.addEventListener("toggle",e=>{const d=e.target;if(d.classList&&d.classList.contains("dd")&&d.open)ddSide(d);},true);
+
+/* tree: build lines from ul.tree; li holds <span>name</span>, an optional data-state (ok, warn, bad),
+   data-note and a child ul. Each branch folds. A click on a name shows its note under the tree. */
+document.querySelectorAll("ul.tree").forEach(ul=>{const box=ul.parentElement;const lines=document.createElement("div");lines.className="tlines";const rows=[];
+ const walk=(list,pre,top,parent)=>{const items=[...list.children];items.forEach((li,i)=>{const last=i===items.length-1;const kids=li.querySelector(":scope>ul");
+  const row=document.createElement("div");row.className="trow";row.parentRow=parent;
+  const g=document.createElement("span");g.className="g";g.textContent=top?"":pre+(last?"\u2514\u2500 ":"\u251C\u2500 ");
+  const tg=document.createElement("button");tg.type="button";tg.className="tg"+(kids?"":" none");if(kids){tg.setAttribute("aria-expanded","true");tg.setAttribute("aria-label","Fold or open");}else tg.tabIndex=-1;
+  const nm=document.createElement("button");nm.type="button";nm.className="nm";nm.textContent=li.querySelector(":scope>span").textContent;nm.dataset.note=li.dataset.note||"";
+  row.append(g,tg);const stt=li.dataset.state;if(stt){const q=document.createElement("i");q.className="sq "+stt;q.textContent="\u25A0";row.append(q);}row.append(nm);
+  lines.append(row);rows.push(row);if(kids)walk(kids,top?"":pre+(last?"   ":"\u2502  "),false,row);});};
+ walk(ul,"",true,null);
+ const sc=document.createElement("div");sc.className="tscroll";sc.append(lines);const note=document.createElement("div");note.className="tnote";note.innerHTML='<span class="hint">Select a name for its note.</span>';
+ ul.replaceWith(sc);box.append(note);
+ const vis=r=>{for(let p=r.parentRow;p;p=p.parentRow){if(p.querySelector(".tg").getAttribute("aria-expanded")==="false")return false;}return true;};
+ box.addEventListener("click",e=>{const t=e.target.closest(".tg");if(t&&!t.classList.contains("none")){t.setAttribute("aria-expanded",t.getAttribute("aria-expanded")==="true"?"false":"true");rows.forEach(r=>r.hidden=!vis(r));fitAll();return;}
+  const n=e.target.closest(".nm");if(n){box.querySelectorAll(".nm.sel").forEach(x=>x.classList.remove("sel"));n.classList.add("sel");note.textContent="";const b=document.createElement("b");b.textContent=n.textContent;note.append(b," ",n.dataset.note);}});});
+const fitTree=s=>{const t=s.firstElementChild;t.style.zoom=1;if(!s.clientWidth)return;const k=s.clientWidth/t.scrollWidth;if(k<1)t.style.zoom=Math.max(k,0.5);};
+
+const fitAll=()=>{fitTabs();document.querySelectorAll(".tree-box>.tscroll").forEach(fitTree);document.querySelectorAll(".fbar").forEach(invBar);document.querySelectorAll(".dd[open]").forEach(ddSide);document.querySelectorAll(".tw").forEach(fitTable);document.querySelectorAll(".cb .scroll").forEach(fitCode);};
+window.addEventListener("resize",fitAll);
+document.addEventListener("toggle",fitAll,true);
+show(location.hash.slice(1));
+}
+
+</script>

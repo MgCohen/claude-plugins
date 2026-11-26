@@ -195,13 +195,13 @@ nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:va
 </style>
 
 <div class="wrap">
-  <header>
+  <header data-g="header">
     <span class="eyebrow">Project · Topic</span>
     <h1>Page Name</h1>
     <p class="lead">The result or the decision first, in 1 to 3 sentences.</p>
   </header>
 
-  <nav class="tabs" id="tabs" role="tablist">
+  <nav class="tabs" id="tabs" role="tablist" data-g="tabs">
     <button role="tab" data-t="summary">Summary</button>
     <button role="tab" data-t="details">Details</button>
     <button role="tab" data-t="plan">Plan</button>
@@ -211,19 +211,19 @@ nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:va
   </nav>
 
   <section class="tab" data-p="summary">
-    <div class="card rec">
+    <div class="card rec" data-g="rec">
       <h2>Recommendation</h2>
       <ul>
         <li><b>K1:</b> one line for each decision.</li>
         <li><b>Not recommended:</b> the rejected option, last.</li>
       </ul>
     </div>
-    <div class="stats">
+    <div class="stats" data-g="stats">
       <div class="stat"><b>4</b><span>label with the unit</span></div>
       <div class="stat"><b>1.9 MB</b><span>label with the unit</span></div>
       <div class="stat"><b>3.8 s</b><span>label with the unit</span></div>
     </div>
-    <div class="card">
+    <div class="card" data-g="bars">
       <h2>Heading that states the finding</h2>
       <div class="bars">
         <div class="bar"><span>Largest part</span><i class="bad" style="width:57%"></i><span class="num">4.6 s</span></div>
@@ -234,17 +234,17 @@ nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:va
   </section>
 
   <section class="tab" data-p="details" hidden>
-    <div class="marks"><div><em>Color: health</em><span><i class="mk done"></i>Done</span><span><i class="mk prog"></i>In progress</span><span><i class="mk you"></i>Waits for you</span><span><i class="mk blocked"></i>Blocked</span><span><i class="mk plan"></i>Planning</span><span><i class="mk none"></i>Not started</span></div>
+    <div class="marks" data-g="marks"><div><em>Color: health</em><span><i class="mk done"></i>Done</span><span><i class="mk prog"></i>In progress</span><span><i class="mk you"></i>Waits for you</span><span><i class="mk blocked"></i>Blocked</span><span><i class="mk plan"></i>Planning</span><span><i class="mk none"></i>Not started</span></div>
       <div><em>Symbol: stage</em><span><i class="mk none">✓</i>Merged</span><span><i class="mk none">?</i>Waits for an answer</span><span><i class="mk none">▶</i>Running</span><span><i class="mk none">‖</i>Stopped</span><span><i class="mk none">×</i>Cancelled</span></div></div>
-    <div class="note warn"><b>Risk.</b> One sentence for the risk.</div>
-    <div class="tw"><table>
+    <div class="note warn" data-g="note"><b>Risk.</b> One sentence for the risk.</div>
+    <div class="tw" data-g="table"><table>
       <thead><tr><th>Part</th><th>Reader</th><th>Time (s)</th><th>State</th></tr></thead>
       <tbody>
         <tr><td>Fact reader</td><td><code>TypeFacts</code></td><td class="num">4.6</td><td><i class="mk done">✓</i></td></tr>
         <tr><td>Report format</td><td><code>--report</code></td><td class="num">0.4</td><td><i class="mk you">?</i></td></tr>
       </tbody>
     </table></div>
-    <div class="fl">
+    <div class="fl" data-g="foldable">
       <details><summary><span class="id">K1</span><span class="tt"><b>Item title, 6 words maximum</b><small>Optional key fact</small></span><i class="mk done">✓</i></summary>
         <div class="body"><p>Content of the item: text, a table or a code block.</p></div></details>
       <details><summary><span class="tt"><b>Group: Gaps</b><small>2 items</small></span></summary>
@@ -255,19 +255,19 @@ nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:va
             <div class="body"><p>Content of the item.</p></div></details>
         </div></div></details>
     </div>
-    <div class="cb"><div class="bar-top"><span>Block.cs</span><span>C#</span></div><div class="scroll"><pre data-lang="cs">// Only the lines that make the point
+    <div class="cb" data-g="code"><div class="bar-top"><span>Block.cs</span><span>C#</span></div><div class="scroll"><pre data-lang="cs">// Only the lines that make the point
 public abstract record Block : Concept {
     public string Folder => "Kernel";
 }</pre></div></div>
   </section>
 
   <section class="tab" data-p="plan" hidden>
-    <div class="tiles">
+    <div class="tiles" data-g="tiles">
       <div class="tile key"><span>Status</span><b><i class="mk you">?</i>Waits for you</b></div>
       <div class="tile"><span>Roadmap</span><b>Step 2 of 3</b></div>
       <div class="tile"><span>Items</span><b>3 of 6</b></div>
     </div>
-    <div class="rm">
+    <div class="rm" data-g="roadmap">
       <details><summary><span class="rn">1</span><span class="rt"><b>Base</b></span><span class="strip"><i class="mk done">✓</i><i class="mk done">✓</i></span><i class="mk big done">✓</i></summary>
         <div class="items"><div class="irow"><i class="mk done">✓</i><span class="iid">A1</span><span class="itt">Design page</span></div><div class="irow"><i class="mk done">✓</i><span class="iid">B1</span><span class="itt">Lifecycle design</span></div></div></details>
       <details class="cur" open><summary><span class="rn">2</span><span class="rt"><b>Foundations</b><small>Current step</small></span><span class="strip"><i class="mk prog">?</i><i class="mk done">✓</i><i class="mk none"></i></span><i class="mk big prog">▶</i></summary>
@@ -275,7 +275,7 @@ public abstract record Block : Concept {
       <details><summary><span class="rn">3</span><span class="rt"><b>Features</b></span><span class="strip"><i class="mk plan">?</i></span><i class="mk big plan">?</i></summary>
         <div class="items"><div class="irow"><i class="mk plan">?</i><span class="iid">M1</span><span class="itt">Voice dictation</span></div></div></details>
     </div>
-    <div class="tw"><table>
+    <div class="tw" data-g="log"><table>
       <thead><tr><th>Date</th><th>Kind</th><th>Text</th></tr></thead>
       <tbody>
         <tr><td class="num">11-17</td><td><span class="chip info">answer</span></td><td>Tunnel and Access, as for the runner.</td></tr>
@@ -285,7 +285,7 @@ public abstract record Block : Concept {
   </section>
 
   <section class="tab" data-p="structure" hidden>
-    <div class="tree-box">
+    <div class="tree-box" data-g="tree">
       <ul class="tree">
         <li data-note="The source root."><span>src/</span>
           <ul>
@@ -303,7 +303,7 @@ public abstract record Block : Concept {
           </ul></li>
       </ul>
     </div>
-    <div class="tree-box">
+    <div class="tree-box" data-g="tree-state">
       <div class="legend"><span><i style="--c:var(--ok)"></i>decided</span><span><i style="--c:var(--warn)"></i>open</span><span><i style="--c:var(--bad)"></i>gap</span></div>
       <ul class="tree">
         <li data-note="One folder for each slice."><span>Orchestrator.Features/</span>
@@ -314,14 +314,14 @@ public abstract record Block : Concept {
           </ul></li>
       </ul>
     </div>
-    <div class="cb"><div class="bar-top"><span>Call stack · orch post question</span><span>C#</span></div><div class="scroll"><pre>PostQuestion()                        Cli/Post.cs:42
+    <div class="cb" data-g="callstack"><div class="bar-top"><span>Call stack · orch post question</span><span>C#</span></div><div class="scroll"><pre>PostQuestion()                        Cli/Post.cs:42
 ├─ Envelope.Create(kind, body)        Stream/Envelope.cs:18
 ├─ store.WriteBody(body)              Store/NotionStore.cs:77  → creates a Bodies row
 │  └─ NotionTransport.Create()        Store/NotionTransport.cs:30
 ├─ store.Append(envelope)             Store/NotionStore.cs:95  → creates an Events row
 │  ← EnvelopeId
 └─ Supervisor.Nudge(to)               Supervisor/Nudge.cs:12   → wakes the receiver</pre></div></div>
-    <div class="tw"><table>
+    <div class="tw" data-g="props"><table>
       <thead><tr><th>Field</th><th>Umpire.Analyzers</th></tr></thead>
       <tbody>
         <tr><td>Target</td><td><code>netstandard2.0</code></td></tr>
@@ -332,7 +332,7 @@ public abstract record Block : Concept {
   </section>
 
   <section class="tab" data-p="inventory" hidden>
-    <div class="inv">
+    <div class="inv" data-g="inventory">
       <div class="sbar"><i style="flex:5;background:var(--ok)"></i><i style="flex:2;background:var(--warn)"></i><i style="flex:2;background:var(--bad)"></i></div>
       <div class="tally"><span><i style="background:var(--ok)"></i>match 5</span><span><i style="background:var(--warn)"></i>part 2</span><span><i style="background:var(--bad)"></i>gap 2</span></div>
       <div class="fbar">
@@ -362,7 +362,7 @@ public abstract record Block : Concept {
   </section>
 
   <section class="tab" data-p="questions" hidden>
-    <div class="fl">
+    <div class="fl" data-g="questions">
       <details><summary><span class="id">Q1</span><span class="tt"><b>The question in one sentence?</b><small>Default: the answer if you do not reply</small></span><i class="mk you">?</i></summary>
         <div class="body"><p>Context and options.</p></div></details>
     </div>
@@ -373,8 +373,8 @@ public abstract record Block : Concept {
 {
 /* tabs with #hash routing */
 const tabs=document.getElementById("tabs");
-const show=t=>{if(!document.querySelector(`section.tab[data-p="${t}"]`))t=tabs.querySelector("button").dataset.t;document.querySelectorAll("section.tab").forEach(s=>s.hidden=s.dataset.p!==t);tabs.querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",b.dataset.t===t?"true":"false"));fitAll();};
-tabs.addEventListener("click",e=>{const b=e.target.closest("button");if(b)location.hash=b.dataset.t;});
+const show=t=>{if(!tabs){fitAll();return;}if(!document.querySelector(`section.tab[data-p="${t}"]`))t=tabs.querySelector("button").dataset.t;document.querySelectorAll("section.tab").forEach(s=>s.hidden=s.dataset.p!==t);tabs.querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",b.dataset.t===t?"true":"false"));fitAll();};
+if(tabs)tabs.addEventListener("click",e=>{const b=e.target.closest("button");if(b)location.hash=b.dataset.t;});
 window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
 
 /* tables: label each cell for the stacked form; shrink to fit, or stack below 70% */
@@ -388,7 +388,7 @@ document.querySelectorAll(".cb pre[data-lang]").forEach(p=>{p.innerHTML=p.textCo
 const fitCode=s=>{const p=s.firstElementChild;p.style.zoom=1;if(!s.clientWidth)return;const k=s.clientWidth/p.scrollWidth;if(k<1)p.style.zoom=Math.max(k,0.5);};
 
 /* tab bar: shrink to fit down to 75%, then scroll */
-const fitTabs=()=>{tabs.style.zoom=1;const k=tabs.clientWidth/tabs.scrollWidth;if(k<1)tabs.style.zoom=Math.max(k,0.75);};
+const fitTabs=()=>{if(!tabs)return;tabs.style.zoom=1;const k=tabs.clientWidth/tabs.scrollWidth;if(k<1)tabs.style.zoom=Math.max(k,0.75);};
 /* inventory: search, one dropdown with check boxes for each category, count, Clear.
    Items: [data-item] rows or foldables with data-<category>. Group rows (tr.band) and group
    foldables hide when no item in them shows. */
