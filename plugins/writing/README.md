@@ -14,6 +14,9 @@ Each rule is in one file that Claude reads.
 | Router skill | `skills/writing/SKILL.md` | Before files, commits, PRs | Kind of text, place of each fact |
 | Language | `skills/writing/language.md` | For all kinds | Examples, edit rules |
 | Documents | `skills/writing/documents.md` | Documents, artifacts | Current state, visuals, limits, layout |
+| Artifacts | `skills/writing/artifacts.md` | HTML artifacts | House style, page types, components |
+| Starter page | `skills/writing/starter.html` | HTML artifacts | House CSS, components, script |
+| House style decisions | `skills/writing/house-style-decisions.md` | When necessary | Approved values |
 | Commits and PRs | `skills/writing/commits-prs.md` | Commits, PRs | Change record |
 | Code comments | `skills/writing/code-comments.md` | Comments, docstrings | Comment rules |
 | Word list | `skills/writing/words.md` | When necessary | Word substitutions |
@@ -23,6 +26,7 @@ Each rule is in one file that Claude reads.
 flowchart LR
     A[SKILL.md] --> B{Kind of text}
     B -->|Document| C[language.md + documents.md]
+    B -->|HTML artifact| F[documents.md + artifacts.md]
     B -->|Commit or PR| D[language.md + commits-prs.md]
     B -->|Code comment| E[language.md + code-comments.md]
     B -->|Chat reply| F[Output style only]

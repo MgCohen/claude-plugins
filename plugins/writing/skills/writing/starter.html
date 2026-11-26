@@ -1,0 +1,201 @@
+<title>Page Name</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600&display=swap">
+<style>
+/* House style starter. Copy this file, keep the CSS and the script, and replace the content.
+   Rules: artifacts.md. Decisions: house-style-decisions.md. */
+:root{
+  --bg:#e9ecf1;--surface:#ffffff;--fg:#1b2130;--muted:#5b6475;--line:#dde1e8;--code-in:#eef0f4;--code-bg:#11141b;
+  --accent:#2a5bd7;--accent-soft:#e6edfc;--ok:#1f7a4d;--ok-soft:#e3f3ea;--warn:#9a5b00;--warn-soft:#fbefd9;--bad:#b4232c;--bad-soft:#fbe5e6;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --head:"Space Grotesk","IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#11141b;--surface:#1a1f29;--fg:#e4e8f0;--muted:#9aa3b5;--line:#2c3341;--code-in:#232a36;--code-bg:#06080b;--accent:#7fa2ff;--accent-soft:#1f2a48;--ok:#5fcf95;--ok-soft:#163326;--warn:#f0b257;--warn-soft:#3a2a12;--bad:#ff7b84;--bad-soft:#3d1a1e;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11141b;--surface:#1a1f29;--fg:#e4e8f0;--muted:#9aa3b5;--line:#2c3341;--code-in:#232a36;--code-bg:#06080b;--accent:#7fa2ff;--accent-soft:#1f2a48;--ok:#5fcf95;--ok-soft:#163326;--warn:#f0b257;--warn-soft:#3a2a12;--bad:#ff7b84;--bad-soft:#3d1a1e;color-scheme:dark}
+
+/* base */
+*{box-sizing:border-box;min-width:0}
+[hidden]{display:none!important}
+html{overflow-x:clip}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--body);margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:980px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 64px}
+h1,h2,h3{font-family:var(--head);font-weight:600;text-wrap:balance;margin:0}
+h1{font-size:26px;line-height:1.2}
+h2{font-size:19px;line-height:1.3}
+h3{font-size:16px;line-height:1.3}
+p{margin:0;max-width:72ch}
+a{color:var(--accent)}
+ul,ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
+code{font:13px var(--mono);background:var(--code-in);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+section.tab{display:flex;flex-direction:column;gap:18px;padding-top:20px}
+@media (max-width:600px){h1{font-size:22px}}
+
+/* page header */
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.lead{color:var(--muted);font-size:16px;max-width:70ch}
+
+/* tabs: underline on the open tab */
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);margin-top:16px}
+nav.tabs button{flex-shrink:0;font:500 14px var(--body);color:var(--muted);background:none;border:0;border-bottom:2px solid transparent;padding:10px 10px 8px;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* card, note banner, recommendation card */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.note{background:var(--surface);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:10px 14px}
+.note.ok{border-left-color:var(--ok)}.note.warn{border-left-color:var(--warn)}.note.bad{border-left-color:var(--bad)}
+.rec{border-left:3px solid var(--ok)}
+
+/* chips: filled tint */
+.chip{display:inline-block;font:500 11px var(--mono);padding:2px 8px;border-radius:99px;white-space:nowrap}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}.chip.warn{background:var(--warn-soft);color:var(--warn)}.chip.bad{background:var(--bad-soft);color:var(--bad)}.chip.info{background:var(--accent-soft);color:var(--accent)}
+
+/* table: white box; cell text never wraps; the script shrinks it or stacks it */
+.tw{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.tw>table{border-collapse:collapse;width:100%;font-size:14px}
+.tw th,.tw td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;white-space:nowrap}
+.tw th{font:600 13px var(--body);color:var(--fg);background:var(--bg)}
+.tw tr:last-child td{border-bottom:0}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tw.stacked{background:none;border:0;border-radius:0}
+.tw.stacked thead{display:none}
+.tw.stacked tr{display:block;background:var(--surface);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}
+.tw.stacked td{display:flex;justify-content:space-between;gap:12px;border:0;padding:4px 12px;white-space:normal}
+.tw.stacked td::before{content:attr(data-l);font-weight:600;color:var(--muted);flex:none}
+
+/* stat tiles */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.stat b{display:block;font:600 24px/1.1 var(--head)}
+.stat span{color:var(--muted);font-size:13px}
+
+/* bar rows */
+.bars{display:flex;flex-direction:column;gap:8px}
+.bar{display:grid;grid-template-columns:minmax(0,140px) 1fr 64px;gap:10px;align-items:center;font-size:13px}
+.bar>i{display:block;height:14px;border-radius:3px;background:var(--accent)}
+.bar>i.bad{background:var(--bad)}
+.src{font-size:12.5px;color:var(--muted)}
+
+/* foldable list */
+.fl{display:flex;flex-direction:column;gap:8px}
+.fl details{background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.fl summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 12px}
+.fl summary::-webkit-details-marker{display:none}
+.fl summary::before{content:"\25B8";flex:none;width:12px;font-size:12px;color:var(--muted);text-align:center}
+.fl details[open]>summary::before{content:"\25BE"}
+.fl .id{flex:none;min-width:28px;font:500 12px var(--mono);color:var(--muted)}
+.fl .tt{flex:1;min-width:0}
+.fl .tt b{display:block;font:600 15px/1.35 var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fl .tt small{display:block;font:13px/1.4 var(--body);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fl details[open] .tt b,.fl details[open] .tt small{white-space:normal}
+.fl .chip{flex:none}
+.fl .body{padding:12px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px;font-size:14px}
+
+/* code block: dark, top bar, syntax colors; the script shrinks it to 50%, then it scrolls */
+.cb{background:var(--code-bg);color:#e4e8f0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.cb .bar-top{display:flex;justify-content:space-between;padding:5px 12px;font:500 11px var(--mono);background:#1a1f29;color:#9aa3b5}
+.cb .scroll{overflow-x:auto}
+.cb pre{margin:0;padding:10px 12px;font:12.5px/1.55 var(--mono);white-space:pre;width:max-content;min-width:100%}
+.cb .k{color:#7fa2ff}.cb .t{color:#5fcf95}.cb .s{color:#f0b257}.cb .n{color:#ff7b84}.cb .c{color:#9aa3b5;font-style:italic}
+
+/* diagram box and legend (diagram rules are open) */
+.box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;overflow-x:auto}
+.cap{font:500 12px var(--mono);color:var(--muted);margin-bottom:6px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px;border:2px solid var(--c)}
+.legend b{display:inline-block;width:18px;border-top:2px solid var(--c);margin-right:6px;vertical-align:3px}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Project · Topic</span>
+    <h1>Page Name</h1>
+    <p class="lead">The result or the decision first, in 1 to 3 sentences.</p>
+  </header>
+
+  <nav class="tabs" id="tabs" role="tablist">
+    <button role="tab" data-t="summary">Summary</button>
+    <button role="tab" data-t="details">Details</button>
+    <button role="tab" data-t="questions">Questions</button>
+  </nav>
+
+  <section class="tab" data-p="summary">
+    <div class="card rec">
+      <h2>Recommendation</h2>
+      <ul>
+        <li><b>K1:</b> one line for each decision.</li>
+        <li><b>Not recommended:</b> the rejected option, last.</li>
+      </ul>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>4</b><span>label with the unit</span></div>
+      <div class="stat"><b>1.9 MB</b><span>label with the unit</span></div>
+      <div class="stat"><b>3.8 s</b><span>label with the unit</span></div>
+    </div>
+    <div class="card">
+      <h2>Heading that states the finding</h2>
+      <div class="bars">
+        <div class="bar"><span>Largest part</span><i class="bad" style="width:57%"></i><span class="num">4.6 s</span></div>
+        <div class="bar"><span>Other part</span><i style="width:42%"></i><span class="num">3.3 s</span></div>
+      </div>
+      <p class="src">Source: name of the source.</p>
+    </div>
+  </section>
+
+  <section class="tab" data-p="details" hidden>
+    <div class="note warn"><b>Risk.</b> One sentence for the risk.</div>
+    <div class="tw"><table>
+      <thead><tr><th>Part</th><th>Reader</th><th>Time (s)</th><th>State</th></tr></thead>
+      <tbody>
+        <tr><td>Fact reader</td><td><code>TypeFacts</code></td><td class="num">4.6</td><td><span class="chip ok">decided</span></td></tr>
+        <tr><td>Report format</td><td><code>--report</code></td><td class="num">0.4</td><td><span class="chip warn">open</span></td></tr>
+      </tbody>
+    </table></div>
+    <div class="fl">
+      <details><summary><span class="id">K1</span><span class="tt"><b>Item title, 6 words maximum</b><small>Optional key fact</small></span><span class="chip ok">decided</span></summary>
+        <div class="body"><p>Content of the item: text, a table or a code block.</p></div></details>
+      <details><summary><span class="tt"><b>Item with no ID and no chip</b></span></summary>
+        <div class="body"><p>Content of the item.</p></div></details>
+    </div>
+    <div class="cb"><div class="bar-top"><span>Block.cs</span><span>C#</span></div><div class="scroll"><pre data-lang="cs">// Only the lines that make the point
+public abstract record Block : Concept {
+    public string Folder => "Kernel";
+}</pre></div></div>
+  </section>
+
+  <section class="tab" data-p="questions" hidden>
+    <div class="fl">
+      <details><summary><span class="id">Q1</span><span class="tt"><b>The question in one sentence?</b><small>Default: the answer if you do not reply</small></span><span class="chip info">default</span></summary>
+        <div class="body"><p>Context and options.</p></div></details>
+    </div>
+  </section>
+</div>
+
+<script>
+{
+/* tabs with #hash routing */
+const tabs=document.getElementById("tabs");
+const show=t=>{if(!document.querySelector(`section.tab[data-p="${t}"]`))t=tabs.querySelector("button").dataset.t;document.querySelectorAll("section.tab").forEach(s=>s.hidden=s.dataset.p!==t);tabs.querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",b.dataset.t===t?"true":"false"));fitAll();};
+tabs.addEventListener("click",e=>{const b=e.target.closest("button");if(b)location.hash=b.dataset.t;});
+window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
+
+/* tables: label each cell for the stacked form; shrink to fit, or stack below 70% */
+document.querySelectorAll(".tw>table").forEach(t=>{const h=[...t.querySelectorAll("thead th")].map(th=>th.textContent);t.querySelectorAll("tbody tr").forEach(r=>[...r.children].forEach((td,i)=>td.dataset.l=h[i]||""));});
+const fitTable=w=>{const t=w.firstElementChild;w.classList.remove("stacked");t.style.zoom=1;if(!w.clientWidth)return;const k=w.clientWidth/t.scrollWidth;if(k>=1)return;if(k<0.7)w.classList.add("stacked");else t.style.zoom=k;};
+
+/* code: syntax colors, then shrink to fit down to 50%, then scroll */
+const KW=new Set("public private protected internal abstract virtual override sealed static readonly record class struct interface enum void string int bool var new return if else for foreach while in is as null true false async await using namespace function const let import export from def self None True False".split(" "));
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+document.querySelectorAll(".cb pre[data-lang]").forEach(p=>{p.innerHTML=p.textContent.split("\n").map(line=>{const m=line.match(/(\/\/|#).*$/);const ci=m&&!/["']/.test(line.slice(m.index))?m.index:-1;const code=ci>=0?line.slice(0,ci):line;const cm=ci>=0?line.slice(ci):"";return code.replace(/("[^"]*"|'[^']*')|(\b\d+(?:\.\d+)?\b)|(\b[A-Za-z_]\w*\b)|([^"'\w]+)/g,(x,s,n,w,o)=>s?`<span class="s">${esc(s)}</span>`:n?`<span class="n">${n}</span>`:w?(KW.has(w)?`<span class="k">${w}</span>`:/^[A-Z]/.test(w)?`<span class="t">${w}</span>`:w):esc(o))+(cm?`<span class="c">${esc(cm)}</span>`:"");}).join("\n");});
+const fitCode=s=>{const p=s.firstElementChild;p.style.zoom=1;if(!s.clientWidth)return;const k=s.clientWidth/p.scrollWidth;if(k<1)p.style.zoom=Math.max(k,0.5);};
+
+const fitAll=()=>{document.querySelectorAll(".tw").forEach(fitTable);document.querySelectorAll(".cb .scroll").forEach(fitCode);};
+window.addEventListener("resize",fitAll);
+document.addEventListener("toggle",fitAll,true);
+show(location.hash.slice(1));
+}
+</script>
