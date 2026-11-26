@@ -145,7 +145,10 @@ nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:va
 .trow .tg.none{cursor:default}
 .trow .nm{font:600 13px var(--mono);background:none;border:0;padding:0 3px;border-radius:3px;color:var(--fg);cursor:pointer}
 .trow .nm.sel{background:var(--accent-soft);box-shadow:inset 0 -2px 0 var(--accent)}
-.trow .d{color:var(--muted);font:12.5px var(--body);margin-left:8px}
+.trow .sq{font-style:normal;margin-right:4px}
+.trow .sq.ok{color:var(--ok)}.trow .sq.warn{color:var(--warn)}.trow .sq.bad{color:var(--bad)}
+.tree-box .legend{margin-bottom:6px}
+.tree-box .legend i{background:var(--c);border-color:var(--c)}
 .tnote{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:14px;min-height:1.6em}
 .tnote b{font-family:var(--mono)}
 .tnote .hint{color:var(--muted)}
@@ -227,17 +230,28 @@ public abstract record Block : Concept {
       <ul class="tree">
         <li data-note="The source root."><span>src/</span>
           <ul>
-            <li data-note="Events, ports and projections. No feature code."><span>Orchestrator.Kernel/</span><em>events, ports</em>
+            <li data-note="Events, ports and projections. No feature code."><span>Orchestrator.Kernel/</span>
               <ul>
-                <li data-note="Append with an expected version. One write path."><span>Events/</span><em>envelope, kinds</em></li>
-                <li data-note="One interface for each outside system."><span>Ports/</span><em>IProvider, IClock</em></li>
+                <li data-note="Append with an expected version. One write path."><span>Events/</span></li>
+                <li data-note="One interface for each outside system."><span>Ports/</span></li>
               </ul></li>
-            <li data-note="One folder for each slice."><span>Orchestrator.Features/</span><em>slices</em>
+            <li data-note="One folder for each slice."><span>Orchestrator.Features/</span>
               <ul>
                 <li data-note="Registry, create, archive."><span>Sessions/</span></li>
                 <li data-note="State machine and state check."><span>Lifecycle/</span></li>
               </ul></li>
-            <li data-note="The web host."><span>Orchestrator.Web/</span><em>host</em></li>
+            <li data-note="The web host."><span>Orchestrator.Web/</span></li>
+          </ul></li>
+      </ul>
+    </div>
+    <div class="tree-box">
+      <div class="legend"><span><i style="--c:var(--ok)"></i>decided</span><span><i style="--c:var(--warn)"></i>open</span><span><i style="--c:var(--bad)"></i>gap</span></div>
+      <ul class="tree">
+        <li data-note="One folder for each slice."><span>Orchestrator.Features/</span>
+          <ul>
+            <li data-state="ok" data-note="Decided. Registry, create, archive."><span>Sessions/</span></li>
+            <li data-state="bad" data-note="Gap. The state machine and the state check live in two places."><span>Lifecycle/</span></li>
+            <li data-state="warn" data-note="Open. Delivery waits for task K3."><span>Messages/</span></li>
           </ul></li>
       </ul>
     </div>
@@ -339,7 +353,7 @@ document.querySelectorAll(".inv").forEach(invApply);
 const ddSide=d=>{d.classList.remove("right");const m=d.querySelector(".menu").getBoundingClientRect();if(m.right>document.documentElement.clientWidth-8)d.classList.add("right");};
 document.addEventListener("toggle",e=>{const d=e.target;if(d.classList&&d.classList.contains("dd")&&d.open)ddSide(d);},true);
 
-/* tree: build lines from ul.tree; li holds <span>name</span>, an optional <em>description</em>,
+/* tree: build lines from ul.tree; li holds <span>name</span>, an optional data-state (ok, warn, bad),
    data-note and a child ul. Each branch folds. A click on a name shows its note under the tree. */
 document.querySelectorAll("ul.tree").forEach(ul=>{const box=ul.parentElement;const lines=document.createElement("div");lines.className="tlines";const rows=[];
  const walk=(list,pre,top,parent)=>{const items=[...list.children];items.forEach((li,i)=>{const last=i===items.length-1;const kids=li.querySelector(":scope>ul");
@@ -347,7 +361,7 @@ document.querySelectorAll("ul.tree").forEach(ul=>{const box=ul.parentElement;con
   const g=document.createElement("span");g.className="g";g.textContent=top?"":pre+(last?"\u2514\u2500 ":"\u251C\u2500 ");
   const tg=document.createElement("button");tg.type="button";tg.className="tg"+(kids?"":" none");if(kids){tg.setAttribute("aria-expanded","true");tg.setAttribute("aria-label","Fold or open");}else tg.tabIndex=-1;
   const nm=document.createElement("button");nm.type="button";nm.className="nm";nm.textContent=li.querySelector(":scope>span").textContent;nm.dataset.note=li.dataset.note||"";
-  row.append(g,tg,nm);const em=li.querySelector(":scope>em");if(em){const d=document.createElement("span");d.className="d";d.textContent=em.textContent;row.append(d);}
+  row.append(g,tg);const stt=li.dataset.state;if(stt){const q=document.createElement("i");q.className="sq "+stt;q.textContent="\u25A0";row.append(q);}row.append(nm);
   lines.append(row);rows.push(row);if(kids)walk(kids,top?"":pre+(last?"   ":"\u2502  "),false,row);});};
  walk(ul,"",true,null);
  const sc=document.createElement("div");sc.className="tscroll";sc.append(lines);const note=document.createElement("div");note.className="tnote";note.innerHTML='<span class="hint">Select a name for its note.</span>';

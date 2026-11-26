@@ -130,8 +130,12 @@ A long list of items of one type, for example events, components or concepts.
 
 ### Tree
 
-- Write the tree as `ul.tree` in a `.tree-box`. Each `li` holds `<span>name</span>`, an optional
-  `<em>description</em>`, a `data-note` and an optional child `ul`.
+- Write the tree as `ul.tree` in a `.tree-box`. Each `li` holds `<span>name</span>`, a `data-note`
+  and an optional child `ul`.
+- Use the same tree for each hierarchy, with or without state.
+- Tree lines show only the names. A description goes into the note, not at the right of the name.
+- **State:** only when the tree is about states. Set `data-state` (`ok`, `warn`, `bad`) on each `li`.
+  A colored square shows before the name. Add a `.legend` above the tree.
 - The script draws one line for each node, with `├─ └─` lines. Each branch folds and opens on its
   own. A click on a name shows its note under the tree.
 - Lines never wrap. On a narrow screen the tree shrinks down to 50%, then scrolls.

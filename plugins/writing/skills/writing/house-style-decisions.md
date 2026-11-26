@@ -87,7 +87,8 @@ Filter and search use one bar (U1 to U4). This replaces the filter buttons and t
 
 | ID | Decision | Value |
 |---|---|---|
-| C1 | Folder tree | Text tree with lines. Each branch folds. A click on a name shows its note |
+| C1 | Folder tree | Text tree with lines, names only. Each branch folds. A click on a name shows its note, which holds the description |
+| C2 | State in a tree | A colored square before the name, with a legend. Only when the tree is about states |
 | C3 | Call stack | Text block in the code style: call, file and line, effect, return values |
 | C4 | Properties of one item | Two-column table |
 | C5 | Wide trees on a phone | Shrink down to 50%, then scroll. Lines never wrap |
@@ -111,7 +112,6 @@ Filter and search use one bar (U1 to U4). This replaces the filter buttons and t
 
 ## Open questions
 
-- State in a tree (C2): the colored name and the chip are both refused. Open.
 
 - Diagrams (R4, R6, R7): which types, when to use each, Mermaid or drawn, and the style. This needs
   its own review.
