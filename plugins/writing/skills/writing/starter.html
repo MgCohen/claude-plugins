@@ -134,6 +134,22 @@ nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:va
 .tw th[data-dir="a"]::after{content:" \25B2";color:var(--accent)}
 .tw th[data-dir="d"]::after{content:" \25BC";color:var(--accent)}
 
+/* tree: one line for each node, fold each branch, click a name for its note */
+.tree-box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.tree-box>.tscroll{overflow-x:auto}
+.tlines{font:13px/1.65 var(--mono);white-space:pre;width:max-content}
+.trow .g{color:var(--muted)}
+.trow .tg{display:inline-block;width:1.3em;background:none;border:0;padding:0;font:inherit;color:var(--muted);cursor:pointer}
+.trow .tg[aria-expanded="false"]::before{content:"\25B8"}
+.trow .tg[aria-expanded="true"]::before{content:"\25BE"}
+.trow .tg.none{cursor:default}
+.trow .nm{font:600 13px var(--mono);background:none;border:0;padding:0 3px;border-radius:3px;color:var(--fg);cursor:pointer}
+.trow .nm.sel{background:var(--accent-soft);box-shadow:inset 0 -2px 0 var(--accent)}
+.trow .d{color:var(--muted);font:12.5px var(--body);margin-left:8px}
+.tnote{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:14px;min-height:1.6em}
+.tnote b{font-family:var(--mono)}
+.tnote .hint{color:var(--muted)}
+
 /* diagram box and legend (diagram rules are open) */
 .box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;overflow-x:auto}
 .cap{font:500 12px var(--mono);color:var(--muted);margin-bottom:6px}
@@ -152,6 +168,7 @@ nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:va
   <nav class="tabs" id="tabs" role="tablist">
     <button role="tab" data-t="summary">Summary</button>
     <button role="tab" data-t="details">Details</button>
+    <button role="tab" data-t="structure">Structure</button>
     <button role="tab" data-t="inventory">Inventory</button>
     <button role="tab" data-t="questions">Questions</button>
   </nav>
@@ -203,6 +220,42 @@ nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:va
 public abstract record Block : Concept {
     public string Folder => "Kernel";
 }</pre></div></div>
+  </section>
+
+  <section class="tab" data-p="structure" hidden>
+    <div class="tree-box">
+      <ul class="tree">
+        <li data-note="The source root."><span>src/</span>
+          <ul>
+            <li data-note="Events, ports and projections. No feature code."><span>Orchestrator.Kernel/</span><em>events, ports</em>
+              <ul>
+                <li data-note="Append with an expected version. One write path."><span>Events/</span><em>envelope, kinds</em></li>
+                <li data-note="One interface for each outside system."><span>Ports/</span><em>IProvider, IClock</em></li>
+              </ul></li>
+            <li data-note="One folder for each slice."><span>Orchestrator.Features/</span><em>slices</em>
+              <ul>
+                <li data-note="Registry, create, archive."><span>Sessions/</span></li>
+                <li data-note="State machine and state check."><span>Lifecycle/</span></li>
+              </ul></li>
+            <li data-note="The web host."><span>Orchestrator.Web/</span><em>host</em></li>
+          </ul></li>
+      </ul>
+    </div>
+    <div class="cb"><div class="bar-top"><span>Call stack · orch post question</span><span>C#</span></div><div class="scroll"><pre>PostQuestion()                        Cli/Post.cs:42
+├─ Envelope.Create(kind, body)        Stream/Envelope.cs:18
+├─ store.WriteBody(body)              Store/NotionStore.cs:77  → creates a Bodies row
+│  └─ NotionTransport.Create()        Store/NotionTransport.cs:30
+├─ store.Append(envelope)             Store/NotionStore.cs:95  → creates an Events row
+│  ← EnvelopeId
+└─ Supervisor.Nudge(to)               Supervisor/Nudge.cs:12   → wakes the receiver</pre></div></div>
+    <div class="tw"><table>
+      <thead><tr><th>Field</th><th>Umpire.Analyzers</th></tr></thead>
+      <tbody>
+        <tr><td>Target</td><td><code>netstandard2.0</code></td></tr>
+        <tr><td>Owner</td><td>Engine</td></tr>
+        <tr><td>Source</td><td><code>src/Analyzers/</code></td></tr>
+      </tbody>
+    </table></div>
   </section>
 
   <section class="tab" data-p="inventory" hidden>
@@ -286,7 +339,25 @@ document.querySelectorAll(".inv").forEach(invApply);
 const ddSide=d=>{d.classList.remove("right");const m=d.querySelector(".menu").getBoundingClientRect();if(m.right>document.documentElement.clientWidth-8)d.classList.add("right");};
 document.addEventListener("toggle",e=>{const d=e.target;if(d.classList&&d.classList.contains("dd")&&d.open)ddSide(d);},true);
 
-const fitAll=()=>{fitTabs();document.querySelectorAll(".fbar").forEach(invBar);document.querySelectorAll(".dd[open]").forEach(ddSide);document.querySelectorAll(".tw").forEach(fitTable);document.querySelectorAll(".cb .scroll").forEach(fitCode);};
+/* tree: build lines from ul.tree; li holds <span>name</span>, an optional <em>description</em>,
+   data-note and a child ul. Each branch folds. A click on a name shows its note under the tree. */
+document.querySelectorAll("ul.tree").forEach(ul=>{const box=ul.parentElement;const lines=document.createElement("div");lines.className="tlines";const rows=[];
+ const walk=(list,pre,top,parent)=>{const items=[...list.children];items.forEach((li,i)=>{const last=i===items.length-1;const kids=li.querySelector(":scope>ul");
+  const row=document.createElement("div");row.className="trow";row.parentRow=parent;
+  const g=document.createElement("span");g.className="g";g.textContent=top?"":pre+(last?"\u2514\u2500 ":"\u251C\u2500 ");
+  const tg=document.createElement("button");tg.type="button";tg.className="tg"+(kids?"":" none");if(kids){tg.setAttribute("aria-expanded","true");tg.setAttribute("aria-label","Fold or open");}else tg.tabIndex=-1;
+  const nm=document.createElement("button");nm.type="button";nm.className="nm";nm.textContent=li.querySelector(":scope>span").textContent;nm.dataset.note=li.dataset.note||"";
+  row.append(g,tg,nm);const em=li.querySelector(":scope>em");if(em){const d=document.createElement("span");d.className="d";d.textContent=em.textContent;row.append(d);}
+  lines.append(row);rows.push(row);if(kids)walk(kids,top?"":pre+(last?"   ":"\u2502  "),false,row);});};
+ walk(ul,"",true,null);
+ const sc=document.createElement("div");sc.className="tscroll";sc.append(lines);const note=document.createElement("div");note.className="tnote";note.innerHTML='<span class="hint">Select a name for its note.</span>';
+ ul.replaceWith(sc);box.append(note);
+ const vis=r=>{for(let p=r.parentRow;p;p=p.parentRow){if(p.querySelector(".tg").getAttribute("aria-expanded")==="false")return false;}return true;};
+ box.addEventListener("click",e=>{const t=e.target.closest(".tg");if(t&&!t.classList.contains("none")){t.setAttribute("aria-expanded",t.getAttribute("aria-expanded")==="true"?"false":"true");rows.forEach(r=>r.hidden=!vis(r));fitAll();return;}
+  const n=e.target.closest(".nm");if(n){box.querySelectorAll(".nm.sel").forEach(x=>x.classList.remove("sel"));n.classList.add("sel");note.textContent="";const b=document.createElement("b");b.textContent=n.textContent;note.append(b," ",n.dataset.note);}});});
+const fitTree=s=>{const t=s.firstElementChild;t.style.zoom=1;if(!s.clientWidth)return;const k=s.clientWidth/t.scrollWidth;if(k<1)t.style.zoom=Math.max(k,0.5);};
+
+const fitAll=()=>{fitTabs();document.querySelectorAll(".tree-box>.tscroll").forEach(fitTree);document.querySelectorAll(".fbar").forEach(invBar);document.querySelectorAll(".dd[open]").forEach(ddSide);document.querySelectorAll(".tw").forEach(fitTable);document.querySelectorAll(".cb .scroll").forEach(fitCode);};
 window.addEventListener("resize",fitAll);
 document.addEventListener("toggle",fitAll,true);
 show(location.hash.slice(1));

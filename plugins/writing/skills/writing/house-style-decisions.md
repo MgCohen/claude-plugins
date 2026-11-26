@@ -83,6 +83,15 @@ Question lists (R2) and phase lists (R3) use the foldable.
 
 Filter and search use one bar (U1 to U4). This replaces the filter buttons and the search box of B3 and B4.
 
+## Structures
+
+| ID | Decision | Value |
+|---|---|---|
+| C1 | Folder tree | Text tree with lines. Each branch folds. A click on a name shows its note |
+| C3 | Call stack | Text block in the code style: call, file and line, effect, return values |
+| C4 | Properties of one item | Two-column table |
+| C5 | Wide trees on a phone | Shrink down to 50%, then scroll. Lines never wrap |
+
 ## Code block
 
 | ID | Decision | Value |
@@ -101,6 +110,8 @@ Filter and search use one bar (U1 to U4). This replaces the filter buttons and t
 | R5 | Legend | Keep |
 
 ## Open questions
+
+- State in a tree (C2): the colored name and the chip are both refused. Open.
 
 - Diagrams (R4, R6, R7): which types, when to use each, Mermaid or drawn, and the style. This needs
   its own review.

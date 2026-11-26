@@ -47,6 +47,9 @@ Decisions and values: `house-style-decisions.md`.
 | Code block | `.cb` | Code from a file, or an API shape |
 | Code in a sentence | `code` | A name in normal text |
 | Inventory | `.inv`, `.fbar`, `.sbar` | 20 items or more, with filters |
+| Tree | `.tree-box`, `ul.tree` | Folders, projects, types |
+| Call stack | `.cb` with a plain `pre` | The calls of one code path |
+| Properties | `.tw`, two columns | The fields of one item |
 | Diagram box | `.box`, `.cap`, `.legend` | A diagram |
 
 ### Page header
@@ -124,6 +127,26 @@ A long list of items of one type, for example events, components or concepts.
 - Each item has `data-item` and one `data-<category>` attribute for each dropdown.
 - The bar stays one row while it fits. If not, the search box goes to its own row.
 - If the page needs only search or only one category, use the same bar with fewer controls.
+
+### Tree
+
+- Write the tree as `ul.tree` in a `.tree-box`. Each `li` holds `<span>name</span>`, an optional
+  `<em>description</em>`, a `data-note` and an optional child `ul`.
+- The script draws one line for each node, with `├─ └─` lines. Each branch folds and opens on its
+  own. A click on a name shows its note under the tree.
+- Lines never wrap. On a narrow screen the tree shrinks down to 50%, then scrolls.
+
+### Call stack
+
+- Use a code block (`.cb`) with the top bar "Call stack · <path>" and a plain `pre` (no `data-lang`).
+- One line for each call: `├─ └─ │` lines, the call at the left, the file and line at the right,
+  then "→ effect" when the call changes something.
+- Mark a return value with "←" on its own line.
+
+### Properties of one item
+
+- Use a two-column table: "Field" and the item name.
+- For several items with the same fields, use one normal table with a row for each item.
 
 ### Code block
 
