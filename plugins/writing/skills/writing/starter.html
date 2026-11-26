@@ -64,11 +64,11 @@ nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:va
 .tw.stacked{background:none;border:0;border-radius:0}
 .tw.stacked thead{display:none}
 .tw.stacked tr{display:block;background:var(--surface);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}
-.tw.stacked td{display:flex;justify-content:space-between;gap:12px;border:0;padding:4px 12px;white-space:normal}
-.tw.stacked td::before{content:attr(data-l);font-weight:600;color:var(--muted);flex:none}
+.tw.stacked td{display:block;text-align:right;border:0;padding:4px 12px;white-space:normal}
+.tw.stacked td::before{content:attr(data-l);float:left;margin-right:12px;font:600 14px var(--body);color:var(--muted);text-align:left}
 
 /* stat tiles */
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:10px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:10px}
 .stat{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
 .stat b{display:block;font:600 24px/1.1 var(--head)}
 .stat span{color:var(--muted);font-size:13px}
@@ -193,7 +193,9 @@ const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 document.querySelectorAll(".cb pre[data-lang]").forEach(p=>{p.innerHTML=p.textContent.split("\n").map(line=>{const m=line.match(/(\/\/|#).*$/);const ci=m&&!/["']/.test(line.slice(m.index))?m.index:-1;const code=ci>=0?line.slice(0,ci):line;const cm=ci>=0?line.slice(ci):"";return code.replace(/("[^"]*"|'[^']*')|(\b\d+(?:\.\d+)?\b)|(\b[A-Za-z_]\w*\b)|([^"'\w]+)/g,(x,s,n,w,o)=>s?`<span class="s">${esc(s)}</span>`:n?`<span class="n">${n}</span>`:w?(KW.has(w)?`<span class="k">${w}</span>`:/^[A-Z]/.test(w)?`<span class="t">${w}</span>`:w):esc(o))+(cm?`<span class="c">${esc(cm)}</span>`:"");}).join("\n");});
 const fitCode=s=>{const p=s.firstElementChild;p.style.zoom=1;if(!s.clientWidth)return;const k=s.clientWidth/p.scrollWidth;if(k<1)p.style.zoom=Math.max(k,0.5);};
 
-const fitAll=()=>{document.querySelectorAll(".tw").forEach(fitTable);document.querySelectorAll(".cb .scroll").forEach(fitCode);};
+/* tab bar: shrink to fit down to 75%, then scroll */
+const fitTabs=()=>{tabs.style.zoom=1;const k=tabs.clientWidth/tabs.scrollWidth;if(k<1)tabs.style.zoom=Math.max(k,0.75);};
+const fitAll=()=>{fitTabs();document.querySelectorAll(".tw").forEach(fitTable);document.querySelectorAll(".cb .scroll").forEach(fitCode);};
 window.addEventListener("resize",fitAll);
 document.addEventListener("toggle",fitAll,true);
 show(location.hash.slice(1));
